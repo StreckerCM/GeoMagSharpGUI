@@ -2,3 +2,7 @@ c:\users\chris\documents\visual studio 2010\Projects\GeoMagGUI\GeoMagSharp\bin\D
 c:\users\chris\documents\visual studio 2010\Projects\GeoMagGUI\GeoMagSharp\bin\Debug\GeoMagSharp.pdb
 c:\users\chris\documents\visual studio 2010\Projects\GeoMagGUI\GeoMagSharp\obj\Debug\GeoMagSharp.dll
 c:\users\chris\documents\visual studio 2010\Projects\GeoMagGUI\GeoMagSharp\obj\Debug\GeoMagSharp.pdb
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\bin\Debug\GeoMagSharp.dll
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\bin\Debug\GeoMagSharp.pdb
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\obj\Debug\GeoMagSharp.dll
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\obj\Debug\GeoMagSharp.pdb

@@ -8,3 +8,17 @@ c:\users\chris\documents\visual studio 2010\Projects\GeoMagGUI\GeoMagGUI\bin\Deb
 c:\users\chris\documents\visual studio 2010\Projects\GeoMagGUI\GeoMagGUI\bin\Debug\GeoMagSharp.pdb
 c:\users\chris\documents\visual studio 2010\Projects\GeoMagGUI\GeoMagGUI\obj\x86\Debug\GeoMagGUI.csprojResolveAssemblyReference.cache
 c:\users\chris\documents\visual studio 2010\Projects\GeoMagGUI\GeoMagGUI\obj\x86\Debug\GeoMagGUI.frmMain.resources
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\obj\x86\Debug\GeoMagGUI.exe
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\obj\x86\Debug\GeoMagGUI.pdb
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\bin\Debug\GeoMagGUI.exe
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\bin\Debug\GeoMagGUI.pdb
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\bin\Debug\GeoMagSharp.dll
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\bin\Debug\GeoMagSharp.pdb
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\obj\x86\Debug\GeoMagGUI.csprojResolveAssemblyReference.cache
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\obj\x86\Debug\GeoMagGUI.frmMain.resources
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\obj\x86\Debug\GeoMagGUI.Properties.Resources.resources
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\obj\x86\Debug\GeoMagGUI.csproj.GenerateResource.Cache
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\bin\Debug\coefficient\IGRF11.COF
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\bin\Debug\Resources\LICENSE
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\bin\Debug\Resources\README.md
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\bin\Debug\coefficient\WMM2010.COF
