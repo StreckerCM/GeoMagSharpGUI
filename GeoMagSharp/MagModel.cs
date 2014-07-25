@@ -5,6 +5,48 @@ using System.Text;
 
 namespace GeoMagSharp
 {
+    public class MagModelSet
+    {
+        public MagModelSet()
+        {
+            Models = new List<MagModel>();
+            YearMin = 0.0;
+            YearMax = 0.0;
+        }
+
+        public MagModelSet(MagModelSet other)
+        {
+            Models = new List<MagModel>();
+            if(other.Models!=null)Models.AddRange(other.Models);
+
+            YearMin = other.YearMin;
+            YearMax = other.YearMax;
+        }
+
+        public void AddModel(MagModel newModel)
+        {
+            if (Models == null) Models = new List<MagModel>();
+
+            Models.Add(newModel);
+
+            /* Compute date range for all models */
+            if (Models.Count.Equals(1))
+            {
+                YearMin = newModel.YearMin;
+                YearMax = newModel.YearMax;
+            }
+            else if(Models.Count > 1)
+            {
+                if (newModel.YearMin < YearMin) YearMin = newModel.YearMin;
+
+                if (newModel.YearMax > YearMax) YearMax = newModel.YearMax;
+            }
+        }
+
+        public List<MagModel> Models { get; set; }
+        public double YearMin { get; set; }
+        public double YearMax { get; set; }
+    }
     public class MagModel
     {
         public MagModel()

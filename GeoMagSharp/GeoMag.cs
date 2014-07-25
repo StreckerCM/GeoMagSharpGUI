@@ -9,7 +9,9 @@ namespace GeoMagSharp
 {
     public class GeoMag
     {
-        private List<MagModel> ModelList;
+        //private List<MagModel> ModelList;
+
+        private MagModelSet Models;
 
         private const Int32 RECL = 80;
 
@@ -18,14 +20,16 @@ namespace GeoMagSharp
 
         public GeoMag(string mdFile = null)
         {
-            ModelList = null;
+            Models = null;
 
             if (!string.IsNullOrEmpty(mdFile)) LoadModel(mdFile);
         }
 
         public void LoadModel(string mdFile)
         {
-            ModelList = new List<MagModel>();
+            //ModelList = new List<MagModel>();
+
+            Models = new MagModelSet();
 
             using (var stream = new System.IO.StreamReader(mdFile)) 
             {
@@ -48,7 +52,7 @@ namespace GeoMagSharp
                     {
                         Console.WriteLine("Corrupt record in file {0} on line {1}.", mdFile, fileline);
                         stream.Close();
-                        ModelList = null;
+                        Models = null;
                         return;
                     }
 
@@ -65,7 +69,7 @@ namespace GeoMagSharp
                         {
                             Console.WriteLine("Too many models in file {0} on line {1}.", mdFile, fileline);
                             stream.Close();
-                            ModelList = null;
+                            Models = null;
                             return;
                         }
 
@@ -134,32 +138,12 @@ namespace GeoMagSharp
                             }
                         }
 
-                        ModelList.Add(CurrentModel);
-                        //sscanf(inbuff, "%s%lg%d%d%d%lg%lg%lg%lg", model[modelI], &epoch[modelI],
-                        //       &max1[modelI], &max2[modelI], &max3[modelI], &yrmin[modelI],
-                        //       &yrmax[modelI], &altmin[modelI], &altmax[modelI]);
-
-                        ///* Compute date range for all models */
-                        //if (modelI == 0)                    /*If first model */
-                        //{
-                        //    minyr = yrmin[0];
-                        //    maxyr = yrmax[0];
-                        //}
-                        //else
-                        //{
-                        //    if (yrmin[modelI] < minyr)
-                        //    {
-                        //        minyr = yrmin[modelI];
-                        //    }
-                        //    if (yrmax[modelI] > maxyr)
-                        //    {
-                        //        maxyr = yrmax[modelI];
-                        //    }
-                        //} /* if modelI != 0 */
+                        Models.AddModel(CurrentModel);
 
                     } /* If 1st 3 chars are spaces */
                 } /* While not end of model file */
             }
         }
+
     }
 }
