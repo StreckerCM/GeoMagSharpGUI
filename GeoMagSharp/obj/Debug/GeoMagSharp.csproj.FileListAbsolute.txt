@@ -1,0 +1,4 @@
+c:\users\chris\documents\visual studio 2010\Projects\GeoMagGUI\GeoMagSharp\bin\Debug\GeoMagSharp.dll
+c:\users\chris\documents\visual studio 2010\Projects\GeoMagGUI\GeoMagSharp\bin\Debug\GeoMagSharp.pdb
+c:\users\chris\documents\visual studio 2010\Projects\GeoMagGUI\GeoMagSharp\obj\Debug\GeoMagSharp.dll
+c:\users\chris\documents\visual studio 2010\Projects\GeoMagGUI\GeoMagSharp\obj\Debug\GeoMagSharp.pdb
