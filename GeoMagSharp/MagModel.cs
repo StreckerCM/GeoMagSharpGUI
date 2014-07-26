@@ -60,6 +60,8 @@ namespace GeoMagSharp
             YearMax = 0.0;
             AltitudeMin = 0.0;
             AltitudeMax = 0.0;
+
+            Coefficients = new List<SphericalHarmonicCoefficient>();
         }
 
         public MagModel(MagModel other)
@@ -73,6 +75,10 @@ namespace GeoMagSharp
             YearMax = other.YearMax;
             AltitudeMin = other.AltitudeMin;
             AltitudeMax = other.AltitudeMax;
+
+            Coefficients = new List<SphericalHarmonicCoefficient>();
+
+            if (other.Coefficients != null && other.Coefficients.Any()) Coefficients.AddRange(other.Coefficients);
         }
 
         public string Model {get; set;}
@@ -85,5 +91,42 @@ namespace GeoMagSharp
         public double AltitudeMin {get; set;}
         public double AltitudeMax {get; set;}
 
+        public List<SphericalHarmonicCoefficient> Coefficients { get; set; }
+
+    }
+
+    public class SphericalHarmonicCoefficient
+    {
+        public SphericalHarmonicCoefficient()
+        {
+            LineNum = -1;
+            N = 0;
+            M = 0;
+            G = 0.0;
+            HH = 0.0;
+            Irat = string.Empty;
+            Trash = new List<double>();
+        }
+
+        public SphericalHarmonicCoefficient(SphericalHarmonicCoefficient other)
+        {
+            LineNum = other.LineNum;
+            N = other.N;
+            M = other.M;
+            G = other.G;
+            HH = other.HH;
+            Irat = other.Irat;
+            Trash = new List<double>();
+
+            if (other.Trash != null && other.Trash.Any()) Trash.AddRange(other.Trash);
+        }
+
+        public Int32 LineNum { get; set; }
+        public Int32 N { get; set; }
+        public Int32 M { get; set; }
+        public double G { get; set; }
+        public double HH { get; set; }
+        public string Irat { get; set; }
+        public List<double> Trash { get; set; }
     }
 }

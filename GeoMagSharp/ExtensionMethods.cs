@@ -9,7 +9,7 @@ namespace GeoMagSharp
     {
         /****************************************************************************/
         /*                                                                          */
-        /*                           Subroutine ToJulian                            */
+        /*                           Subroutine ToDecimal                            */
         /*                                                                          */
         /****************************************************************************/
         /*                                                                          */
@@ -26,17 +26,34 @@ namespace GeoMagSharp
         /*                                                                          */
         /****************************************************************************/
 
-        public static double ToJulian(this DateTime date)
+        public static double ToDecimal(this DateTime date)
         {
-            //int days[12] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
+            Int32 year = date.Year;
 
-            //int leap_year = (((year % 4) == 0) &&
-            //                 (((year % 100) != 0) || ((year % 400) == 0)));
+            Int32 month = date.Month;
 
-            //double day_in_year = (days[month - 1] + day + (month > 2 ? leap_year : 0));
+            Int32 day = date.Day;
 
-            //return ((double)year + (day_in_year / (365.0 + leap_year)));
-            return 0;
+            Int32[] days = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
+
+            Boolean isleapYear = (((year % 4) == 0) && (((year % 100) != 0) || ((year % 400) == 0)));
+
+            Int32 leapYear = Convert.ToInt32(isleapYear);
+
+            double dayInYear = (days[month - 1] + day + (month > 2 ? leapYear : 0));
+
+            return ((double)year + (dayInYear / (365.0 + leapYear)));
+
+        }
+
+        public static double ToDegree(this double inRadians)
+        {
+            return inRadians * (180.0 / Math.PI);
+        }
+
+        public static double ToRadian(this double inDegree)
+        {
+            return inDegree * (Math.PI / 180);
         }
 
     }
