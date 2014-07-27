@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -39,7 +40,7 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.comboBoxModels = new System.Windows.Forms.ComboBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBoxAltitude = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.comboBoxUnits = new System.Windows.Forms.ComboBox();
@@ -61,15 +62,17 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutGeoMagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.errorProviderCheck = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProviderCheck)).BeginInit();
             this.SuspendLayout();
             // 
             // dateTimePicker1
@@ -171,7 +174,7 @@
             // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.textBox1);
+            this.groupBox4.Controls.Add(this.textBoxAltitude);
             this.groupBox4.Controls.Add(this.label1);
             this.groupBox4.Controls.Add(this.label2);
             this.groupBox4.Controls.Add(this.comboBoxUnits);
@@ -182,20 +185,22 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Altitude (Above mean sea level)";
             // 
-            // textBox1
+            // textBoxAltitude
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(62, 59);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(162, 20);
-            this.textBox1.TabIndex = 7;
-            this.textBox1.Tag = "LATITUDE";
-            this.textBox1.Text = "0";
+            this.textBoxAltitude.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxAltitude.Location = new System.Drawing.Point(58, 59);
+            this.textBoxAltitude.Name = "textBoxAltitude";
+            this.textBoxAltitude.Size = new System.Drawing.Size(151, 20);
+            this.textBoxAltitude.TabIndex = 7;
+            this.textBoxAltitude.Tag = "LATITUDE";
+            this.textBoxAltitude.Text = "0";
+            this.textBoxAltitude.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxAltitude_Validating);
+            this.textBoxAltitude.Validated += new System.EventHandler(this.textBoxAltitude_Validated);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 63);
+            this.label1.Location = new System.Drawing.Point(7, 63);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 13);
             this.label1.TabIndex = 96;
@@ -204,7 +209,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(27, 26);
+            this.label2.Location = new System.Drawing.Point(23, 26);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(29, 13);
             this.label2.TabIndex = 97;
@@ -219,9 +224,9 @@
             "Kilometers",
             "Meters",
             "Feet"});
-            this.comboBoxUnits.Location = new System.Drawing.Point(62, 22);
+            this.comboBoxUnits.Location = new System.Drawing.Point(58, 22);
             this.comboBoxUnits.Name = "comboBoxUnits";
-            this.comboBoxUnits.Size = new System.Drawing.Size(162, 21);
+            this.comboBoxUnits.Size = new System.Drawing.Size(151, 21);
             this.comboBoxUnits.TabIndex = 6;
             // 
             // buttonCalculate
@@ -258,6 +263,8 @@
             this.ComboBoxLatDir.Tag = "LATITUDE";
             this.ComboBoxLatDir.Text = "N";
             this.ComboBoxLatDir.Visible = false;
+            this.ComboBoxLatDir.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLatitude_Validating);
+            this.ComboBoxLatDir.Validated += new System.EventHandler(this.TextBoxLatitude_Validated);
             // 
             // TextBoxLongDeg
             // 
@@ -269,6 +276,8 @@
             this.TextBoxLongDeg.Tag = "LONGITUDE";
             this.TextBoxLongDeg.Text = "0";
             this.TextBoxLongDeg.Visible = false;
+            this.TextBoxLongDeg.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLongitude_Validating);
+            this.TextBoxLongDeg.Validated += new System.EventHandler(this.TextBoxLongitude_Validated);
             // 
             // TextBoxLatSec
             // 
@@ -280,6 +289,8 @@
             this.TextBoxLatSec.Tag = "LATITUDE";
             this.TextBoxLatSec.Text = "0";
             this.TextBoxLatSec.Visible = false;
+            this.TextBoxLatSec.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLatitude_Validating);
+            this.TextBoxLatSec.Validated += new System.EventHandler(this.TextBoxLatitude_Validated);
             // 
             // TextBoxLongMin
             // 
@@ -291,6 +302,8 @@
             this.TextBoxLongMin.Tag = "LONGITUDE";
             this.TextBoxLongMin.Text = "0";
             this.TextBoxLongMin.Visible = false;
+            this.TextBoxLongMin.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLongitude_Validating);
+            this.TextBoxLongMin.Validated += new System.EventHandler(this.TextBoxLongitude_Validated);
             // 
             // TextBoxLatMin
             // 
@@ -302,6 +315,8 @@
             this.TextBoxLatMin.Tag = "LATITUDE";
             this.TextBoxLatMin.Text = "0";
             this.TextBoxLatMin.Visible = false;
+            this.TextBoxLatMin.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLatitude_Validating);
+            this.TextBoxLatMin.Validated += new System.EventHandler(this.TextBoxLatitude_Validated);
             // 
             // TextBoxLongSec
             // 
@@ -313,6 +328,8 @@
             this.TextBoxLongSec.Tag = "LONGITUDE";
             this.TextBoxLongSec.Text = "0";
             this.TextBoxLongSec.Visible = false;
+            this.TextBoxLongSec.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLongitude_Validating);
+            this.TextBoxLongSec.Validated += new System.EventHandler(this.TextBoxLongitude_Validated);
             // 
             // TextBoxLatDeg
             // 
@@ -324,6 +341,8 @@
             this.TextBoxLatDeg.Tag = "LATITUDE";
             this.TextBoxLatDeg.Text = "0";
             this.TextBoxLatDeg.Visible = false;
+            this.TextBoxLatDeg.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLatitude_Validating);
+            this.TextBoxLatDeg.Validated += new System.EventHandler(this.TextBoxLatitude_Validated);
             // 
             // ComboBoxLongDir
             // 
@@ -339,6 +358,8 @@
             this.ComboBoxLongDir.Tag = "LONGITUDE";
             this.ComboBoxLongDir.Text = "W";
             this.ComboBoxLongDir.Visible = false;
+            this.ComboBoxLongDir.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLongitude_Validating);
+            this.ComboBoxLongDir.Validated += new System.EventHandler(this.TextBoxLongitude_Validated);
             // 
             // label80
             // 
@@ -359,6 +380,9 @@
             this.textBoxLatitudeDecimal.TabIndex = 9;
             this.textBoxLatitudeDecimal.Tag = "LATITUDE";
             this.textBoxLatitudeDecimal.Text = "0";
+            this.textBoxLatitudeDecimal.Enter += new System.EventHandler(this.textBox_Enter);
+            this.textBoxLatitudeDecimal.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxLatitudeDecimal_Validating);
+            this.textBoxLatitudeDecimal.Validated += new System.EventHandler(this.textBoxLatitudeDecimal_Validated);
             // 
             // textBoxLongitudeDecimal
             // 
@@ -369,6 +393,8 @@
             this.textBoxLongitudeDecimal.TabIndex = 14;
             this.textBoxLongitudeDecimal.Tag = "LONGITUDE";
             this.textBoxLongitudeDecimal.Text = "0";
+            this.textBoxLongitudeDecimal.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxLongitudeDecimal_Validating);
+            this.textBoxLongitudeDecimal.Validated += new System.EventHandler(this.textBoxLongitudeDecimal_Validated);
             // 
             // groupBox1
             // 
@@ -431,14 +457,19 @@
             // loadModelToolStripMenuItem
             // 
             this.loadModelToolStripMenuItem.Name = "loadModelToolStripMenuItem";
-            this.loadModelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadModelToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.loadModelToolStripMenuItem.Text = "Load Model";
             this.loadModelToolStripMenuItem.Click += new System.EventHandler(this.loadModelToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(134, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -453,13 +484,12 @@
             // aboutGeoMagToolStripMenuItem
             // 
             this.aboutGeoMagToolStripMenuItem.Name = "aboutGeoMagToolStripMenuItem";
-            this.aboutGeoMagToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutGeoMagToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.aboutGeoMagToolStripMenuItem.Text = "About...";
             // 
-            // toolStripSeparator1
+            // errorProviderCheck
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.errorProviderCheck.ContainerControl = this;
             // 
             // FrmMain
             // 
@@ -485,6 +515,7 @@
             this.groupBox1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProviderCheck)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -502,7 +533,7 @@
         private System.Windows.Forms.DateTimePicker dateTimePicker2;
         internal System.Windows.Forms.RadioButton radioButtonDateSingle;
         private System.Windows.Forms.ComboBox comboBoxModels;
-        internal System.Windows.Forms.TextBox textBox1;
+        internal System.Windows.Forms.TextBox textBoxAltitude;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox comboBoxUnits;
@@ -528,6 +559,7 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutGeoMagToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ErrorProvider errorProviderCheck;
     }
 }
 

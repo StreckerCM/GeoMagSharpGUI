@@ -47,6 +47,7 @@ namespace GeoMagSharp
         public double YearMin { get; set; }
         public double YearMax { get; set; }
     }
+
     public class MagModel
     {
         public MagModel()
@@ -128,5 +129,193 @@ namespace GeoMagSharp
         public double HH { get; set; }
         public string Irat { get; set; }
         public List<double> Trash { get; set; }
+    }
+
+    public class Latitude
+    {
+        public Latitude ()
+        {
+            Decimal = 0;
+        }
+
+        public Latitude(double inDecimal)
+        {
+            Decimal = inDecimal;
+        }
+
+        public Latitude(Latitude other)
+        {
+            Decimal = other.Decimal;
+        }
+
+        public Latitude(double inDegrees, double inMinutes, double inSeconds, string inDirection)
+        {
+            double coordDec = (inMinutes * 60) + inSeconds;
+
+            coordDec = coordDec / 3600;  //Total number of seconds 
+
+            coordDec = inDegrees + coordDec;
+
+            if (inDirection.Equals("N", StringComparison.OrdinalIgnoreCase))
+            {
+                coordDec = Math.Abs(coordDec);
+            }
+            else if (inDirection.Equals("S", StringComparison.OrdinalIgnoreCase))
+            {
+                coordDec = -Math.Abs(coordDec);
+            }
+
+            Decimal = coordDec;
+        }
+
+        public double Degrees
+        {
+            get
+            {
+                double absDecimal = Math.Abs(Decimal);
+
+                return absDecimal.Truncate();
+            }
+        }
+
+        public double Minutes
+        {
+            get
+            {
+                double absDecimal = Math.Abs(Decimal);
+
+                absDecimal -= absDecimal.Truncate();
+
+                return (absDecimal * 60).Truncate();
+            }
+        }
+
+        public double Seconds
+        {
+            get
+            {
+                double absDecimal = Math.Abs(Decimal);
+
+                absDecimal -= absDecimal.Truncate();
+
+                absDecimal *= 60;
+                
+                absDecimal -= absDecimal.Truncate();
+
+                return absDecimal * 60;
+            }
+        }
+
+        public string Hemisphere 
+        { 
+            get
+            {
+                return Decimal >= 0 ? "N" : "S"; 
+            } 
+        }
+
+        public string ToStringDMS
+        {
+            get
+            {
+                return string.Format("{0}° {1}′ {2}″ {3}", Degrees, Minutes, Seconds.ToString("F4"), Hemisphere);
+            }
+        }
+
+        public double Decimal { get; set; }
+    }
+
+    public class Longitude
+    {
+        public Longitude ()
+        {
+            Decimal = 0;
+        }
+
+        public Longitude(double inDecimal)
+        {
+            Decimal = inDecimal;
+        }
+
+        public Longitude(Latitude other)
+        {
+            Decimal = other.Decimal;
+        }
+
+        public Longitude(double inDegrees, double inMinutes, double inSeconds, string inDirection)
+        {
+            double coordDec = (inMinutes * 60) + inSeconds;
+
+            coordDec = coordDec / 3600;  //Total number of seconds 
+
+            coordDec = inDegrees + coordDec;
+
+            if (inDirection.Equals("E", StringComparison.OrdinalIgnoreCase))
+            {
+                coordDec = Math.Abs(coordDec);
+            }
+            else if (inDirection.Equals("W", StringComparison.OrdinalIgnoreCase))
+            {
+                coordDec = -Math.Abs(coordDec);
+            }
+
+            Decimal = coordDec;
+        }
+
+        public double Degrees
+        {
+            get
+            {
+                double absDecimal = Math.Abs(Decimal);
+
+                return absDecimal.Truncate();
+            }
+        }
+
+        public double Minutes
+        {
+            get
+            {
+                double absDecimal = Math.Abs(Decimal);
+
+                absDecimal -= absDecimal.Truncate();
+
+                return (absDecimal * 60).Truncate();
+            }
+        }
+
+        public double Seconds
+        {
+            get
+            {
+                double absDecimal = Math.Abs(Decimal);
+
+                absDecimal -= absDecimal.Truncate();
+
+                absDecimal *= 60;
+
+                absDecimal -= absDecimal.Truncate();
+
+                return absDecimal * 60;
+            }
+        }
+
+        public string Hemisphere 
+        { 
+            get
+            {
+                return Decimal >= 0 ? "E" : "W"; 
+            } 
+        }
+
+        public string ToStringDMS
+        {
+            get
+            {
+                return string.Format("{0}° {1}′ {2}″ {3}", Degrees, Minutes, Seconds.ToString("F4"), Hemisphere);
+            }
+        }
+
+        public double Decimal { get; set; }
     }
 }

@@ -56,6 +56,18 @@ namespace GeoMagSharp
             return inDegree * (Math.PI / 180);
         }
 
+        public static double Truncate(this double number)
+        {
+            var numStr = number.ToString("F15");
+
+            if (numStr.IndexOf('.') == -1)
+            {
+                return number;
+            }
+
+            return Convert.ToDouble(numStr.Substring(0, numStr.IndexOf('.')));
+        }
+
     }
     
 }

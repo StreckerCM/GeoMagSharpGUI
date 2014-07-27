@@ -11,3 +11,4 @@ C:\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\bin\Debug\GeoMagSharp.p
 C:\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\obj\Debug\ResolveAssemblyReference.cache
 C:\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\obj\Debug\GeoMagSharp.dll
 C:\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\obj\Debug\GeoMagSharp.pdb
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\obj\Debug\GeoMagSharp.csprojResolveAssemblyReference.cache

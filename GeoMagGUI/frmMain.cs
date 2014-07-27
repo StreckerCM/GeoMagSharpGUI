@@ -3,6 +3,8 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using GeoMagGUI.Properties;
+using GeoMagSharp;
 
 namespace GeoMagGUI
 {
@@ -54,6 +56,30 @@ namespace GeoMagGUI
                 if (!File.Exists(modelFile))
                 {
                     MessageBox.Show(string.Format("The model file {0} could not be found", Path.GetFileName(modelFile)), @"Error: Missing Model File", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                if (comboBoxUnits.SelectedItem == null)
+                {
+                    MessageBox.Show(string.Format("No Units have been selected.{0}Please choose a Units and try again.", Environment.NewLine), @"Error: No Units", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(textBoxAltitude.Text) || !Helper.IsNumeric(textBoxAltitude.Text))
+                {
+                    MessageBox.Show(string.Format("Altitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Altitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(textBoxLatitudeDecimal.Text) || !Helper.IsNumeric(textBoxLatitudeDecimal.Text))
+                {
+                    MessageBox.Show(string.Format("Latitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Latitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(textBoxLongitudeDecimal.Text) || !Helper.IsNumeric(textBoxLongitudeDecimal.Text))
+                {
+                    MessageBox.Show(string.Format("Longitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Longitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
 
@@ -180,6 +206,222 @@ namespace GeoMagGUI
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void textBoxLatitudeDecimal_Validated(object sender, EventArgs e)
+        {
+            this.errorProviderCheck.SetError(textBoxLatitudeDecimal, string.Empty);
+
+            var latitude = new Latitude(Convert.ToDouble(textBoxLatitudeDecimal.Text));
+
+            TextBoxLatDeg.Text = latitude.Degrees.ToString("F0");
+            TextBoxLatMin.Text = latitude.Minutes.ToString("F0");
+            TextBoxLatSec.Text = latitude.Seconds.ToString("F4");
+            ComboBoxLatDir.SelectedItem = latitude.Hemisphere.ToString();
+        }
+
+        private void textBoxLatitudeDecimal_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (string.IsNullOrEmpty(textBoxLatitudeDecimal.Text))
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(textBoxLatitudeDecimal, "This value is required");
+
+                return;
+            }
+
+            if(!Helper.IsNumeric(textBoxLatitudeDecimal.Text))
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(textBoxLatitudeDecimal, "Entered Value is not numeric");
+
+                return;
+            }
+
+            if (Convert.ToDouble(textBoxLatitudeDecimal.Text) < -90 || Convert.ToDouble(textBoxLatitudeDecimal.Text) > 90)
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(textBoxLatitudeDecimal, "Decimal Latitude is between -90 and 90");
+
+                return;
+            }
+
+        }
+
+        private void textBoxLongitudeDecimal_Validated(object sender, EventArgs e)
+        {
+            this.errorProviderCheck.SetError(textBoxLongitudeDecimal, string.Empty);
+
+            var longitude = new Longitude(Convert.ToDouble(textBoxLongitudeDecimal.Text));
+
+            TextBoxLongDeg.Text = longitude.Degrees.ToString("F0");
+            TextBoxLongMin.Text = longitude.Minutes.ToString("F0");
+            TextBoxLongSec.Text = longitude.Seconds.ToString("F4");
+            ComboBoxLongDir.SelectedItem = longitude.Hemisphere.ToString();
+        }
+
+        private void textBoxLongitudeDecimal_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (string.IsNullOrEmpty(textBoxLongitudeDecimal.Text))
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(textBoxLongitudeDecimal, "This value is required");
+
+                return;
+            }
+
+            if (!Helper.IsNumeric(textBoxLongitudeDecimal.Text))
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(textBoxLongitudeDecimal, "Entered Value is not numeric");
+
+                return;
+            }
+
+            if (Convert.ToDouble(textBoxLongitudeDecimal.Text) < -180 || Convert.ToDouble(textBoxLongitudeDecimal.Text) > 180)
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(textBoxLongitudeDecimal, "Decimal Longitude is between -180 and 180");
+
+                return;
+            }
+        }
+
+        private void textBoxAltitude_Validated(object sender, EventArgs e)
+        {
+            this.errorProviderCheck.SetError(textBoxAltitude, string.Empty);
+        }
+
+        private void textBoxAltitude_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (string.IsNullOrEmpty(textBoxAltitude.Text))
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(textBoxAltitude, "This value is required");
+
+                return;
+            }
+
+            if (!Helper.IsNumeric(textBoxAltitude.Text))
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(textBoxAltitude, "Entered Value is not numeric");
+
+                return;
+            }
+        }
+
+        private void TextBoxLongitude_Validated(object sender, EventArgs e)
+        {
+            this.errorProviderCheck.SetError(ComboBoxLongDir, string.Empty);
+
+            var longitude = new Longitude(Convert.ToDouble(TextBoxLongDeg.Text), Convert.ToDouble(TextBoxLongMin.Text), Convert.ToDouble(TextBoxLongSec.Text), ComboBoxLongDir.SelectedItem.ToString());
+
+            textBoxLongitudeDecimal.Text = longitude.Decimal.ToString("F8");
+        }
+
+        private void TextBoxLongitude_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (string.IsNullOrEmpty(TextBoxLongDeg.Text) || string.IsNullOrEmpty(TextBoxLongMin.Text) || string.IsNullOrEmpty(TextBoxLongSec.Text))
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(ComboBoxLongDir, "This value is required");
+
+                return;
+            }
+
+            if (!Helper.IsNumeric(TextBoxLongDeg.Text) || !Helper.IsNumeric(TextBoxLongMin.Text) || !Helper.IsNumeric(TextBoxLongSec.Text))
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(ComboBoxLongDir, "Entered Value is not numeric");
+
+                return;
+            }
+
+            if (ComboBoxLongDir.SelectedItem == null)
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(ComboBoxLongDir, "Missing Hemisphere");
+
+                return;
+            }
+
+            if (Convert.ToDouble(TextBoxLongDeg.Text) < -180 || Convert.ToDouble(TextBoxLongDeg.Text) > 180)
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(ComboBoxLongDir, "Longitude Degree is between -180 and 180");
+
+                return;
+            }
+        }
+
+        private void TextBoxLatitude_Validated(object sender, EventArgs e)
+        {
+            this.errorProviderCheck.SetError(ComboBoxLatDir, string.Empty);
+
+            var latitude = new Longitude(Convert.ToDouble(TextBoxLatDeg.Text), Convert.ToDouble(TextBoxLatMin.Text), Convert.ToDouble(TextBoxLatSec.Text), ComboBoxLatDir.SelectedItem.ToString());
+
+            textBoxLatitudeDecimal.Text = latitude.Decimal.ToString("F8");
+        }
+
+        private void TextBoxLatitude_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (string.IsNullOrEmpty(TextBoxLatDeg.Text) || string.IsNullOrEmpty(TextBoxLatMin.Text) || string.IsNullOrEmpty(TextBoxLatSec.Text))
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(ComboBoxLatDir, "This value is required");
+
+                return;
+            }
+
+            if (!Helper.IsNumeric(TextBoxLatDeg.Text) || !Helper.IsNumeric(TextBoxLatMin.Text) || !Helper.IsNumeric(TextBoxLatSec.Text))
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(ComboBoxLatDir, "Entered Value is not numeric");
+
+                return;
+            }
+
+            if (ComboBoxLatDir.SelectedItem == null)
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(ComboBoxLatDir, "Missing Hemisphere");
+
+                return;
+            }
+
+            if (Convert.ToDouble(TextBoxLatDeg.Text) < -90 || Convert.ToDouble(TextBoxLatDeg.Text) > 90)
+            {
+                e.Cancel = true;
+
+                this.errorProviderCheck.SetError(ComboBoxLatDir, "Latitude Degree is between -90 and 90");
+
+                return;
+            }
+        }
+
+        private void textBox_Enter(object sender, EventArgs e)
+        {
+            var txtBox = (TextBox)sender;
+
+            txtBox.SelectionStart = 0;
+
+            txtBox.SelectionLength = txtBox.Text.Length;
         }
     }
 }
