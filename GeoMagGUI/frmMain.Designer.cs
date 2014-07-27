@@ -484,8 +484,9 @@
             // aboutGeoMagToolStripMenuItem
             // 
             this.aboutGeoMagToolStripMenuItem.Name = "aboutGeoMagToolStripMenuItem";
-            this.aboutGeoMagToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.aboutGeoMagToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutGeoMagToolStripMenuItem.Text = "About...";
+            this.aboutGeoMagToolStripMenuItem.Click += new System.EventHandler(this.aboutGeoMagToolStripMenuItem_Click);
             // 
             // errorProviderCheck
             // 

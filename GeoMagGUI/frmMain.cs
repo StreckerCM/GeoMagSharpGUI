@@ -423,5 +423,12 @@ namespace GeoMagGUI
 
             txtBox.SelectionLength = txtBox.Text.Length;
         }
+
+        private void aboutGeoMagToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var aboutBox = new AboutBoxGeoMag();
+
+            aboutBox.ShowDialog();
+        }
     }
 }

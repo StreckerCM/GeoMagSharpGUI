@@ -37,3 +37,4 @@ C:\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\obj\x86\Debug\GeoMagGUI.f
 C:\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\obj\x86\Debug\GeoMagGUI.Properties.Resources.resources
 C:\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\obj\x86\Debug\GenerateResource.read.1.tlog
 C:\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\obj\x86\Debug\GenerateResource.write.1.tlog
+D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagGUI\obj\x86\Debug\GeoMagGUI.AboutBoxGeoMag.resources

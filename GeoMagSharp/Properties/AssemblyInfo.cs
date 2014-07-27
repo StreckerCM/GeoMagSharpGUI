@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("GeoMagSharp")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("C# Library used for WMM and IGRF Magnetic Calculations based off Geomag 7.0")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("GeoMagSharp")]
