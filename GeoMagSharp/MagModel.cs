@@ -198,6 +198,60 @@ namespace GeoMagSharp
         //public List<double> Trash { get; set; }
     }
 
+    public class MagneticCalculations
+    {
+        public MagneticCalculations()
+        {
+            Date = DateTime.Now;
+            Declination = new MagneticValue();
+            Inclination = new MagneticValue();
+            HorizontalIntensity = new MagneticValue();
+            NorthComp = new MagneticValue();
+            EastComp = new MagneticValue();
+            VerticalComp = new MagneticValue();
+            TotalField = new MagneticValue();
+        }
+
+        public MagneticCalculations(MagneticCalculations other)
+        {
+            Date = other.Date;
+            Declination = new MagneticValue(other.Declination);
+            Inclination = new MagneticValue(other.Inclination);
+            HorizontalIntensity = new MagneticValue(other.HorizontalIntensity);
+            NorthComp = new MagneticValue(other.NorthComp);
+            EastComp = new MagneticValue(other.EastComp);
+            VerticalComp = new MagneticValue(other.VerticalComp);
+            TotalField = new MagneticValue(other.TotalField);
+        }
+
+        public DateTime Date { get; set; }
+        public MagneticValue Declination { get; set; }
+        public MagneticValue Inclination { get; set; }
+        public MagneticValue HorizontalIntensity { get; set; }
+        public MagneticValue NorthComp { get; set; }
+        public MagneticValue EastComp { get; set; }
+        public MagneticValue VerticalComp { get; set; }
+        public MagneticValue TotalField { get; set; }
+    }
+
+    public class MagneticValue
+    {
+        public MagneticValue()
+        {
+            CalculatedValue = 0.0;
+            ChangePerYear = 0.0;
+        }
+
+        public MagneticValue(MagneticValue other)
+        {
+            CalculatedValue = other.CalculatedValue;
+            ChangePerYear = other.ChangePerYear;
+        }
+
+        public double CalculatedValue { get; set; }
+        public double ChangePerYear { get; set; }
+    }
+
     public class Latitude
     {
         public Latitude ()

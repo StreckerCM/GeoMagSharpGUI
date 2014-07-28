@@ -4,12 +4,15 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Data;
 
 namespace GeoMagSharp
 {
     public class GeoMag
     {
         //private List<MagModel> ModelList;
+
+        public List<MagneticCalculations> MagneticResults;
 
         private MagModelSet _models;
 
@@ -214,6 +217,25 @@ namespace GeoMagSharp
                 } /* While not end of model file */
             }
         }
+
+        public void MagneticCalculations(DateTime startDate, DateTime endDate, double latitude, double longitude, double altitude, double stepInterval = 0)
+        {
+            MagneticResults = new List<MagneticCalculations>();
+
+            TimeSpan timespan = (endDate - startDate);
+
+            double incrament = timespan.TotalDays * stepInterval;
+
+            if (incrament.Equals(0)) incrament = 1;
+
+            for (double dateIdx = 0; dateIdx <= timespan.TotalDays; dateIdx += incrament)
+            {
+                DateTime intervalDate = startDate.AddDays(dateIdx);
+
+            }
+        }
+
+
 
         /****************************************************************************/
         /*                                                                          */

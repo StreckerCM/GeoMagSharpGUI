@@ -14,8 +14,12 @@ namespace GeoMagGUI
 
         public DataTable DtModels;
 
+        public bool _processingEvents;
+
         public FrmMain()
         {
+            _processingEvents = true;
+
             InitializeComponent();
 
             ModelFolder = string.Format("{0}\\coefficient\\", Application.StartupPath);
@@ -29,6 +33,8 @@ namespace GeoMagGUI
             DtModels.Columns.Add(new DataColumn("FileName", typeof(string)));
 
             LoadModels();
+
+            _processingEvents = false;
         }
 
 
@@ -71,11 +77,15 @@ namespace GeoMagGUI
                     return;
                 }
 
+                double altitude = Convert.ToDouble(textBoxAltitude.Text);
+
                 if (string.IsNullOrEmpty(textBoxLatitudeDecimal.Text) || !Helper.IsNumeric(textBoxLatitudeDecimal.Text))
                 {
                     MessageBox.Show(string.Format("Latitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Latitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
+
+                double latitude = Convert.ToDouble(textBoxLatitudeDecimal.Text);
 
                 if (string.IsNullOrEmpty(textBoxLongitudeDecimal.Text) || !Helper.IsNumeric(textBoxLongitudeDecimal.Text))
                 {
@@ -83,7 +93,22 @@ namespace GeoMagGUI
                     return;
                 }
 
+                double longitude = Convert.ToDouble(textBoxLongitudeDecimal.Text);
+
+                double stepInterval = Convert.ToDouble(numericUpDownStepSize.Value);
+
+                dataGridViewResults.Rows.Clear();
+
                 var magCalc = new GeoMagSharp.GeoMag(modelFile);
+
+                if (radioButtonDateSingle.Checked)
+                {
+                    magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker1.Value, latitude, longitude, altitude);
+                }
+                else
+                {
+                    magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker2.Value, latitude, longitude, altitude, stepInterval);
+                }
             }
         }
 
@@ -133,53 +158,16 @@ namespace GeoMagGUI
                 labelDateFrom.Visible = false;
                 labelDateTo.Visible = false;
                 dateTimePicker2.Visible = false;
+                labelStepSize.Visible = false;
+                numericUpDownStepSize.Visible = false;
             }
             else
             {
                 labelDateFrom.Visible = true;
                 labelDateTo.Visible = true;
-                dateTimePicker2.Visible = true; 
-            }
-        }
-
-        private void comboBoxGeodeticType_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (comboBoxGeodeticType.SelectedItem == null) return;
-
-            var selectedText = comboBoxGeodeticType.SelectedItem.ToString();
-
-            if (selectedText.Equals("Decimal Degrees", StringComparison.OrdinalIgnoreCase))
-            {
-                textBoxLongitudeDecimal.Visible = true;
-
-                TextBoxLongDeg.Visible = false;
-                TextBoxLongMin.Visible = false;
-                TextBoxLongSec.Visible = false;
-                ComboBoxLongDir.Visible = false;
-
-                textBoxLatitudeDecimal.Visible = true;
-
-                TextBoxLatDeg.Visible = false;
-                TextBoxLatMin.Visible = false;
-                TextBoxLatSec.Visible = false;
-                ComboBoxLatDir.Visible = false;
-
-            }
-            else if (selectedText.Equals("Degrees, Minutes, and Seconds", StringComparison.OrdinalIgnoreCase))
-            {
-                textBoxLongitudeDecimal.Visible = false;
-
-                TextBoxLongDeg.Visible = true;
-                TextBoxLongMin.Visible = true;
-                TextBoxLongSec.Visible = true;
-                ComboBoxLongDir.Visible = true;
-
-                textBoxLatitudeDecimal.Visible = false;
-
-                TextBoxLatDeg.Visible = true;
-                TextBoxLatMin.Visible = true;
-                TextBoxLatSec.Visible = true;
-                ComboBoxLatDir.Visible = true;
+                dateTimePicker2.Visible = true;
+                labelStepSize.Visible = true;
+                numericUpDownStepSize.Visible = true;
             }
         }
 
@@ -430,5 +418,73 @@ namespace GeoMagGUI
 
             aboutBox.ShowDialog();
         }
+
+        private void decimalDegreesToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_processingEvents) return;
+
+            _processingEvents = true;
+
+            degreesMinutesAndSecondsToolStripMenuItem.Checked = !decimalDegreesToolStripMenuItem.Checked;
+
+            SetCoordinateDisplay();
+
+            _processingEvents = false;
+        }
+
+        private void degreesMinutesAndSecondsToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_processingEvents) return;
+
+            _processingEvents = true;
+
+            decimalDegreesToolStripMenuItem.Checked = !degreesMinutesAndSecondsToolStripMenuItem.Checked;
+
+            SetCoordinateDisplay();
+
+            _processingEvents = false;
+        }
+
+        private void SetCoordinateDisplay()
+        {
+            //if (comboBoxGeodeticType.SelectedItem == null) return;
+
+            //var selectedText = comboBoxGeodeticType.SelectedItem.ToString();
+
+            if (decimalDegreesToolStripMenuItem.Checked)
+            {
+                textBoxLongitudeDecimal.Visible = true;
+
+                TextBoxLongDeg.Visible = false;
+                TextBoxLongMin.Visible = false;
+                TextBoxLongSec.Visible = false;
+                ComboBoxLongDir.Visible = false;
+
+                textBoxLatitudeDecimal.Visible = true;
+
+                TextBoxLatDeg.Visible = false;
+                TextBoxLatMin.Visible = false;
+                TextBoxLatSec.Visible = false;
+                ComboBoxLatDir.Visible = false;
+
+            }
+            else if (degreesMinutesAndSecondsToolStripMenuItem.Checked)
+            {
+                textBoxLongitudeDecimal.Visible = false;
+
+                TextBoxLongDeg.Visible = true;
+                TextBoxLongMin.Visible = true;
+                TextBoxLongSec.Visible = true;
+                ComboBoxLongDir.Visible = true;
+
+                textBoxLatitudeDecimal.Visible = false;
+
+                TextBoxLatDeg.Visible = true;
+                TextBoxLatMin.Visible = true;
+                TextBoxLatSec.Visible = true;
+                ComboBoxLatDir.Visible = true;
+            }
+        }
+
     }
 }
