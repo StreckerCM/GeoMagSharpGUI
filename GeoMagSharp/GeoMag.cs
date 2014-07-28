@@ -13,29 +13,16 @@ namespace GeoMagSharp
 
         private MagModelSet _models;
 
-        private const double Ft2kM = (1.0 / 0.0003048);
-
-        private const double M2kM = 1000.0;
-
-        private const Int32 RECL = 80;
-
-        /** Max number of models in a file **/
-        private const Int32 MAXMOD = 30;
-
-        private const Int32 MAXDEG = 13;
-
-        private const Int32 MAXCOEFF = (MAXDEG*(MAXDEG+2)+1);
-
         /* Geomag global variables */
         private List<double> gh1 = new List<double>();
         private List<double> gh2 = new List<double>();
         private List<double> gha = new List<double>();
         private List<double> ghb = new List<double>();
 
-        private double d = 0,f=0,h=0,i=0;
-        private double dtemp,ftemp,htemp,itemp;
-        private double x=0,y=0,z=0;
-        private double xtemp,ytemp,ztemp;
+        private double d = 0, f = 0, h = 0, i = 0;
+        private double dtemp, ftemp, htemp, itemp;
+        private double x = 0, y = 0, z = 0;
+        private double xtemp, ytemp, ztemp;
 
         public GeoMag(string mdFile = null)
         {
@@ -58,13 +45,13 @@ namespace GeoMagSharp
 
                 Int32 modelI = -1;                             /* First model will be 0 */
 
-                var irecPos = new Int64[MAXMOD];
+                var irecPos = new Int64[Constants.MaxModules];
 
                 while ((inbuff = stream.ReadLine()) != null)
                 {
                     fileline++;
 
-                    if (!inbuff.Length.Equals(RECL))
+                    if (!inbuff.Length.Equals(Constants.RecordLen))
                     {
                         Console.WriteLine("Corrupt record in file {0} on line {1}.", mdFile, fileline);
                         stream.Close();
@@ -72,16 +59,11 @@ namespace GeoMagSharp
                         return;
                     }
 
-
-                    /* old statement Dec 1999 */
-                    /*       if (!strncmp(inbuff,"    ",4)){         /* If 1st 4 chars are spaces */
-                    /* New statement Dec 1999 changed by wmd  required by year 2000 models */
-                    //if (!strncmp(inbuff, "   ", 3))         /* If 1st 3 chars are spaces */
                     if (inbuff.Substring(0, 3).Equals("   ", StringComparison.Ordinal)) /* If 1st 3 chars are spaces */
                     {
-                        modelI++;                           /* New model */
+                        modelI++;                                           /* New model */
 
-                        if (modelI > MAXMOD)                /* If too many headers */
+                        if (modelI > Constants.MaxModules)                  /* If too many headers */
                         {
                             Console.WriteLine("Too many models in file {0} on line {1}.", mdFile, fileline);
                             stream.Close();
@@ -158,8 +140,77 @@ namespace GeoMagSharp
                         }
 
                         _models.AddModel(currentModel);
-
+                        
                     } /* If 1st 3 chars are spaces */
+                    else
+                    {
+                        /* Get fields from buffer into individual vars.  */
+                        var lineParase = inbuff.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        var coeffLine = new SphericalHarmonicCoefficient();
+
+                        for (Int32 itemIdx = 0; itemIdx < lineParase.Count(); itemIdx++)
+                        {
+                            double tempDbl;
+                            Int32 tempInt;
+
+                            switch (itemIdx)
+                            {
+                                //Degree(n) (int)
+                                case 0:
+                                    Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+                                    coeffLine.Degree = tempInt;
+                                    break;
+
+                                //Order(m) (int)
+                                case 1:
+                                    Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+                                    coeffLine.Order = tempInt;
+                                    break;
+
+                                //g1 (double)
+                                case 2:
+                                    double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                    coeffLine.G1 = tempDbl;
+                                    break;
+
+                                //h1 (double)
+                                case 3:
+                                    double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                    coeffLine.H1 = tempDbl;
+                                    break;
+
+                                //g2 (double)
+                                case 4:
+                                    double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                    coeffLine.G2 = tempDbl;
+                                    break;
+
+                                //h2 (double)
+                                case 5:
+                                    double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                    coeffLine.H2 = tempDbl;
+                                    break;
+
+                                //irat (string)
+                                case 6:
+                                    coeffLine.Model = lineParase[itemIdx].ToString();
+                                    break;
+
+                                //LineNum (int)
+                                case 7:
+                                    Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+                                    coeffLine.LineNum = tempInt;
+                                    break;
+                            }
+                        }
+
+                        var modelResult = _models.Models.Find(m => m.Model.Equals(coeffLine.Model, StringComparison.OrdinalIgnoreCase));
+
+                        if(modelResult != null) modelResult.Coefficients.Add(coeffLine);
+                    }
+
+                    
                 } /* While not end of model file */
             }
         }
@@ -707,6 +758,7 @@ namespace GeoMagSharp
           double h2;
           double hpx;
           double argument, argument2;
+
   
           ios = gh;
           sn = 0.0001;

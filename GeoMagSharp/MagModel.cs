@@ -5,6 +5,33 @@ using System.Text;
 
 namespace GeoMagSharp
 {
+
+    public static class Constants
+    {
+        public const Int32 RecordLen = 80;
+
+        public const Int32 MaxModules = 30;  /** Max number of models in a file **/
+
+        public const Int32 MaxDeg = 13;
+        public static Int32 MaxCoeff 
+            {
+                get
+                {
+                    return (MaxDeg * (MaxDeg + 2) + 1); /* index starts with 1!, (from old Fortran?) */
+                }
+            }
+
+        public const double FeetToKilometer = 0.0003048;
+        public const double FeetToMeter = 0.3048;
+
+        public const double MeterToKilometer = 0.001;
+        public const double MeterToFeet = 3.28084;
+
+        public const double KilometerToMeter = 1000;
+        public const double KilometerToFeet = 3280.84;
+
+    }
+
     public class MagModelSet
     {
         public MagModelSet()
@@ -92,6 +119,40 @@ namespace GeoMagSharp
         public double AltitudeMin {get; set;}
         public double AltitudeMax {get; set;}
 
+        public double[] GH1 
+            { 
+                    get 
+                    {
+                        var gh1Out = new List<double>();
+
+                        foreach (var Coeff in Coefficients)
+                        {
+                            gh1Out.Add(Coeff.G1);
+
+                            if (Coeff.Order != 0) gh1Out.Add(Coeff.H1);
+                        }
+
+                        return gh1Out.ToArray();
+                    } 
+            }
+
+        public double[] GH2
+            {
+                get
+                {
+                    var gh2Out = new List<double>();
+
+                    foreach (var Coeff in Coefficients)
+                    {
+                        gh2Out.Add(Coeff.G2);
+
+                        if (Coeff.Order != 0) gh2Out.Add(Coeff.H2);
+                    }
+
+                    return gh2Out.ToArray();
+                }
+            }
+
         public List<SphericalHarmonicCoefficient> Coefficients { get; set; }
 
     }
@@ -101,34 +162,40 @@ namespace GeoMagSharp
         public SphericalHarmonicCoefficient()
         {
             LineNum = -1;
-            N = 0;
-            M = 0;
-            G = 0.0;
-            HH = 0.0;
-            Irat = string.Empty;
-            Trash = new List<double>();
+            Degree = 0;
+            Order = 0;
+            G1 = 0.0;
+            H1 = 0.0;
+            G2 = 0.0;
+            H2 = 0.0;
+            Model = string.Empty;
+            //Trash = new List<double>();
         }
 
         public SphericalHarmonicCoefficient(SphericalHarmonicCoefficient other)
         {
             LineNum = other.LineNum;
-            N = other.N;
-            M = other.M;
-            G = other.G;
-            HH = other.HH;
-            Irat = other.Irat;
-            Trash = new List<double>();
+            Degree = other.Degree;
+            Order = other.Order;
+            G1 = other.G1;
+            H1 = other.H1;
+            G2 = other.G2;
+            H2 = other.H2;
+            Model = other.Model;
+            //Trash = new List<double>();
 
-            if (other.Trash != null && other.Trash.Any()) Trash.AddRange(other.Trash);
+            //if (other.Trash != null && other.Trash.Any()) Trash.AddRange(other.Trash);
         }
 
         public Int32 LineNum { get; set; }
-        public Int32 N { get; set; }
-        public Int32 M { get; set; }
-        public double G { get; set; }
-        public double HH { get; set; }
-        public string Irat { get; set; }
-        public List<double> Trash { get; set; }
+        public Int32 Degree { get; set; }
+        public Int32 Order { get; set; }
+        public double G1 { get; set; }
+        public double H1 { get; set; }
+        public double G2 { get; set; }
+        public double H2 { get; set; }
+        public string Model { get; set; }
+        //public List<double> Trash { get; set; }
     }
 
     public class Latitude

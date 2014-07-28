@@ -12,3 +12,8 @@ C:\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\obj\Debug\ResolveAssemb
 C:\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\obj\Debug\GeoMagSharp.dll
 C:\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\obj\Debug\GeoMagSharp.pdb
 D:\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\obj\Debug\GeoMagSharp.csprojResolveAssemblyReference.cache
+\\psf\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\bin\Debug\GeoMagSharp.dll
+\\psf\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\bin\Debug\GeoMagSharp.pdb
+\\psf\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\obj\Debug\GeoMagSharp.csprojResolveAssemblyReference.cache
+\\psf\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\obj\Debug\GeoMagSharp.dll
+\\psf\Google Drive\Development\GeoMagSharpGUI\GeoMagSharpGUI\GeoMagSharp\obj\Debug\GeoMagSharp.pdb
