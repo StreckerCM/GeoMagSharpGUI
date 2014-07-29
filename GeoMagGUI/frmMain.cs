@@ -79,6 +79,15 @@ namespace GeoMagGUI
 
                 double altitude = Convert.ToDouble(textBoxAltitude.Text);
 
+                if (comboBoxUnits.SelectedItem.ToString().Equals("Feet", StringComparison.OrdinalIgnoreCase))
+                {
+                    altitude *= Constants.FeetToKilometer;
+                }
+                else if (comboBoxUnits.SelectedItem.ToString().Equals("Meters", StringComparison.OrdinalIgnoreCase))
+                {
+                    altitude *= Constants.MeterToKilometer;
+                }
+
                 if (string.IsNullOrEmpty(textBoxLatitudeDecimal.Text) || !Helper.IsNumeric(textBoxLatitudeDecimal.Text))
                 {
                     MessageBox.Show(string.Format("Latitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Latitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -92,6 +101,8 @@ namespace GeoMagGUI
                     MessageBox.Show(string.Format("Longitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Longitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
+
+                Cursor = Cursors.WaitCursor;
 
                 double longitude = Convert.ToDouble(textBoxLongitudeDecimal.Text);
 
@@ -109,6 +120,8 @@ namespace GeoMagGUI
                 {
                     magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker2.Value, latitude, longitude, altitude, stepInterval);
                 }
+
+                Cursor = Cursors.Default;
             }
         }
 

@@ -5,6 +5,19 @@ using System.Text;
 
 namespace GeoMagSharp
 {
+    public enum CoordinateSystem
+    {
+        Geodetic = 1,
+        Geocentric = 2
+    }
+
+    public enum GH
+    {
+        One = 1,
+        Two = 2,
+        A = 3,
+        B = 4,
+    }
 
     public static class Constants
     {
@@ -21,6 +34,16 @@ namespace GeoMagSharp
                 }
             }
 
+        public const double SN = 0.0001;
+
+        public const double ThreeHundredFeetFromNorthPole = 89.999;
+        public const double ThreeHundredFeetFromSouthPole = -89.999;
+
+        public const double EarthsRadiusInKm = 6371.2;
+
+        public const double A2WGS84 = 40680631.59;            /* WGS84 */
+        public const double B2WGS84 = 40408299.98;            /* WGS84 */
+
         public const double FeetToKilometer = 0.0003048;
         public const double FeetToMeter = 0.3048;
 
@@ -30,6 +53,27 @@ namespace GeoMagSharp
         public const double KilometerToMeter = 1000;
         public const double KilometerToFeet = 3280.84;
 
+    }
+
+    public class Point3D
+    {
+        public Point3D()
+        {
+            X = 0;
+            Y = 0;
+            Z = 0;
+        }
+
+        public Point3D(Point3D other)
+        {
+            X = other.X;
+            Y = other.Y;
+            Z = other.Z;
+        }
+
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
     }
 
     public class MagModelSet
