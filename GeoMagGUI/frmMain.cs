@@ -16,6 +16,8 @@ namespace GeoMagGUI
 
         public bool _processingEvents;
 
+        public frmMap PubMap;
+
         public FrmMain()
         {
             _processingEvents = true;
@@ -128,6 +130,8 @@ namespace GeoMagGUI
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error: Calculating Magnetics", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                    
+                    magCalc.Dispose();
                     magCalc = null;
                 }
 
@@ -137,7 +141,11 @@ namespace GeoMagGUI
                 if (magCalc.MagneticResults == null || !magCalc.MagneticResults.Any())
                 {
                     Cursor = Cursors.Default;
-                    MessageBox.Show("", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    MessageBox.Show("No Results were returned for the given parameters", "Error: No Results", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    magCalc.Dispose();
+                    magCalc = null;
                     return;
                 }
 
@@ -188,6 +196,9 @@ namespace GeoMagGUI
 
                 dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnTotalField"].Value = string.Format("{0} nT", magCalc.MagneticResults.Last().TotalField.ChangePerYear.ToString("F2"));
                 dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnTotalField"].Style.BackColor = System.Drawing.Color.LightBlue;
+
+                magCalc.Dispose();
+                magCalc = null;
 
                 Cursor = Cursors.Default;
             }
@@ -287,6 +298,8 @@ namespace GeoMagGUI
             TextBoxLatMin.Text = latitude.Minutes.ToString("F0");
             TextBoxLatSec.Text = latitude.Seconds.ToString("F4");
             ComboBoxLatDir.SelectedItem = latitude.Hemisphere.ToString();
+
+            InvalidateMap();
         }
 
         private void textBoxLatitudeDecimal_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -330,6 +343,8 @@ namespace GeoMagGUI
             TextBoxLongMin.Text = longitude.Minutes.ToString("F0");
             TextBoxLongSec.Text = longitude.Seconds.ToString("F4");
             ComboBoxLongDir.SelectedItem = longitude.Hemisphere.ToString();
+
+            InvalidateMap();
         }
 
         private void textBoxLongitudeDecimal_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -395,6 +410,8 @@ namespace GeoMagGUI
             var longitude = new Longitude(Convert.ToDouble(TextBoxLongDeg.Text), Convert.ToDouble(TextBoxLongMin.Text), Convert.ToDouble(TextBoxLongSec.Text), ComboBoxLongDir.SelectedItem.ToString());
 
             textBoxLongitudeDecimal.Text = longitude.Decimal.ToString("F8");
+
+            InvalidateMap();
         }
 
         private void TextBoxLongitude_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -443,6 +460,8 @@ namespace GeoMagGUI
             var latitude = new Longitude(Convert.ToDouble(TextBoxLatDeg.Text), Convert.ToDouble(TextBoxLatMin.Text), Convert.ToDouble(TextBoxLatSec.Text), ComboBoxLatDir.SelectedItem.ToString());
 
             textBoxLatitudeDecimal.Text = latitude.Decimal.ToString("F8");
+
+            InvalidateMap();
         }
 
         private void TextBoxLatitude_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -565,6 +584,73 @@ namespace GeoMagGUI
                 TextBoxLatSec.Visible = true;
                 ComboBoxLatDir.Visible = true;
             }
+        }
+
+        private void showMapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (PubMap == null)
+            {
+                if (string.IsNullOrEmpty(textBoxLatitudeDecimal.Text) || !Helper.IsNumeric(textBoxLatitudeDecimal.Text))
+                {
+                    MessageBox.Show(string.Format("Latitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Latitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                double latitude = Convert.ToDouble(textBoxLatitudeDecimal.Text);
+
+                if (string.IsNullOrEmpty(textBoxLongitudeDecimal.Text) || !Helper.IsNumeric(textBoxLongitudeDecimal.Text))
+                {
+                    MessageBox.Show(string.Format("Longitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Longitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                double longitude = Convert.ToDouble(textBoxLongitudeDecimal.Text);
+
+                PubMap = new frmMap(this, latitude, longitude);
+
+                PubMap.Show();
+            }
+            else if (PubMap.WindowState == FormWindowState.Normal)
+            {
+                PubMap.BringToFront();
+
+                PubMap.Activate();
+            }
+            else if (PubMap.WindowState == FormWindowState.Minimized)
+            {
+                PubMap.WindowState = FormWindowState.Normal;
+
+                PubMap.BringToFront();
+
+                PubMap.Activate();
+            }
+
+
+        }
+
+        public void InvalidateMap()
+        {
+            if (_processingEvents) return;
+
+            if (PubMap != null)
+            {
+                if (string.IsNullOrEmpty(textBoxLatitudeDecimal.Text) || !Helper.IsNumeric(textBoxLatitudeDecimal.Text)) return;
+
+                double lat = Convert.ToDouble(textBoxLatitudeDecimal.Text);
+
+                if (string.IsNullOrEmpty(textBoxLongitudeDecimal.Text) || !Helper.IsNumeric(textBoxLongitudeDecimal.Text)) return;
+
+                double lng = Convert.ToDouble(textBoxLongitudeDecimal.Text);
+
+                PubMap.SetCoordinates(lat, lng);
+            }
+        }
+
+        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _processingEvents = true;
+
+            if (PubMap != null) PubMap.Close();
         }
 
     }

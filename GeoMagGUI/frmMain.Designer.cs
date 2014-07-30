@@ -68,6 +68,7 @@
             this.coordinateFormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.decimalDegreesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.degreesMinutesAndSecondsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutGeoMagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.errorProviderCheck = new System.Windows.Forms.ErrorProvider(this.components);
@@ -486,26 +487,27 @@
             // loadModelToolStripMenuItem
             // 
             this.loadModelToolStripMenuItem.Name = "loadModelToolStripMenuItem";
-            this.loadModelToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.loadModelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.loadModelToolStripMenuItem.Text = "Load Model";
             this.loadModelToolStripMenuItem.Click += new System.EventHandler(this.loadModelToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(134, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.coordinateFormatToolStripMenuItem});
+            this.coordinateFormatToolStripMenuItem,
+            this.showMapToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -537,6 +539,13 @@
             this.degreesMinutesAndSecondsToolStripMenuItem.Text = "Degrees, Minutes, and Seconds";
             this.degreesMinutesAndSecondsToolStripMenuItem.CheckedChanged += new System.EventHandler(this.degreesMinutesAndSecondsToolStripMenuItem_CheckedChanged);
             // 
+            // showMapToolStripMenuItem
+            // 
+            this.showMapToolStripMenuItem.Name = "showMapToolStripMenuItem";
+            this.showMapToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.showMapToolStripMenuItem.Text = "Show Map";
+            this.showMapToolStripMenuItem.Click += new System.EventHandler(this.showMapToolStripMenuItem_Click);
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -548,7 +557,7 @@
             // aboutGeoMagToolStripMenuItem
             // 
             this.aboutGeoMagToolStripMenuItem.Name = "aboutGeoMagToolStripMenuItem";
-            this.aboutGeoMagToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.aboutGeoMagToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutGeoMagToolStripMenuItem.Text = "About...";
             this.aboutGeoMagToolStripMenuItem.Click += new System.EventHandler(this.aboutGeoMagToolStripMenuItem_Click);
             // 
@@ -644,6 +653,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FrmMain";
             this.Text = "GeoMag #";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStepSize)).EndInit();
@@ -711,6 +721,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnTotalField;
         private System.Windows.Forms.ToolStripMenuItem decimalDegreesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem degreesMinutesAndSecondsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showMapToolStripMenuItem;
     }
 }
 

@@ -8,7 +8,7 @@ using System.Data;
 
 namespace GeoMagSharp
 {
-    public class GeoMag
+    public class GeoMag : IDisposable
     {
         //private List<MagModel> ModelList;
 
@@ -32,6 +32,13 @@ namespace GeoMagSharp
             _models = null;
 
             if (!string.IsNullOrEmpty(mdFile)) LoadModel(mdFile);
+        }
+
+        // clear it up! (free unmanaged resources)
+        public void Dispose()
+        {
+            _models = null;
+            MagneticResults = null;
         }
 
         public void LoadModel(string mdFile)
