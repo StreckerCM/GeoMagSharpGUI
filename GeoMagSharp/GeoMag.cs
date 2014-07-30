@@ -56,10 +56,11 @@ namespace GeoMagSharp
 
                     if (!inbuff.Length.Equals(Constants.RecordLen))
                     {
-                        Console.WriteLine("Corrupt record in file {0} on line {1}.", mdFile, fileline);
+                       // Console.WriteLine("Corrupt record in file {0} on line {1}.", mdFile, fileline);
                         stream.Close();
                         _models = null;
-                        return;
+                        throw new GeoMagException(string.Format("Corrupt record in file {0} on line {1}.", mdFile, fileline));
+                        //return;
                     }
 
                     if (inbuff.Substring(0, 3).Equals("   ", StringComparison.Ordinal)) /* If 1st 3 chars are spaces */
@@ -68,10 +69,11 @@ namespace GeoMagSharp
 
                         if (modelI > Constants.MaxModules)                  /* If too many headers */
                         {
-                            Console.WriteLine("Too many models in file {0} on line {1}.", mdFile, fileline);
+                            //Console.WriteLine("Too many models in file {0} on line {1}.", mdFile, fileline);
                             stream.Close();
                             _models = null;
-                            return;
+                            throw new GeoMagException(string.Format("Too many models in file {0} on line {1}.", mdFile, fileline));
+                            //return;
                         }
 
                         irecPos[modelI] = stream.BaseStream.Position;
@@ -241,31 +243,29 @@ namespace GeoMagSharp
                 double[] ghb = null;
 
                 var modelToUse =
-                    _models.Models.Find(m => m.YearMin <= intervalDate.Year && intervalDate.Year <= m.YearMax);
+                    _models.Models.Find(m => m.YearMin <= intervalDate.ToDecimal() && intervalDate.ToDecimal() <= m.YearMax);
 
-                if (modelToUse != null)
+                if (modelToUse == null) throw new GeoMagException("No suitble model could be located for the given date(s).");
+                
+
+                if (modelToUse.Max2.Equals(0))
                 {
+                    var laterModelToUse = _models.Models[_models.Models.IndexOf(modelToUse) + 1];
 
-
-                    if (modelToUse.Max2.Equals(0))
-                    {
-                        var laterModelToUse = _models.Models[_models.Models.IndexOf(modelToUse) + 1];
-
-                        if (laterModelToUse != null)
-                        {
-                            //nmaxGh3
-                            //    nmaxGh4
-                            gha = InterpolatesSphericalHarmonic(intervalDate.ToDecimal(), out ghaNmax, modelToUse, laterModelToUse);
-                            ghb = InterpolatesSphericalHarmonic(intervalDate.ToDecimal() + 1, out ghbNmax, modelToUse, laterModelToUse);
-                        }
-                    }
-                    else
-                    {
-                        gha = ExtrapolatesSphericalHarmonic(intervalDate.ToDecimal(), out ghaNmax, modelToUse);
-                        ghb = ExtrapolatesSphericalHarmonic(intervalDate.ToDecimal() + 1, out ghbNmax, modelToUse);
-                    }
-
+                    if (laterModelToUse == null) throw new GeoMagException("No suitble model could be located for the given date(s).");
+                    
+                    //nmaxGh3
+                    //    nmaxGh4
+                    gha = InterpolatesSphericalHarmonic(intervalDate.ToDecimal(), out ghaNmax, modelToUse, laterModelToUse);
+                    ghb = InterpolatesSphericalHarmonic(intervalDate.ToDecimal() + 1, out ghbNmax, modelToUse, laterModelToUse);
+                    
                 }
+                else
+                {
+                    gha = ExtrapolatesSphericalHarmonic(intervalDate.ToDecimal(), out ghaNmax, modelToUse);
+                    ghb = ExtrapolatesSphericalHarmonic(intervalDate.ToDecimal() + 1, out ghbNmax, modelToUse);
+                }
+
 
                 var aPoint = (gha == null ? null : CalculateSphericalHarmonicField(CoordinateSystem.Geodetic, latitude, longitude, altitude, ghaNmax, gha));
                 var bPoint = (ghb == null ? null : CalculateSphericalHarmonicField(CoordinateSystem.Geodetic, latitude, longitude, altitude, ghbNmax, ghb));

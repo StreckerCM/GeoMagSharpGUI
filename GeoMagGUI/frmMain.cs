@@ -110,16 +110,29 @@ namespace GeoMagGUI
 
                 dataGridViewResults.Rows.Clear();
 
-                var magCalc = new GeoMagSharp.GeoMag(modelFile);
+                GeoMag magCalc = null;
 
-                if (radioButtonDateSingle.Checked)
+                try
                 {
-                    magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker1.Value, latitude, longitude, altitude);
+                    magCalc = new GeoMag(modelFile);
+
+                    if (radioButtonDateSingle.Checked)
+                    {
+                        magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker1.Value, latitude, longitude, altitude);
+                    }
+                    else
+                    {
+                        magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker2.Value, latitude, longitude, altitude, stepInterval);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker2.Value, latitude, longitude, altitude, stepInterval);
+                    MessageBox.Show(ex.Message, "Error: Calculating Magnetics", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                    magCalc = null;
                 }
+
+                if (magCalc == null) return;
+
 
                 if (magCalc.MagneticResults == null || !magCalc.MagneticResults.Any())
                 {
@@ -152,7 +165,7 @@ namespace GeoMagGUI
 
                 dataGridViewResults.Rows.Add();
                 
-                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Value = @"Change/year";
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Value = @"Change per year";
                 dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Style.BackColor = System.Drawing.Color.LightBlue;
 
                 dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Value = string.Format("{0}°", magCalc.MagneticResults.Last().Declination.ChangePerYear.ToString("F2"));
