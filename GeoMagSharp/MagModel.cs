@@ -282,17 +282,17 @@ namespace GeoMagSharp
     {
         public MagneticValue()
         {
-            CalculatedValue = 0.0;
+            Value = 0.0;
             ChangePerYear = 0.0;
         }
 
         public MagneticValue(MagneticValue other)
         {
-            CalculatedValue = other.CalculatedValue;
+            Value = other.Value;
             ChangePerYear = other.ChangePerYear;
         }
 
-        public double CalculatedValue { get; set; }
+        public double Value { get; set; }
         public double ChangePerYear { get; set; }
     }
 

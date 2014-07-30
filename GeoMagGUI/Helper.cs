@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace GeoMagGUI
 {
@@ -26,6 +27,24 @@ namespace GeoMagGUI
             catch (Exception)
             { } // just dismiss errors but return false
             return false;
+        }
+
+        public static Int32 GetColumnID(String columnName, DataGridView inDataGrid)
+        {
+
+            for (Int32 i = 0; i < inDataGrid.ColumnCount; i++)
+            {
+                if (inDataGrid.Columns[i].Name.Equals(columnName, StringComparison.OrdinalIgnoreCase))
+                {
+
+                    return i;
+
+                }
+
+            }
+
+            return -1;
+
         }
 
     }

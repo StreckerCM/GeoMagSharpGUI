@@ -222,13 +222,15 @@ namespace GeoMagSharp
         {
             MagneticResults = new List<MagneticCalculations>();
 
-            TimeSpan timespan = (endDate - startDate);
+            TimeSpan timespan = (endDate.Date - startDate.Date);
+            
+            double incrament = (timespan.TotalDays + 0.25) * stepInterval;
 
-            double incrament = timespan.TotalDays * stepInterval;
+            if (timespan.TotalDays.Equals(0)) timespan = (endDate.AddDays(1) - startDate);
 
             if (incrament.Equals(0)) incrament = 1;
 
-            for (double dateIdx = 0; dateIdx <= timespan.TotalDays; dateIdx += incrament)
+            for (double dateIdx = 0; dateIdx < timespan.TotalDays; dateIdx += incrament)
             {
                 DateTime intervalDate = startDate.AddDays(dateIdx);
 
@@ -347,37 +349,37 @@ namespace GeoMagSharp
                     Date = intervalDate,
                     Declination = new MagneticValue
                     {
-                        CalculatedValue = dDeg.ToDegree(),
+                        Value = dDeg,
                         ChangePerYear = ddot
                     },
                     Inclination = new MagneticValue
                     {
-                        CalculatedValue = ia.ToDegree(),
+                        Value = ia.ToDegree(),
                         ChangePerYear = idot
                     },
                     HorizontalIntensity = new MagneticValue
                     {
-                        CalculatedValue = ha,
+                        Value = ha,
                         ChangePerYear = hdot
                     },
                     NorthComp = new MagneticValue
                     {
-                        CalculatedValue = aPoint.X,
+                        Value = aPoint.X,
                         ChangePerYear = xdot
                     },
                     EastComp = new MagneticValue
                     {
-                        CalculatedValue = aPoint.Y,
+                        Value = aPoint.Y,
                         ChangePerYear = ydot
                     },
                     VerticalComp = new MagneticValue
                     {
-                        CalculatedValue = aPoint.Z,
+                        Value = aPoint.Z,
                         ChangePerYear = zdot
                     },
                     TotalField = new MagneticValue
                     {
-                        CalculatedValue = fa,
+                        Value = fa,
                         ChangePerYear = fdot
                     }
                 });

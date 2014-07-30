@@ -121,6 +121,61 @@ namespace GeoMagGUI
                     magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker2.Value, latitude, longitude, altitude, stepInterval);
                 }
 
+                if (magCalc.MagneticResults == null || !magCalc.MagneticResults.Any())
+                {
+                    Cursor = Cursors.Default;
+                    MessageBox.Show("", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                foreach (var mag in magCalc.MagneticResults)
+                {
+                    dataGridViewResults.Rows.Add();
+
+                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Value = mag.Date.ToShortDateString();
+
+                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Value = string.Format("{0}°", mag.Declination.Value.ToString("F2"));
+
+                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnInclination"].Value = string.Format("{0}°", mag.Inclination.Value.ToString("F2"));
+
+                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnHorizontalIntensity"].Value = string.Format("{0} nT", mag.HorizontalIntensity.Value.ToString("F2"));
+
+                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnNorthComp"].Value = string.Format("{0} nT", mag.NorthComp.Value.ToString("F2"));
+
+                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnEastComp"].Value = string.Format("{0} nT", mag.EastComp.Value.ToString("F2"));
+
+                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnVerticalComp"].Value = string.Format("{0} nT", mag.VerticalComp.Value.ToString("F2"));
+
+                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnTotalField"].Value = string.Format("{0} nT", mag.TotalField.Value.ToString("F2"));
+
+                }
+
+                dataGridViewResults.Rows.Add();
+                
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Value = @"Change/year";
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Style.BackColor = System.Drawing.Color.LightBlue;
+
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Value = string.Format("{0}°", magCalc.MagneticResults.Last().Declination.ChangePerYear.ToString("F2"));
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Style.BackColor = System.Drawing.Color.LightBlue;
+
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnInclination"].Value = string.Format("{0}°", magCalc.MagneticResults.Last().Inclination.ChangePerYear.ToString("F2"));
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnInclination"].Style.BackColor = System.Drawing.Color.LightBlue;
+
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnHorizontalIntensity"].Value = string.Format("{0} nT", magCalc.MagneticResults.Last().HorizontalIntensity.ChangePerYear.ToString("F2"));
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnHorizontalIntensity"].Style.BackColor = System.Drawing.Color.LightBlue;
+
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnNorthComp"].Value = string.Format("{0} nT", magCalc.MagneticResults.Last().NorthComp.ChangePerYear.ToString("F2"));
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnNorthComp"].Style.BackColor = System.Drawing.Color.LightBlue;
+
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnEastComp"].Value = string.Format("{0} nT", magCalc.MagneticResults.Last().EastComp.ChangePerYear.ToString("F2"));
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnEastComp"].Style.BackColor = System.Drawing.Color.LightBlue;
+
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnVerticalComp"].Value = string.Format("{0} nT", magCalc.MagneticResults.Last().VerticalComp.ChangePerYear.ToString("F2"));
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnVerticalComp"].Style.BackColor = System.Drawing.Color.LightBlue;
+
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnTotalField"].Value = string.Format("{0} nT", magCalc.MagneticResults.Last().TotalField.ChangePerYear.ToString("F2"));
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnTotalField"].Style.BackColor = System.Drawing.Color.LightBlue;
+
                 Cursor = Cursors.Default;
             }
         }
