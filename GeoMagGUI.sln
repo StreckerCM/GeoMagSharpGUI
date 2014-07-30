@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoMagGUI", "GeoMagGUI\GeoM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoMagSharp", "GeoMagSharp\GeoMagSharp.csproj", "{AE04340D-E45E-4BDC-942A-58BD0424CEFC}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupGeoMagGUI", "SetupGeoMagGUI\SetupGeoMagGUI.vdproj", "{56C6AF87-18CE-4F3A-8A91-09A99647D428}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,12 @@ Global
 		{AE04340D-E45E-4BDC-942A-58BD0424CEFC}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{AE04340D-E45E-4BDC-942A-58BD0424CEFC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{AE04340D-E45E-4BDC-942A-58BD0424CEFC}.Release|x86.ActiveCfg = Release|Any CPU
+		{56C6AF87-18CE-4F3A-8A91-09A99647D428}.Debug|Any CPU.ActiveCfg = Debug
+		{56C6AF87-18CE-4F3A-8A91-09A99647D428}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{56C6AF87-18CE-4F3A-8A91-09A99647D428}.Debug|x86.ActiveCfg = Debug
+		{56C6AF87-18CE-4F3A-8A91-09A99647D428}.Release|Any CPU.ActiveCfg = Release
+		{56C6AF87-18CE-4F3A-8A91-09A99647D428}.Release|Mixed Platforms.ActiveCfg = Release
+		{56C6AF87-18CE-4F3A-8A91-09A99647D428}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

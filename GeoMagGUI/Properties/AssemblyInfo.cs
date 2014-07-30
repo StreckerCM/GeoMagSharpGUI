@@ -6,12 +6,12 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GeoMagGUI")]
-[assembly: AssemblyDescription("GeoMag Sharp is a C# port of the NOAA GeoMag 7 software.")]
+[assembly: AssemblyTitle("GeoMag #")]
+[assembly: AssemblyDescription("GeoMag # is a C# port of the C++ application GeoMag 7.0 distributed by NOAA")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("StreckerCM")]
-[assembly: AssemblyProduct("GeoMag Sharp")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyProduct("GeoMag #")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

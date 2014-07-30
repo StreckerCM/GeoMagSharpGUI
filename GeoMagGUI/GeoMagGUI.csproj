@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Magnet.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -86,18 +89,20 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="coefficient\IGRF11.COF">
+    <Content Include="coefficient\IGRF11.COF">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\LICENSE">
+    </Content>
+    <Content Include="Magnet.ico" />
+    <Content Include="Resources\LICENSE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\README.md">
+    </Content>
+    <EmbeddedResource Include="Resources\Magnet.ico" />
+    <Content Include="Resources\README.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="coefficient\WMM2010.COF">
+    </Content>
+    <Content Include="coefficient\WMM2010.COF">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GeoMagSharp\GeoMagSharp.csproj">

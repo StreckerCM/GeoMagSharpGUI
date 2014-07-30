@@ -314,14 +314,16 @@
 </value>
   </data>
   <data name="textBoxDescription.Text" xml:space="preserve">
-    <value>GeoMag Sharp is a C# port of the NOAA GeoMag 7 software.
+    <value>This is a C# port of the NOAA Geomag 7.0 software.  No guarantees are made of the accuracy of these calculations.
 
-Geomag 7.0 Software : license and copyright information
+Geomag 7.0 Software: license and copyright information
 
 The geomag 7.0 software code is in the public domain and not licensed or under copyright. The information and software may be used freely by the public. As required by 17 U.S.C. 403, third parties producing copyrighted works consisting predominantly of the material produced by U.S. government agencies must provide notice with such work(s) identifying the U.S. Government material incorporated and stating that such material is not subject to copyright protection.
 
 http://www.ngdc.noaa.gov/IAGA/vmod/geomag70_license.html
 
-Icon and Logo By Nishan Sothilingam</value>
+Icon and Logo by Nishan Sothilingam
+
+</value>
   </data>
 </root>
