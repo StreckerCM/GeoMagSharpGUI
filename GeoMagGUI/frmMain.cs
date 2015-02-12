@@ -3,6 +3,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Device.Location;
 using GeoMagGUI.Properties;
 using GeoMagSharp;
 
@@ -11,6 +12,8 @@ namespace GeoMagGUI
     public partial class FrmMain : Form
     {
         public readonly string ModelFolder;
+
+        private GeoCoordinateWatcher Watcher = null;
 
         public DataTable DtModels;
 
@@ -22,7 +25,14 @@ namespace GeoMagGUI
 
             InitializeComponent();
 
+            // Create the watcher.
+            Watcher = new GeoCoordinateWatcher();
+            // Catch the StatusChanged event.
+            Watcher.StatusChanged += Watcher_StatusChanged;
+
             ModelFolder = string.Format("{0}\\coefficient\\", Application.StartupPath);
+
+            comboBoxUnits.SelectedItem = "Feet";
 
             DtModels = new DataTable();
 
@@ -37,13 +47,49 @@ namespace GeoMagGUI
             _processingEvents = false;
         }
 
+        // The watcher's status has change. See if it is ready.
+        private void Watcher_StatusChanged(object sender, GeoPositionStatusChangedEventArgs e)
+        {
+            if (e.Status == GeoPositionStatus.Ready)
+            {
+                // Display the latitude and longitude.
+                if (Watcher.Position.Location.IsUnknown)
+                {
+                    textBoxAltitude.Text = "0";
+
+                    textBoxLatitudeDecimal.Text = "0.0";
+
+                    textBoxLongitudeDecimal.Text = "0.0";
+                }
+                else
+                {
+                    textBoxAltitude.Text = Watcher.Position.Location.Altitude.ToString();
+                    
+                    textBoxLatitudeDecimal.Text = Watcher.Position.Location.Latitude.ToString();
+
+                    textBoxLongitudeDecimal.Text = Watcher.Position.Location.Longitude.ToString();
+                    
+                }
+
+                textBoxLatitudeDecimal_Validated(textBoxLatitudeDecimal, new EventArgs());
+                textBoxLongitudeDecimal_Validated(textBoxLongitudeDecimal, new EventArgs());
+            }
+        }
+
 
 
         private void buttonCalculate_Click(object sender, EventArgs e)
         {
+            this.errorProviderCheck.SetError(comboBoxModels, string.Empty);
+            this.errorProviderCheck.SetError(comboBoxUnits, string.Empty);
+            this.errorProviderCheck.SetError(textBoxAltitude, string.Empty);
+            this.errorProviderCheck.SetError(textBoxLatitudeDecimal, string.Empty);
+            this.errorProviderCheck.SetError(textBoxLongitudeDecimal, string.Empty);
+
             if (comboBoxModels.SelectedValue == null)
             {
-                MessageBox.Show(string.Format("No Model has been selected.{0}Please choose model and try again.", Environment.NewLine), @"Error: No Model", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                this.errorProviderCheck.SetError(comboBoxModels, @"No Model selected");
+                //MessageBox.Show(string.Format("No Model has been selected.{0}Please choose model and try again.", Environment.NewLine), @"Error: No Model", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -53,7 +99,8 @@ namespace GeoMagGUI
             {
                 if (DBNull.Value.Equals(dRow.First()["FileName"]))
                 {
-                    MessageBox.Show(@"No file name was found for the model you selected.", @"Error: No Model File", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    this.errorProviderCheck.SetError(comboBoxModels, @"No file name was found for the model you selected");
+                    //MessageBox.Show(@"No file name was found for the model you selected.", @"Error: No Model File", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
 
@@ -61,19 +108,22 @@ namespace GeoMagGUI
 
                 if (!File.Exists(modelFile))
                 {
-                    MessageBox.Show(string.Format("The model file {0} could not be found", Path.GetFileName(modelFile)), @"Error: Missing Model File", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    this.errorProviderCheck.SetError(comboBoxModels, string.Format("The model file {0} could not be found", Path.GetFileName(modelFile)));
+                    //MessageBox.Show(string.Format("The model file {0} could not be found", Path.GetFileName(modelFile)), @"Error: Missing Model File", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
 
                 if (comboBoxUnits.SelectedItem == null)
                 {
-                    MessageBox.Show(string.Format("No Units have been selected.{0}Please choose a Units and try again.", Environment.NewLine), @"Error: No Units", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    this.errorProviderCheck.SetError(comboBoxUnits, @"No Units have been selected");
+                    //MessageBox.Show(string.Format("No Units have been selected.{0}Please choose a Units and try again.", Environment.NewLine), @"Error: No Units", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
 
                 if (string.IsNullOrEmpty(textBoxAltitude.Text) || !Helper.IsNumeric(textBoxAltitude.Text))
                 {
-                    MessageBox.Show(string.Format("Altitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Altitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    this.errorProviderCheck.SetError(textBoxAltitude, @"Altitude must be a valid number");
+                    //MessageBox.Show(string.Format("Altitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Altitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
 
@@ -90,7 +140,8 @@ namespace GeoMagGUI
 
                 if (string.IsNullOrEmpty(textBoxLatitudeDecimal.Text) || !Helper.IsNumeric(textBoxLatitudeDecimal.Text))
                 {
-                    MessageBox.Show(string.Format("Latitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Latitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    this.errorProviderCheck.SetError(textBoxLatitudeDecimal, @"Latitude must be a valid number");
+                    //MessageBox.Show(string.Format("Latitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Latitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
 
@@ -98,7 +149,8 @@ namespace GeoMagGUI
 
                 if (string.IsNullOrEmpty(textBoxLongitudeDecimal.Text) || !Helper.IsNumeric(textBoxLongitudeDecimal.Text))
                 {
-                    MessageBox.Show(string.Format("Longitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Longitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    this.errorProviderCheck.SetError(textBoxLongitudeDecimal, @"Longitude must be a valid number");
+                    //MessageBox.Show(string.Format("Longitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Longitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
 
@@ -114,9 +166,10 @@ namespace GeoMagGUI
 
                 try
                 {
+                    
                     magCalc = new GeoMag(modelFile);
 
-                    if (radioButtonDateSingle.Checked)
+                    if (!toolStripMenuItemUseRangeOfDates.Checked)
                     {
                         magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker1.Value, latitude, longitude, altitude);
                     }
@@ -131,8 +184,11 @@ namespace GeoMagGUI
                     magCalc = null;
                 }
 
-                if (magCalc == null) return;
-
+                if (magCalc == null)
+                {
+                    Cursor = Cursors.Default;
+                    return;
+                }
 
                 if (magCalc.MagneticResults == null || !magCalc.MagneticResults.Any())
                 {
@@ -147,9 +203,9 @@ namespace GeoMagGUI
 
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Value = mag.Date.ToShortDateString();
 
-                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Value = string.Format("{0}°", mag.Declination.Value.ToString("F2"));
+                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Value = string.Format("{0}°", mag.Declination.Value.ToString("F3"));
 
-                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnInclination"].Value = string.Format("{0}°", mag.Inclination.Value.ToString("F2"));
+                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnInclination"].Value = string.Format("{0}°", mag.Inclination.Value.ToString("F3"));
 
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnHorizontalIntensity"].Value = string.Format("{0} nT", mag.HorizontalIntensity.Value.ToString("F2"));
 
@@ -168,10 +224,10 @@ namespace GeoMagGUI
                 dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Value = @"Change per year";
                 dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Style.BackColor = System.Drawing.Color.LightBlue;
 
-                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Value = string.Format("{0}°", magCalc.MagneticResults.Last().Declination.ChangePerYear.ToString("F2"));
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Value = string.Format("{0}°", magCalc.MagneticResults.Last().Declination.ChangePerYear.ToString("F3"));
                 dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Style.BackColor = System.Drawing.Color.LightBlue;
 
-                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnInclination"].Value = string.Format("{0}°", magCalc.MagneticResults.Last().Inclination.ChangePerYear.ToString("F2"));
+                dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnInclination"].Value = string.Format("{0}°", magCalc.MagneticResults.Last().Inclination.ChangePerYear.ToString("F3"));
                 dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnInclination"].Style.BackColor = System.Drawing.Color.LightBlue;
 
                 dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnHorizontalIntensity"].Value = string.Format("{0} nT", magCalc.MagneticResults.Last().HorizontalIntensity.ChangePerYear.ToString("F2"));
@@ -205,7 +261,10 @@ namespace GeoMagGUI
             {
                 var extension = Path.GetExtension(lfile);
 
-                if (extension == null || !extension.Equals(".cof", StringComparison.OrdinalIgnoreCase)) continue;
+                if (extension == null) continue;
+
+                if (!extension.Equals(".cof", StringComparison.OrdinalIgnoreCase) &&
+                    !extension.Equals(".dat", StringComparison.OrdinalIgnoreCase)) continue;
 
                 var fRow = DtModels.NewRow();
 
@@ -230,26 +289,6 @@ namespace GeoMagGUI
             comboBoxModels.ValueMember = "ID";
 
             comboBoxModels.SelectedValue = selectedIdx;
-        }
-
-        private void radioButtonDateSingle_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioButtonDateSingle.Checked)
-            {
-                labelDateFrom.Visible = false;
-                labelDateTo.Visible = false;
-                dateTimePicker2.Visible = false;
-                labelStepSize.Visible = false;
-                numericUpDownStepSize.Visible = false;
-            }
-            else
-            {
-                labelDateFrom.Visible = true;
-                labelDateTo.Visible = true;
-                dateTimePicker2.Visible = true;
-                labelStepSize.Visible = true;
-                numericUpDownStepSize.Visible = true;
-            }
         }
 
         private void loadModelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -534,37 +573,64 @@ namespace GeoMagGUI
 
             if (decimalDegreesToolStripMenuItem.Checked)
             {
-                textBoxLongitudeDecimal.Visible = true;
+                textBoxLongitudeDecimal.Enabled = true;
 
-                TextBoxLongDeg.Visible = false;
-                TextBoxLongMin.Visible = false;
-                TextBoxLongSec.Visible = false;
-                ComboBoxLongDir.Visible = false;
+                TextBoxLongDeg.Enabled = false;
+                TextBoxLongMin.Enabled = false;
+                TextBoxLongSec.Enabled = false;
+                ComboBoxLongDir.Enabled = false;
 
-                textBoxLatitudeDecimal.Visible = true;
+                textBoxLatitudeDecimal.Enabled = true;
 
-                TextBoxLatDeg.Visible = false;
-                TextBoxLatMin.Visible = false;
-                TextBoxLatSec.Visible = false;
-                ComboBoxLatDir.Visible = false;
+                TextBoxLatDeg.Enabled = false;
+                TextBoxLatMin.Enabled = false;
+                TextBoxLatSec.Enabled = false;
+                ComboBoxLatDir.Enabled = false;
 
             }
             else if (degreesMinutesAndSecondsToolStripMenuItem.Checked)
             {
-                textBoxLongitudeDecimal.Visible = false;
+                textBoxLongitudeDecimal.Enabled = false;
 
-                TextBoxLongDeg.Visible = true;
-                TextBoxLongMin.Visible = true;
-                TextBoxLongSec.Visible = true;
-                ComboBoxLongDir.Visible = true;
+                TextBoxLongDeg.Enabled = true;
+                TextBoxLongMin.Enabled = true;
+                TextBoxLongSec.Enabled = true;
+                ComboBoxLongDir.Enabled = true;
 
-                textBoxLatitudeDecimal.Visible = false;
+                textBoxLatitudeDecimal.Enabled = false;
 
-                TextBoxLatDeg.Visible = true;
-                TextBoxLatMin.Visible = true;
-                TextBoxLatSec.Visible = true;
-                ComboBoxLatDir.Visible = true;
+                TextBoxLatDeg.Enabled = true;
+                TextBoxLatMin.Enabled = true;
+                TextBoxLatSec.Enabled = true;
+                ComboBoxLatDir.Enabled = true;
             }
+        }
+
+        private void toolStripMenuItemUseRangeOfDates_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!toolStripMenuItemUseRangeOfDates.Checked)
+            {
+                labelDateFrom.Visible = false;
+                labelDateTo.Visible = false;
+                dateTimePicker2.Visible = false;
+                labelStepSize.Visible = false;
+                numericUpDownStepSize.Visible = false;
+            }
+            else
+            {
+                labelDateFrom.Visible = true;
+                labelDateTo.Visible = true;
+                dateTimePicker2.Visible = true;
+                labelStepSize.Visible = true;
+                numericUpDownStepSize.Visible = true;
+            }
+
+        }
+
+        private void buttonMyLocation_Click(object sender, EventArgs e)
+        {
+            // Start the watcher.
+            Watcher.Start();
         }
 
     }

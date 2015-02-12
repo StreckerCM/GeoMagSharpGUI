@@ -21,3 +21,5 @@ obj/
 _ReSharper*/
 #Ignore Setup Project
 SetupGeoMagGUI/
+#User Defined Ignores
+bggm2014.dat

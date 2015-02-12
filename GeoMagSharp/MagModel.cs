@@ -103,20 +103,22 @@ namespace GeoMagSharp
             /* Compute date range for all models */
             if (Models.Count.Equals(1))
             {
-                YearMin = newModel.YearMin;
-                YearMax = newModel.YearMax;
+                if (YearMin.Equals(0)) YearMin = newModel.YearMin;
+                if (YearMax.Equals(0)) YearMax = newModel.YearMax;
             }
             else if(Models.Count > 1)
             {
-                if (newModel.YearMin < YearMin) YearMin = newModel.YearMin;
+                if (!newModel.YearMin.Equals(0) && newModel.YearMin < YearMin) YearMin = newModel.YearMin;
 
-                if (newModel.YearMax > YearMax) YearMax = newModel.YearMax;
+                if (!newModel.YearMax.Equals(0) && newModel.YearMax > YearMax) YearMax = newModel.YearMax;
             }
         }
 
-        public List<MagModel> Models { get; set; }
+        private List<MagModel> Models { get; set; }
         public double YearMin { get; set; }
         public double YearMax { get; set; }
+
+        public List<MagModel> GetModels { get { return new List<MagModel>(Models); } }
     }
 
     public class MagModel

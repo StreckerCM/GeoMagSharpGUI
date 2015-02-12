@@ -31,15 +31,11 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.numericUpDownStepSize = new System.Windows.Forms.NumericUpDown();
             this.labelStepSize = new System.Windows.Forms.Label();
             this.labelDateTo = new System.Windows.Forms.Label();
             this.labelDateFrom = new System.Windows.Forms.Label();
-            this.radioButtonDateRange = new System.Windows.Forms.RadioButton();
             this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
-            this.radioButtonDateSingle = new System.Windows.Forms.RadioButton();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.comboBoxModels = new System.Windows.Forms.ComboBox();
             this.textBoxAltitude = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -58,7 +54,6 @@
             this.label80 = new System.Windows.Forms.Label();
             this.textBoxLatitudeDecimal = new System.Windows.Forms.TextBox();
             this.textBoxLongitudeDecimal = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,6 +63,7 @@
             this.coordinateFormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.decimalDegreesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.degreesMinutesAndSecondsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemUseRangeOfDates = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutGeoMagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.errorProviderCheck = new System.Windows.Forms.ErrorProvider(this.components);
@@ -80,55 +76,39 @@
             this.ColumnEastComp = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnVerticalComp = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnTotalField = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.groupBox2.SuspendLayout();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.buttonMyLocation = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStepSize)).BeginInit();
-            this.groupBox3.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderCheck)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewResults)).BeginInit();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // dateTimePicker1
             // 
-            this.dateTimePicker1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dateTimePicker1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.dateTimePicker1, 2);
             this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePicker1.Location = new System.Drawing.Point(141, 23);
+            this.dateTimePicker1.Location = new System.Drawing.Point(556, 18);
+            this.dateTimePicker1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(161, 20);
+            this.dateTimePicker1.Size = new System.Drawing.Size(121, 26);
             this.dateTimePicker1.TabIndex = 6;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.numericUpDownStepSize);
-            this.groupBox2.Controls.Add(this.labelStepSize);
-            this.groupBox2.Controls.Add(this.labelDateTo);
-            this.groupBox2.Controls.Add(this.labelDateFrom);
-            this.groupBox2.Controls.Add(this.radioButtonDateRange);
-            this.groupBox2.Controls.Add(this.dateTimePicker2);
-            this.groupBox2.Controls.Add(this.radioButtonDateSingle);
-            this.groupBox2.Controls.Add(this.dateTimePicker1);
-            this.groupBox2.Location = new System.Drawing.Point(238, 34);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(315, 130);
-            this.groupBox2.TabIndex = 2;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Date";
             // 
             // numericUpDownStepSize
             // 
-            this.numericUpDownStepSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.numericUpDownStepSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.numericUpDownStepSize, 2);
             this.numericUpDownStepSize.DecimalPlaces = 3;
             this.numericUpDownStepSize.Increment = new decimal(new int[] {
             1,
             0,
             0,
             131072});
-            this.numericUpDownStepSize.Location = new System.Drawing.Point(141, 93);
+            this.numericUpDownStepSize.Location = new System.Drawing.Point(1065, 18);
+            this.numericUpDownStepSize.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownStepSize.Maximum = new decimal(new int[] {
             1,
             0,
@@ -140,7 +120,7 @@
             0,
             196608});
             this.numericUpDownStepSize.Name = "numericUpDownStepSize";
-            this.numericUpDownStepSize.Size = new System.Drawing.Size(161, 20);
+            this.numericUpDownStepSize.Size = new System.Drawing.Size(182, 26);
             this.numericUpDownStepSize.TabIndex = 10;
             this.numericUpDownStepSize.Value = new decimal(new int[] {
             10,
@@ -151,95 +131,72 @@
             // 
             // labelStepSize
             // 
+            this.labelStepSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.labelStepSize.AutoSize = true;
-            this.labelStepSize.Location = new System.Drawing.Point(77, 97);
+            this.labelStepSize.Location = new System.Drawing.Point(970, 21);
+            this.labelStepSize.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelStepSize.Name = "labelStepSize";
-            this.labelStepSize.Size = new System.Drawing.Size(55, 13);
+            this.labelStepSize.Size = new System.Drawing.Size(87, 20);
             this.labelStepSize.TabIndex = 9;
             this.labelStepSize.Text = "Step Size:";
             this.labelStepSize.Visible = false;
             // 
             // labelDateTo
             // 
+            this.labelDateTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.labelDateTo.AutoSize = true;
-            this.labelDateTo.Location = new System.Drawing.Point(109, 63);
+            this.labelDateTo.Location = new System.Drawing.Point(685, 21);
+            this.labelDateTo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelDateTo.Name = "labelDateTo";
-            this.labelDateTo.Size = new System.Drawing.Size(23, 13);
+            this.labelDateTo.Size = new System.Drawing.Size(43, 20);
             this.labelDateTo.TabIndex = 7;
             this.labelDateTo.Text = "To:";
             this.labelDateTo.Visible = false;
             // 
             // labelDateFrom
             // 
+            this.labelDateFrom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.labelDateFrom.AutoSize = true;
-            this.labelDateFrom.Location = new System.Drawing.Point(99, 27);
+            this.labelDateFrom.Location = new System.Drawing.Point(460, 21);
+            this.labelDateFrom.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelDateFrom.Name = "labelDateFrom";
-            this.labelDateFrom.Size = new System.Drawing.Size(33, 13);
+            this.labelDateFrom.Size = new System.Drawing.Size(88, 20);
             this.labelDateFrom.TabIndex = 5;
             this.labelDateFrom.Text = "From:";
-            this.labelDateFrom.Visible = false;
-            // 
-            // radioButtonDateRange
-            // 
-            this.radioButtonDateRange.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.radioButtonDateRange.AutoSize = true;
-            this.radioButtonDateRange.Location = new System.Drawing.Point(12, 61);
-            this.radioButtonDateRange.Name = "radioButtonDateRange";
-            this.radioButtonDateRange.Size = new System.Drawing.Size(57, 17);
-            this.radioButtonDateRange.TabIndex = 4;
-            this.radioButtonDateRange.Text = "Range";
-            this.radioButtonDateRange.UseVisualStyleBackColor = true;
             // 
             // dateTimePicker2
             // 
-            this.dateTimePicker2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dateTimePicker2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.dateTimePicker2, 2);
             this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePicker2.Location = new System.Drawing.Point(141, 59);
+            this.dateTimePicker2.Location = new System.Drawing.Point(736, 18);
+            this.dateTimePicker2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(161, 20);
+            this.dateTimePicker2.Size = new System.Drawing.Size(125, 26);
             this.dateTimePicker2.TabIndex = 8;
             this.dateTimePicker2.Visible = false;
             // 
-            // radioButtonDateSingle
-            // 
-            this.radioButtonDateSingle.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.radioButtonDateSingle.AutoSize = true;
-            this.radioButtonDateSingle.Checked = true;
-            this.radioButtonDateSingle.Location = new System.Drawing.Point(12, 25);
-            this.radioButtonDateSingle.Name = "radioButtonDateSingle";
-            this.radioButtonDateSingle.Size = new System.Drawing.Size(54, 17);
-            this.radioButtonDateSingle.TabIndex = 3;
-            this.radioButtonDateSingle.TabStop = true;
-            this.radioButtonDateSingle.Text = "Single";
-            this.radioButtonDateSingle.UseVisualStyleBackColor = true;
-            this.radioButtonDateSingle.CheckedChanged += new System.EventHandler(this.radioButtonDateSingle_CheckedChanged);
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.comboBoxModels);
-            this.groupBox3.Location = new System.Drawing.Point(25, 34);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(200, 130);
-            this.groupBox3.TabIndex = 0;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Model";
-            // 
             // comboBoxModels
             // 
+            this.comboBoxModels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxModels.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.comboBoxModels.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.tableLayoutPanel1.SetColumnSpan(this.comboBoxModels, 4);
             this.comboBoxModels.FormattingEnabled = true;
-            this.comboBoxModels.Location = new System.Drawing.Point(6, 23);
+            this.comboBoxModels.Location = new System.Drawing.Point(105, 17);
+            this.comboBoxModels.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.comboBoxModels.Name = "comboBoxModels";
-            this.comboBoxModels.Size = new System.Drawing.Size(172, 21);
+            this.comboBoxModels.Size = new System.Drawing.Size(336, 28);
             this.comboBoxModels.TabIndex = 1;
             // 
             // textBoxAltitude
             // 
-            this.textBoxAltitude.Location = new System.Drawing.Point(63, 93);
+            this.textBoxAltitude.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.textBoxAltitude, 2);
+            this.textBoxAltitude.Location = new System.Drawing.Point(1065, 68);
+            this.textBoxAltitude.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBoxAltitude.Name = "textBoxAltitude";
-            this.textBoxAltitude.Size = new System.Drawing.Size(95, 20);
+            this.textBoxAltitude.Size = new System.Drawing.Size(182, 26);
             this.textBoxAltitude.TabIndex = 17;
             this.textBoxAltitude.Tag = "LATITUDE";
             this.textBoxAltitude.Text = "0";
@@ -248,43 +205,51 @@
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 97);
+            this.label1.Location = new System.Drawing.Point(970, 71);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(51, 13);
+            this.label1.Size = new System.Drawing.Size(87, 20);
             this.label1.TabIndex = 16;
             this.label1.Text = "Elevation";
             // 
             // label2
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(164, 97);
+            this.label2.Location = new System.Drawing.Point(970, 109);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(34, 13);
+            this.label2.Size = new System.Drawing.Size(87, 20);
             this.label2.TabIndex = 18;
             this.label2.Text = "Units:";
             // 
             // comboBoxUnits
             // 
+            this.comboBoxUnits.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxUnits.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.comboBoxUnits.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.tableLayoutPanel1.SetColumnSpan(this.comboBoxUnits, 2);
             this.comboBoxUnits.FormattingEnabled = true;
             this.comboBoxUnits.Items.AddRange(new object[] {
             "Kilometers",
             "Meters",
             "Feet"});
-            this.comboBoxUnits.Location = new System.Drawing.Point(204, 93);
+            this.comboBoxUnits.Location = new System.Drawing.Point(1065, 105);
+            this.comboBoxUnits.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.comboBoxUnits.Name = "comboBoxUnits";
-            this.comboBoxUnits.Size = new System.Drawing.Size(94, 21);
+            this.comboBoxUnits.Size = new System.Drawing.Size(182, 28);
             this.comboBoxUnits.TabIndex = 19;
             // 
             // buttonCalculate
             // 
-            this.buttonCalculate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCalculate.Location = new System.Drawing.Point(25, 175);
+            this.buttonCalculate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.buttonCalculate, 18);
+            this.buttonCalculate.Location = new System.Drawing.Point(15, 155);
+            this.buttonCalculate.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCalculate.Name = "buttonCalculate";
-            this.buttonCalculate.Size = new System.Drawing.Size(845, 33);
+            this.buttonCalculate.Size = new System.Drawing.Size(1232, 40);
             this.buttonCalculate.TabIndex = 20;
             this.buttonCalculate.Text = "Calculate";
             this.buttonCalculate.UseVisualStyleBackColor = true;
@@ -292,131 +257,155 @@
             // 
             // label85
             // 
+            this.label85.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label85.AutoSize = true;
-            this.label85.Location = new System.Drawing.Point(1, 63);
+            this.label85.Location = new System.Drawing.Point(460, 71);
+            this.label85.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label85.Name = "label85";
-            this.label85.Size = new System.Drawing.Size(57, 13);
+            this.label85.Size = new System.Drawing.Size(88, 20);
             this.label85.TabIndex = 14;
             this.label85.Text = "Longitude:";
             // 
             // ComboBoxLatDir
             // 
+            this.ComboBoxLatDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.ComboBoxLatDir.Enabled = false;
             this.ComboBoxLatDir.FormattingEnabled = true;
             this.ComboBoxLatDir.Items.AddRange(new object[] {
             "N",
             "S"});
-            this.ComboBoxLatDir.Location = new System.Drawing.Point(216, 23);
+            this.ComboBoxLatDir.Location = new System.Drawing.Point(370, 105);
+            this.ComboBoxLatDir.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ComboBoxLatDir.Name = "ComboBoxLatDir";
-            this.ComboBoxLatDir.Size = new System.Drawing.Size(47, 21);
+            this.ComboBoxLatDir.Size = new System.Drawing.Size(71, 28);
             this.ComboBoxLatDir.TabIndex = 13;
             this.ComboBoxLatDir.Tag = "LATITUDE";
             this.ComboBoxLatDir.Text = "N";
-            this.ComboBoxLatDir.Visible = false;
             this.ComboBoxLatDir.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLatitude_Validating);
             this.ComboBoxLatDir.Validated += new System.EventHandler(this.TextBoxLatitude_Validated);
             // 
             // TextBoxLongDeg
             // 
-            this.TextBoxLongDeg.Location = new System.Drawing.Point(62, 59);
+            this.TextBoxLongDeg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.TextBoxLongDeg.Enabled = false;
+            this.TextBoxLongDeg.Location = new System.Drawing.Point(556, 106);
+            this.TextBoxLongDeg.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.TextBoxLongDeg.Name = "TextBoxLongDeg";
-            this.TextBoxLongDeg.Size = new System.Drawing.Size(38, 20);
+            this.TextBoxLongDeg.Size = new System.Drawing.Size(65, 26);
             this.TextBoxLongDeg.TabIndex = 15;
             this.TextBoxLongDeg.Tag = "LONGITUDE";
             this.TextBoxLongDeg.Text = "0";
-            this.TextBoxLongDeg.Visible = false;
             this.TextBoxLongDeg.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLongitude_Validating);
             this.TextBoxLongDeg.Validated += new System.EventHandler(this.TextBoxLongitude_Validated);
             // 
             // TextBoxLatSec
             // 
-            this.TextBoxLatSec.Location = new System.Drawing.Point(148, 23);
+            this.TextBoxLatSec.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.TextBoxLatSec.Enabled = false;
+            this.TextBoxLatSec.Location = new System.Drawing.Point(244, 106);
+            this.TextBoxLatSec.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.TextBoxLatSec.Name = "TextBoxLatSec";
-            this.TextBoxLatSec.Size = new System.Drawing.Size(61, 20);
+            this.TextBoxLatSec.Size = new System.Drawing.Size(118, 26);
             this.TextBoxLatSec.TabIndex = 12;
             this.TextBoxLatSec.Tag = "LATITUDE";
             this.TextBoxLatSec.Text = "0";
-            this.TextBoxLatSec.Visible = false;
             this.TextBoxLatSec.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLatitude_Validating);
             this.TextBoxLatSec.Validated += new System.EventHandler(this.TextBoxLatitude_Validated);
             // 
             // TextBoxLongMin
             // 
-            this.TextBoxLongMin.Location = new System.Drawing.Point(105, 59);
+            this.TextBoxLongMin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.TextBoxLongMin.Enabled = false;
+            this.TextBoxLongMin.Location = new System.Drawing.Point(629, 106);
+            this.TextBoxLongMin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.TextBoxLongMin.Name = "TextBoxLongMin";
-            this.TextBoxLongMin.Size = new System.Drawing.Size(38, 20);
+            this.TextBoxLongMin.Size = new System.Drawing.Size(48, 26);
             this.TextBoxLongMin.TabIndex = 16;
             this.TextBoxLongMin.Tag = "LONGITUDE";
             this.TextBoxLongMin.Text = "0";
-            this.TextBoxLongMin.Visible = false;
             this.TextBoxLongMin.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLongitude_Validating);
             this.TextBoxLongMin.Validated += new System.EventHandler(this.TextBoxLongitude_Validated);
             // 
             // TextBoxLatMin
             // 
-            this.TextBoxLatMin.Location = new System.Drawing.Point(105, 23);
+            this.TextBoxLatMin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.TextBoxLatMin.Enabled = false;
+            this.TextBoxLatMin.Location = new System.Drawing.Point(188, 106);
+            this.TextBoxLatMin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.TextBoxLatMin.Name = "TextBoxLatMin";
-            this.TextBoxLatMin.Size = new System.Drawing.Size(38, 20);
+            this.TextBoxLatMin.Size = new System.Drawing.Size(48, 26);
             this.TextBoxLatMin.TabIndex = 11;
             this.TextBoxLatMin.Tag = "LATITUDE";
             this.TextBoxLatMin.Text = "0";
-            this.TextBoxLatMin.Visible = false;
             this.TextBoxLatMin.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLatitude_Validating);
             this.TextBoxLatMin.Validated += new System.EventHandler(this.TextBoxLatitude_Validated);
             // 
             // TextBoxLongSec
             // 
-            this.TextBoxLongSec.Location = new System.Drawing.Point(148, 59);
+            this.TextBoxLongSec.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.TextBoxLongSec, 2);
+            this.TextBoxLongSec.Enabled = false;
+            this.TextBoxLongSec.Location = new System.Drawing.Point(685, 106);
+            this.TextBoxLongSec.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.TextBoxLongSec.Name = "TextBoxLongSec";
-            this.TextBoxLongSec.Size = new System.Drawing.Size(61, 20);
+            this.TextBoxLongSec.Size = new System.Drawing.Size(97, 26);
             this.TextBoxLongSec.TabIndex = 17;
             this.TextBoxLongSec.Tag = "LONGITUDE";
             this.TextBoxLongSec.Text = "0";
-            this.TextBoxLongSec.Visible = false;
             this.TextBoxLongSec.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLongitude_Validating);
             this.TextBoxLongSec.Validated += new System.EventHandler(this.TextBoxLongitude_Validated);
             // 
             // TextBoxLatDeg
             // 
-            this.TextBoxLatDeg.Location = new System.Drawing.Point(62, 23);
+            this.TextBoxLatDeg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.TextBoxLatDeg.Enabled = false;
+            this.TextBoxLatDeg.Location = new System.Drawing.Point(105, 106);
+            this.TextBoxLatDeg.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.TextBoxLatDeg.Name = "TextBoxLatDeg";
-            this.TextBoxLatDeg.Size = new System.Drawing.Size(38, 20);
+            this.TextBoxLatDeg.Size = new System.Drawing.Size(75, 26);
             this.TextBoxLatDeg.TabIndex = 10;
             this.TextBoxLatDeg.Tag = "LATITUDE";
             this.TextBoxLatDeg.Text = "0";
-            this.TextBoxLatDeg.Visible = false;
             this.TextBoxLatDeg.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLatitude_Validating);
             this.TextBoxLatDeg.Validated += new System.EventHandler(this.TextBoxLatitude_Validated);
             // 
             // ComboBoxLongDir
             // 
+            this.ComboBoxLongDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.ComboBoxLongDir.Enabled = false;
             this.ComboBoxLongDir.FormattingEnabled = true;
             this.ComboBoxLongDir.Items.AddRange(new object[] {
             "E",
             "W"});
-            this.ComboBoxLongDir.Location = new System.Drawing.Point(216, 59);
+            this.ComboBoxLongDir.Location = new System.Drawing.Point(790, 105);
+            this.ComboBoxLongDir.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ComboBoxLongDir.Name = "ComboBoxLongDir";
-            this.ComboBoxLongDir.Size = new System.Drawing.Size(47, 21);
+            this.ComboBoxLongDir.Size = new System.Drawing.Size(71, 28);
             this.ComboBoxLongDir.TabIndex = 18;
             this.ComboBoxLongDir.Tag = "LONGITUDE";
             this.ComboBoxLongDir.Text = "W";
-            this.ComboBoxLongDir.Visible = false;
             this.ComboBoxLongDir.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLongitude_Validating);
             this.ComboBoxLongDir.Validated += new System.EventHandler(this.TextBoxLongitude_Validated);
             // 
             // label80
             // 
+            this.label80.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label80.AutoSize = true;
-            this.label80.Location = new System.Drawing.Point(10, 27);
+            this.label80.Location = new System.Drawing.Point(15, 71);
+            this.label80.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label80.Name = "label80";
-            this.label80.Size = new System.Drawing.Size(48, 13);
+            this.label80.Size = new System.Drawing.Size(82, 20);
             this.label80.TabIndex = 12;
             this.label80.Text = "Latitude:";
             // 
             // textBoxLatitudeDecimal
             // 
-            this.textBoxLatitudeDecimal.Location = new System.Drawing.Point(62, 23);
+            this.textBoxLatitudeDecimal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.textBoxLatitudeDecimal, 4);
+            this.textBoxLatitudeDecimal.Location = new System.Drawing.Point(105, 68);
+            this.textBoxLatitudeDecimal.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBoxLatitudeDecimal.Name = "textBoxLatitudeDecimal";
-            this.textBoxLatitudeDecimal.Size = new System.Drawing.Size(236, 20);
+            this.textBoxLatitudeDecimal.Size = new System.Drawing.Size(336, 26);
             this.textBoxLatitudeDecimal.TabIndex = 13;
             this.textBoxLatitudeDecimal.Tag = "LATITUDE";
             this.textBoxLatitudeDecimal.Text = "0";
@@ -426,40 +415,17 @@
             // 
             // textBoxLongitudeDecimal
             // 
-            this.textBoxLongitudeDecimal.Location = new System.Drawing.Point(62, 59);
+            this.textBoxLongitudeDecimal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.textBoxLongitudeDecimal, 5);
+            this.textBoxLongitudeDecimal.Location = new System.Drawing.Point(556, 68);
+            this.textBoxLongitudeDecimal.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBoxLongitudeDecimal.Name = "textBoxLongitudeDecimal";
-            this.textBoxLongitudeDecimal.Size = new System.Drawing.Size(236, 20);
+            this.textBoxLongitudeDecimal.Size = new System.Drawing.Size(305, 26);
             this.textBoxLongitudeDecimal.TabIndex = 15;
             this.textBoxLongitudeDecimal.Tag = "LONGITUDE";
             this.textBoxLongitudeDecimal.Text = "0";
             this.textBoxLongitudeDecimal.Validating += new System.ComponentModel.CancelEventHandler(this.textBoxLongitudeDecimal_Validating);
             this.textBoxLongitudeDecimal.Validated += new System.EventHandler(this.textBoxLongitudeDecimal_Validated);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.textBoxAltitude);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.textBoxLongitudeDecimal);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.textBoxLatitudeDecimal);
-            this.groupBox1.Controls.Add(this.comboBoxUnits);
-            this.groupBox1.Controls.Add(this.label80);
-            this.groupBox1.Controls.Add(this.ComboBoxLongDir);
-            this.groupBox1.Controls.Add(this.TextBoxLatDeg);
-            this.groupBox1.Controls.Add(this.TextBoxLongSec);
-            this.groupBox1.Controls.Add(this.TextBoxLatMin);
-            this.groupBox1.Controls.Add(this.TextBoxLongMin);
-            this.groupBox1.Controls.Add(this.TextBoxLatSec);
-            this.groupBox1.Controls.Add(this.TextBoxLongDeg);
-            this.groupBox1.Controls.Add(this.ComboBoxLatDir);
-            this.groupBox1.Controls.Add(this.label85);
-            this.groupBox1.Location = new System.Drawing.Point(566, 34);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(304, 130);
-            this.groupBox1.TabIndex = 11;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Location";
             // 
             // menuStrip1
             // 
@@ -469,7 +435,8 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(895, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(9, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(1266, 33);
             this.menuStrip1.TabIndex = 22;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -480,34 +447,35 @@
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // loadModelToolStripMenuItem
             // 
             this.loadModelToolStripMenuItem.Name = "loadModelToolStripMenuItem";
-            this.loadModelToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.loadModelToolStripMenuItem.Size = new System.Drawing.Size(179, 30);
             this.loadModelToolStripMenuItem.Text = "Load Model";
             this.loadModelToolStripMenuItem.Click += new System.EventHandler(this.loadModelToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(134, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(176, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(179, 30);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.coordinateFormatToolStripMenuItem});
+            this.coordinateFormatToolStripMenuItem,
+            this.toolStripMenuItemUseRangeOfDates});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(61, 29);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // coordinateFormatToolStripMenuItem
@@ -516,7 +484,7 @@
             this.decimalDegreesToolStripMenuItem,
             this.degreesMinutesAndSecondsToolStripMenuItem});
             this.coordinateFormatToolStripMenuItem.Name = "coordinateFormatToolStripMenuItem";
-            this.coordinateFormatToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.coordinateFormatToolStripMenuItem.Size = new System.Drawing.Size(282, 30);
             this.coordinateFormatToolStripMenuItem.Text = "Coordinate Format";
             // 
             // decimalDegreesToolStripMenuItem
@@ -525,7 +493,7 @@
             this.decimalDegreesToolStripMenuItem.CheckOnClick = true;
             this.decimalDegreesToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.decimalDegreesToolStripMenuItem.Name = "decimalDegreesToolStripMenuItem";
-            this.decimalDegreesToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.decimalDegreesToolStripMenuItem.Size = new System.Drawing.Size(332, 30);
             this.decimalDegreesToolStripMenuItem.Text = "Decimal Degrees";
             this.decimalDegreesToolStripMenuItem.CheckedChanged += new System.EventHandler(this.decimalDegreesToolStripMenuItem_CheckedChanged);
             // 
@@ -533,22 +501,30 @@
             // 
             this.degreesMinutesAndSecondsToolStripMenuItem.CheckOnClick = true;
             this.degreesMinutesAndSecondsToolStripMenuItem.Name = "degreesMinutesAndSecondsToolStripMenuItem";
-            this.degreesMinutesAndSecondsToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.degreesMinutesAndSecondsToolStripMenuItem.Size = new System.Drawing.Size(332, 30);
             this.degreesMinutesAndSecondsToolStripMenuItem.Text = "Degrees, Minutes, and Seconds";
             this.degreesMinutesAndSecondsToolStripMenuItem.CheckedChanged += new System.EventHandler(this.degreesMinutesAndSecondsToolStripMenuItem_CheckedChanged);
+            // 
+            // toolStripMenuItemUseRangeOfDates
+            // 
+            this.toolStripMenuItemUseRangeOfDates.CheckOnClick = true;
+            this.toolStripMenuItemUseRangeOfDates.Name = "toolStripMenuItemUseRangeOfDates";
+            this.toolStripMenuItemUseRangeOfDates.Size = new System.Drawing.Size(282, 30);
+            this.toolStripMenuItemUseRangeOfDates.Text = "Calculate For Date Range";
+            this.toolStripMenuItemUseRangeOfDates.CheckedChanged += new System.EventHandler(this.toolStripMenuItemUseRangeOfDates_CheckedChanged);
             // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutGeoMagToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(61, 29);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutGeoMagToolStripMenuItem
             // 
             this.aboutGeoMagToolStripMenuItem.Name = "aboutGeoMagToolStripMenuItem";
-            this.aboutGeoMagToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.aboutGeoMagToolStripMenuItem.Size = new System.Drawing.Size(146, 30);
             this.aboutGeoMagToolStripMenuItem.Text = "About...";
             this.aboutGeoMagToolStripMenuItem.Click += new System.EventHandler(this.aboutGeoMagToolStripMenuItem_Click);
             // 
@@ -575,9 +551,12 @@
             this.ColumnEastComp,
             this.ColumnVerticalComp,
             this.ColumnTotalField});
-            this.dataGridViewResults.Location = new System.Drawing.Point(25, 219);
+            this.tableLayoutPanel1.SetColumnSpan(this.dataGridViewResults, 18);
+            this.dataGridViewResults.Location = new System.Drawing.Point(15, 217);
+            this.dataGridViewResults.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dataGridViewResults.Name = "dataGridViewResults";
-            this.dataGridViewResults.Size = new System.Drawing.Size(845, 162);
+            this.tableLayoutPanel1.SetRowSpan(this.dataGridViewResults, 2);
+            this.dataGridViewResults.Size = new System.Drawing.Size(1232, 174);
             this.dataGridViewResults.TabIndex = 21;
             // 
             // ColumnDate
@@ -629,31 +608,121 @@
             this.ColumnTotalField.Name = "ColumnTotalField";
             this.ColumnTotalField.ReadOnly = true;
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 20;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 11F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 83F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 79F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 11F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 96F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 73F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 51F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 79F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 11F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 95F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 15F));
+            this.tableLayoutPanel1.Controls.Add(this.textBoxLatitudeDecimal, 2, 3);
+            this.tableLayoutPanel1.Controls.Add(this.comboBoxModels, 2, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label3, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label80, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.TextBoxLatDeg, 2, 4);
+            this.tableLayoutPanel1.Controls.Add(this.TextBoxLatMin, 3, 4);
+            this.tableLayoutPanel1.Controls.Add(this.TextBoxLatSec, 4, 4);
+            this.tableLayoutPanel1.Controls.Add(this.ComboBoxLatDir, 5, 4);
+            this.tableLayoutPanel1.Controls.Add(this.label85, 7, 3);
+            this.tableLayoutPanel1.Controls.Add(this.labelDateFrom, 7, 1);
+            this.tableLayoutPanel1.Controls.Add(this.textBoxLongitudeDecimal, 8, 3);
+            this.tableLayoutPanel1.Controls.Add(this.TextBoxLongDeg, 8, 4);
+            this.tableLayoutPanel1.Controls.Add(this.TextBoxLongMin, 9, 4);
+            this.tableLayoutPanel1.Controls.Add(this.TextBoxLongSec, 10, 4);
+            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker1, 8, 1);
+            this.tableLayoutPanel1.Controls.Add(this.ComboBoxLongDir, 12, 4);
+            this.tableLayoutPanel1.Controls.Add(this.dataGridViewResults, 1, 8);
+            this.tableLayoutPanel1.Controls.Add(this.buttonMyLocation, 14, 3);
+            this.tableLayoutPanel1.Controls.Add(this.buttonCalculate, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.labelDateTo, 10, 1);
+            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker2, 11, 1);
+            this.tableLayoutPanel1.Controls.Add(this.labelStepSize, 16, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label1, 16, 3);
+            this.tableLayoutPanel1.Controls.Add(this.label2, 16, 4);
+            this.tableLayoutPanel1.Controls.Add(this.numericUpDownStepSize, 17, 1);
+            this.tableLayoutPanel1.Controls.Add(this.textBoxAltitude, 17, 3);
+            this.tableLayoutPanel1.Controls.Add(this.comboBoxUnits, 17, 4);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 33);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 11;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 12F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 12F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 12F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 12F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 12F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1266, 408);
+            this.tableLayoutPanel1.TabIndex = 23;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(15, 21);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(82, 20);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "Model:";
+            // 
+            // buttonMyLocation
+            // 
+            this.buttonMyLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonMyLocation.Image = global::GeoMagGUI.Properties.Resources.gps_icon_32;
+            this.buttonMyLocation.Location = new System.Drawing.Point(880, 67);
+            this.buttonMyLocation.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonMyLocation.Name = "buttonMyLocation";
+            this.tableLayoutPanel1.SetRowSpan(this.buttonMyLocation, 2);
+            this.buttonMyLocation.Size = new System.Drawing.Size(72, 66);
+            this.buttonMyLocation.TabIndex = 22;
+            this.buttonMyLocation.UseVisualStyleBackColor = true;
+            this.buttonMyLocation.Click += new System.EventHandler(this.buttonMyLocation_Click);
+            // 
             // FrmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(895, 396);
-            this.Controls.Add(this.dataGridViewResults);
-            this.Controls.Add(this.buttonCalculate);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(1266, 441);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.MinimumSize = new System.Drawing.Size(1198, 484);
             this.Name = "FrmMain";
             this.Text = "GeoMag #";
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStepSize)).EndInit();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderCheck)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewResults)).EndInit();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -662,13 +731,9 @@
         #endregion
 
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label labelDateTo;
         private System.Windows.Forms.Label labelDateFrom;
-        internal System.Windows.Forms.RadioButton radioButtonDateRange;
         private System.Windows.Forms.DateTimePicker dateTimePicker2;
-        internal System.Windows.Forms.RadioButton radioButtonDateSingle;
         private System.Windows.Forms.ComboBox comboBoxModels;
         internal System.Windows.Forms.TextBox textBoxAltitude;
         private System.Windows.Forms.Label label1;
@@ -687,7 +752,6 @@
         internal System.Windows.Forms.Label label80;
         internal System.Windows.Forms.TextBox textBoxLatitudeDecimal;
         internal System.Windows.Forms.TextBox textBoxLongitudeDecimal;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadModelToolStripMenuItem;
@@ -711,6 +775,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnTotalField;
         private System.Windows.Forms.ToolStripMenuItem decimalDegreesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem degreesMinutesAndSecondsToolStripMenuItem;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemUseRangeOfDates;
+        private System.Windows.Forms.Button buttonMyLocation;
     }
 }
 

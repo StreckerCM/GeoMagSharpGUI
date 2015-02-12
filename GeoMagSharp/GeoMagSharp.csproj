@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="FileReader.cs" />
     <Compile Include="GeoMag.cs" />
     <Compile Include="GeoMagException.cs" />
     <Compile Include="MagModel.cs" />

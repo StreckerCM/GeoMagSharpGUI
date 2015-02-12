@@ -34,190 +34,201 @@ namespace GeoMagSharp
             if (!string.IsNullOrEmpty(mdFile)) LoadModel(mdFile);
         }
 
-        public void LoadModel(string mdFile)
+        public void LoadModel(string modelFile)
         {
+            switch (Path.GetExtension(modelFile).ToLower())
+            {
+                case ".cof":
+                    _models = FileReader.ReadFileCOF(modelFile);
+                    break;
+
+                case ".dat":
+                    _models = FileReader.ReadFileDAT(modelFile);
+                    break;
+            }
+
             //ModelList = new List<MagModel>();
 
-            _models = new MagModelSet();
+            //_models = new MagModelSet();
 
-            using (var stream = new StreamReader(mdFile)) 
-            {
-                string inbuff;
+            //using (var stream = new StreamReader(mdFile)) 
+            //{
+            //    string inbuff;
 
-                Int32 fileline = 0;                            /* First line will be 1 */
+            //    Int32 fileline = 0;                            /* First line will be 1 */
 
-                Int32 modelI = -1;                             /* First model will be 0 */
+            //    Int32 modelI = -1;                             /* First model will be 0 */
 
-                var irecPos = new Int64[Constants.MaxModules];
+            //    var irecPos = new Int64[Constants.MaxModules];
 
-                while ((inbuff = stream.ReadLine()) != null)
-                {
-                    fileline++;
+            //    while ((inbuff = stream.ReadLine()) != null)
+            //    {
+            //        fileline++;
 
-                    if (!inbuff.Length.Equals(Constants.RecordLen))
-                    {
-                       // Console.WriteLine("Corrupt record in file {0} on line {1}.", mdFile, fileline);
-                        stream.Close();
-                        _models = null;
-                        throw new GeoMagException(string.Format("Corrupt record in file {0} on line {1}.", mdFile, fileline));
-                        //return;
-                    }
+            //        if (!inbuff.Length.Equals(Constants.RecordLen))
+            //        {
+            //           // Console.WriteLine("Corrupt record in file {0} on line {1}.", mdFile, fileline);
+            //            stream.Close();
+            //            _models = null;
+            //            throw new GeoMagException(string.Format("Corrupt record in file {0} on line {1}.", mdFile, fileline));
+            //            //return;
+            //        }
 
-                    if (inbuff.Substring(0, 3).Equals("   ", StringComparison.Ordinal)) /* If 1st 3 chars are spaces */
-                    {
-                        modelI++;                                           /* New model */
+            //        if (inbuff.Substring(0, 3).Equals("   ", StringComparison.Ordinal)) /* If 1st 3 chars are spaces */
+            //        {
+            //            modelI++;                                           /* New model */
 
-                        if (modelI > Constants.MaxModules)                  /* If too many headers */
-                        {
-                            //Console.WriteLine("Too many models in file {0} on line {1}.", mdFile, fileline);
-                            stream.Close();
-                            _models = null;
-                            throw new GeoMagException(string.Format("Too many models in file {0} on line {1}.", mdFile, fileline));
-                            //return;
-                        }
+            //            if (modelI > Constants.MaxModules)                  /* If too many headers */
+            //            {
+            //                //Console.WriteLine("Too many models in file {0} on line {1}.", mdFile, fileline);
+            //                stream.Close();
+            //                _models = null;
+            //                throw new GeoMagException(string.Format("Too many models in file {0} on line {1}.", mdFile, fileline));
+            //                //return;
+            //            }
 
-                        irecPos[modelI] = stream.BaseStream.Position;
-                        /* Get fields from buffer into individual vars.  */
-                        var lineParase = inbuff.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            //            irecPos[modelI] = stream.BaseStream.Position;
+            //            /* Get fields from buffer into individual vars.  */
+            //            var lineParase = inbuff.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        var currentModel = new MagModel();
+            //            var currentModel = new MagModel();
 
-                        for (Int32 itemIdx = 0; itemIdx < lineParase.Count(); itemIdx++)
-                        {
-                            double tempDbl;
-                            Int32 tempInt;
+            //            for (Int32 itemIdx = 0; itemIdx < lineParase.Count(); itemIdx++)
+            //            {
+            //                double tempDbl;
+            //                Int32 tempInt;
 
-                            switch (itemIdx)
-                            {
-                                //model (string)
-                                case 0:
-                                    currentModel.Model = lineParase[itemIdx];
-                                    break;
+            //                switch (itemIdx)
+            //                {
+            //                    //model (string)
+            //                    case 0:
+            //                        currentModel.Model = lineParase[itemIdx];
+            //                        break;
 
-                                //epoch (double)
-                                case 1:
-                                    double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                    currentModel.Epoch = tempDbl;
-                                    break;
+            //                    //epoch (double)
+            //                    case 1:
+            //                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+            //                        currentModel.Epoch = tempDbl;
+            //                        break;
 
-                                //max1 (int)
-                                case 2:
-                                    Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
-                                    currentModel.Max1 = tempInt;
-                                    break;
+            //                    //max1 (int)
+            //                    case 2:
+            //                        Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+            //                        currentModel.Max1 = tempInt;
+            //                        break;
 
-                                //max2 (int)
-                                case 3:
-                                    Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
-                                    currentModel.Max2 = tempInt;
-                                    break;
+            //                    //max2 (int)
+            //                    case 3:
+            //                        Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+            //                        currentModel.Max2 = tempInt;
+            //                        break;
 
-                                //max3 (int)
-                                case 4:
-                                    Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
-                                    currentModel.Max3 = tempInt;
-                                    break;
+            //                    //max3 (int)
+            //                    case 4:
+            //                        Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+            //                        currentModel.Max3 = tempInt;
+            //                        break;
 
-                                //yrmin (double)
-                                case 5:
-                                    double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                    currentModel.YearMin = tempDbl;
-                                    break;
+            //                    //yrmin (double)
+            //                    case 5:
+            //                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+            //                        currentModel.YearMin = tempDbl;
+            //                        break;
 
-                                //yrmax (double)
-                                case 6:
-                                    double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                    currentModel.YearMax = tempDbl;
-                                    break;
+            //                    //yrmax (double)
+            //                    case 6:
+            //                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+            //                        currentModel.YearMax = tempDbl;
+            //                        break;
 
-                                //altmin (double)
-                                case 7:
-                                    double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                    currentModel.AltitudeMin = tempDbl;
-                                    break;
+            //                    //altmin (double)
+            //                    case 7:
+            //                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+            //                        currentModel.AltitudeMin = tempDbl;
+            //                        break;
 
-                                //altmax (double)
-                                case 8:
-                                    double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                    currentModel.AltitudeMax = tempDbl;
-                                    break;
-                            }
-                        }
+            //                    //altmax (double)
+            //                    case 8:
+            //                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+            //                        currentModel.AltitudeMax = tempDbl;
+            //                        break;
+            //                }
+            //            }
 
-                        _models.AddModel(currentModel);
+            //            _models.AddModel(currentModel);
                         
-                    } /* If 1st 3 chars are spaces */
-                    else
-                    {
-                        /* Get fields from buffer into individual vars.  */
-                        var lineParase = inbuff.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            //        } /* If 1st 3 chars are spaces */
+            //        else
+            //        {
+            //            /* Get fields from buffer into individual vars.  */
+            //            var lineParase = inbuff.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        var coeffLine = new SphericalHarmonicCoefficient();
+            //            var coeffLine = new SphericalHarmonicCoefficient();
 
-                        for (Int32 itemIdx = 0; itemIdx < lineParase.Count(); itemIdx++)
-                        {
-                            double tempDbl;
-                            Int32 tempInt;
+            //            for (Int32 itemIdx = 0; itemIdx < lineParase.Count(); itemIdx++)
+            //            {
+            //                double tempDbl;
+            //                Int32 tempInt;
 
-                            switch (itemIdx)
-                            {
-                                //Degree(n) (int)
-                                case 0:
-                                    Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
-                                    coeffLine.Degree = tempInt;
-                                    break;
+            //                switch (itemIdx)
+            //                {
+            //                    //Degree(n) (int)
+            //                    case 0:
+            //                        Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+            //                        coeffLine.Degree = tempInt;
+            //                        break;
 
-                                //Order(m) (int)
-                                case 1:
-                                    Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
-                                    coeffLine.Order = tempInt;
-                                    break;
+            //                    //Order(m) (int)
+            //                    case 1:
+            //                        Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+            //                        coeffLine.Order = tempInt;
+            //                        break;
 
-                                //g1 (double)
-                                case 2:
-                                    double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                    coeffLine.G1 = tempDbl;
-                                    break;
+            //                    //g1 (double)
+            //                    case 2:
+            //                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+            //                        coeffLine.G1 = tempDbl;
+            //                        break;
 
-                                //h1 (double)
-                                case 3:
-                                    double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                    coeffLine.H1 = tempDbl;
-                                    break;
+            //                    //h1 (double)
+            //                    case 3:
+            //                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+            //                        coeffLine.H1 = tempDbl;
+            //                        break;
 
-                                //g2 (double)
-                                case 4:
-                                    double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                    coeffLine.G2 = tempDbl;
-                                    break;
+            //                    //g2 (double)
+            //                    case 4:
+            //                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+            //                        coeffLine.G2 = tempDbl;
+            //                        break;
 
-                                //h2 (double)
-                                case 5:
-                                    double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                    coeffLine.H2 = tempDbl;
-                                    break;
+            //                    //h2 (double)
+            //                    case 5:
+            //                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+            //                        coeffLine.H2 = tempDbl;
+            //                        break;
 
-                                //irat (string)
-                                case 6:
-                                    coeffLine.Model = lineParase[itemIdx];
-                                    break;
+            //                    //irat (string)
+            //                    case 6:
+            //                        coeffLine.Model = lineParase[itemIdx];
+            //                        break;
 
-                                //LineNum (int)
-                                case 7:
-                                    Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
-                                    coeffLine.LineNum = tempInt;
-                                    break;
-                            }
-                        }
+            //                    //LineNum (int)
+            //                    case 7:
+            //                        Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+            //                        coeffLine.LineNum = tempInt;
+            //                        break;
+            //                }
+            //            }
 
-                        var modelResult = _models.Models.Find(m => m.Model.Equals(coeffLine.Model, StringComparison.OrdinalIgnoreCase));
+            //            var modelResult = _models.Models.Find(m => m.Model.Equals(coeffLine.Model, StringComparison.OrdinalIgnoreCase));
 
-                        if(modelResult != null) modelResult.Coefficients.Add(coeffLine);
-                    }
+            //            if(modelResult != null) modelResult.Coefficients.Add(coeffLine);
+            //        }
 
                     
-                } /* While not end of model file */
-            }
+            //    } /* While not end of model file */
+            //}
         }
 
         public void MagneticCalculations(DateTime startDate, DateTime endDate, double latitude, double longitude, double altitude, double stepInterval = 0)
@@ -232,6 +243,8 @@ namespace GeoMagSharp
 
             if (incrament.Equals(0)) incrament = 1;
 
+            var avaliableModels = _models.GetModels;
+
             for (double dateIdx = 0; dateIdx < timespan.TotalDays; dateIdx += incrament)
             {
                 DateTime intervalDate = startDate.AddDays(dateIdx);
@@ -243,14 +256,14 @@ namespace GeoMagSharp
                 double[] ghb = null;
 
                 var modelToUse =
-                    _models.Models.Find(m => m.YearMin <= intervalDate.ToDecimal() && intervalDate.ToDecimal() <= m.YearMax);
+                    avaliableModels.Find(m => m.YearMin <= intervalDate.ToDecimal() && intervalDate.ToDecimal() <= m.YearMax);
 
                 if (modelToUse == null) throw new GeoMagException("No suitble model could be located for the given date(s).");
                 
 
                 if (modelToUse.Max2.Equals(0))
                 {
-                    var laterModelToUse = _models.Models[_models.Models.IndexOf(modelToUse) + 1];
+                    var laterModelToUse = avaliableModels[avaliableModels.IndexOf(modelToUse) + 1];
 
                     if (laterModelToUse == null) throw new GeoMagException("No suitble model could be located for the given date(s).");
                     
