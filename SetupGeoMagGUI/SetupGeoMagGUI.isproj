@@ -28,4 +28,14 @@
 		</TaggedOutputs> -->
 	</ItemGroup>
 	<Import Project="$(MSBuildExtensionsPath32)\InstallShield\2013Limited\InstallShield.targets"/>
+	<ItemGroup>
+		<ProjectReference Include="..\GeoMagGUI\GeoMagGUI.csproj">
+			<Name>GeoMagGUI</Name>
+			<Project>{F4F726CC-6FE9-4C5A-8C07-7D120EFD957E}</Project>
+		</ProjectReference>
+		<ProjectReference Include="..\GeoMagSharp\GeoMagSharp.csproj">
+			<Name>GeoMagSharp</Name>
+			<Project>{AE04340D-E45E-4BDC-942A-58BD0424CEFC}</Project>
+		</ProjectReference>
+	</ItemGroup>
 </Project>
