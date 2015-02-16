@@ -238,9 +238,8 @@ namespace GeoMagSharp
                 //if (!externalSH->coeffs) return BGGM_NOT_ENOUGH_MEM;
 
                 for (Int32 cIdx = 0; cIdx < numCoeff; cIdx++)
-                {
                     externalSH.coeffs.Add(Models[Emodel1].SharmCoeff[cIdx]);
-                }
+                
             }
 
             /* both E type models */

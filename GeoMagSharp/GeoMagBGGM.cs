@@ -52,6 +52,32 @@ namespace GeoMagSharp
 
         }
 
+        private static void GetField(Options CalculationOptions, coefficientsBGGM internalSH, coefficientsBGGM externalSH)
+        {
+            /* allocate storage for arrays */
+            Int32 kmx = (internalSH.MaxDegree + 1) * (internalSH.MaxDegree + 2) / 2;
+            Int32 isize = internalSH.MaxDegree * (internalSH.MaxDegree + 2);
+            Int32 esize = externalSH.MaxDegree * (externalSH.MaxDegree + 2);
+            Int32 nagh = isize + esize; 
+
+
+            /* set values of agh */
+            var agh = new List<double>();
+            for (Int32 aghIdx = 0; aghIdx < nagh; aghIdx++)
+            {
+                if (aghIdx < isize)
+                    agh.Add(internalSH.coeffs[aghIdx]);
+                else
+                {
+                    //j = aghIdx - isize;
+                    agh[aghIdx] = externalSH.coeffs[aghIdx - isize];
+                    /*    printf("COEFFS: i: %d j:%d coeff: %lf %lf\n",
+                    i,j,externalSH->coeffs[j], agh[i]); */
+                }
+            } /* end of setting agh */
+
+        }
+
 
     }
 }

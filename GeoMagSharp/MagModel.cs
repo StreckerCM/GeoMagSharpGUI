@@ -84,6 +84,14 @@ namespace GeoMagSharp
         public double StepInterval { get; set; }
         public bool SecularVariation { get; set; }
 
+        public double CoLatitude 
+        { 
+            get
+            {
+                return 90 - Latitude;
+            }
+        }
+
     }
 
     public class Point3D
