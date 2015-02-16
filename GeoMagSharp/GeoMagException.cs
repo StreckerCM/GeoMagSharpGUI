@@ -1,25 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Runtime.Serialization;
 
 namespace GeoMagSharp
-{
+{    
+    /// <summary>
+    /// Base class for all exceptions.
+    /// </summary>
+    [Serializable]
     class GeoMagException : Exception
     {
-        public GeoMagException()
-            : base() { }
+        /// <summary>
+        /// Creates a new instance of <seealso cref="GeoMagException"/>.
+        /// </summary>
+        protected GeoMagException()
+        {
+        }
 
-        public GeoMagException(string message)
-            : base(message) { }
+        /// <summary>
+        /// Creates a new instance of <seealso cref="GeoMagException"/>.
+        /// </summary>
+        /// <param name="message">error message</param>
+        protected GeoMagException(string message)
+            : base(message)
+        {
+        }
 
-        public GeoMagException(string format, params object[] args)
-            : base(string.Format(format, args)) { }
+        /// <summary>
+        /// Creates a new instance of <seealso cref="GeoMagException"/>.
+        /// </summary>
+        /// <param name="message">error message</param>
+        /// <param name="inner">inner exception</param>
+        protected GeoMagException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
 
-        public GeoMagException(string message, Exception innerException)
-            : base(message, innerException) { }
-
-        public GeoMagException(string format, Exception innerException, params object[] args)
-            : base(string.Format(format, args), innerException) { }
+        /// <summary>
+        /// Creates a new instance of <seealso cref="GeoMagException"/>.
+        /// </summary>
+        /// <param name="info">serialization information</param>
+        /// <param name="context">streaming context</param>
+        protected GeoMagException(
+            SerializationInfo info,
+            StreamingContext context)
+            : base(info, context)
+        {
+        }
     }
 }

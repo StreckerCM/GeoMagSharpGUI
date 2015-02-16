@@ -40,11 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExceptionsModelFile.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FileReader.cs" />
     <Compile Include="GeoMag.cs" />
+    <Compile Include="GeoMagBGGM.cs" />
     <Compile Include="GeoMagException.cs" />
     <Compile Include="MagModel.cs" />
+    <Compile Include="ModelBGGM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -35,8 +35,9 @@ namespace GeoMagSharp
                         // Console.WriteLine("Corrupt record in file {0} on line {1}.", mdFile, fileline);
                         stream.Close();
                         outModels = null;
-                        throw new GeoMagException(string.Format("Corrupt record in file {0} on line {1}.", modelFile, fileline));
+                        throw new GeoMagExceptionBadCharacter(string.Format("Corrupt record in file {0} on line {1}", modelFile, fileline));
                         //return;
+  
                     }
 
                     if (inbuff.Substring(0, 3).Equals("   ", StringComparison.Ordinal)) /* If 1st 3 chars are spaces */
@@ -48,7 +49,7 @@ namespace GeoMagSharp
                             //Console.WriteLine("Too many models in file {0} on line {1}.", mdFile, fileline);
                             stream.Close();
                             outModels = null;
-                            throw new GeoMagException(string.Format("Too many models in file {0} on line {1}.", modelFile, fileline));
+                            throw new GeoMagExceptionBadCharacter(string.Format("Too many models in file {0} on line {1}", modelFile, fileline));
                             //return;
                         }
 
@@ -198,81 +199,83 @@ namespace GeoMagSharp
             return outModels;
         }
 
-        public static MagModelSet ReadFileDAT(string modelFile)
+        public static ModelSetBGGM ReadFileDAT(string modelFile)
         {
-            var outModels = new MagModelSet();
+            var outModels = new ModelSetBGGM
+                {
+                    FileName = modelFile
+                };
+
+            double tempDbl = 0;
 
             using (var stream = new StreamReader(modelFile))
             {
                 string inbuff;
 
-                //Int32 fileline = 0;                            /* First line will be 1 */
-
                 Int32 modelI = -1;                             /* First model will be 0 */
-
-                var irecPos = new Int64[Constants.MaxModules];
-
-                MagModel currentModel = null;
 
                 Int32 lineNumber = 0;
 
                 while ((inbuff = stream.ReadLine()) != null)
                 {
-                    inbuff = inbuff.Trim();
-
                     lineNumber++;
 
-                    if (lineNumber.Equals(1))
-                    {
-                        //Min Year
-                        outModels.YearMin = Convert.ToDouble(inbuff);
-                    }
-                    else if (lineNumber.Equals(2))
-                    {
-                        //Max Year
-                        outModels.YearMax = Convert.ToDouble(inbuff);
-                    }
-                    else if (inbuff.IndexOf("N", StringComparison.OrdinalIgnoreCase).Equals(0))
-                    {
-                    }
-                    else if (inbuff.IndexOf("M", StringComparison.OrdinalIgnoreCase).Equals(0) ||
-                        inbuff.IndexOf("S", StringComparison.OrdinalIgnoreCase).Equals(0) ||
-                        inbuff.IndexOf("E", StringComparison.OrdinalIgnoreCase).Equals(0)) /* If 1st 3 chars are spaces */
-                    {
-                        modelI++;                                           /* New model */
+                    inbuff = inbuff.Trim();
 
-                        var modelMinYear = Convert.ToDouble(inbuff.Substring(inbuff.Length - 6));
+                    if(!string.IsNullOrEmpty(inbuff))
+                    {
+                        var lineParase = inbuff.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        if (currentModel != null)
+                        if (lineNumber.Equals(1))
                         {
-                            currentModel.YearMax = modelMinYear;
+                            //Min Year
+                            double.TryParse(inbuff, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
 
-                            outModels.AddModel(currentModel);
+                            outModels.MinDate = tempDbl;
                         }
+                        else if (lineNumber.Equals(2))
+                        {
+                            //Max Year
+                            double.TryParse(inbuff, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
 
-                        currentModel = new MagModel
+                            outModels.MaxDate = tempDbl;
+                        }
+                        else if (inbuff.IndexOf("N", StringComparison.OrdinalIgnoreCase).Equals(0))
                         {
-                            Model = inbuff,
-                            YearMin = modelMinYear
-                        };
-                    }
-                    else if (currentModel != null)
-                    {
-                        foreach(var coeff in inbuff.Split('\t'))
+                        }
+                        else if (inbuff.IndexOf("M", StringComparison.OrdinalIgnoreCase).Equals(0) ||
+                            inbuff.IndexOf("S", StringComparison.OrdinalIgnoreCase).Equals(0) ||
+                            inbuff.IndexOf("E", StringComparison.OrdinalIgnoreCase).Equals(0)) /* If 1st 3 chars are spaces */
                         {
+                            modelI++;                                           /* New model */
+
+                            double.TryParse(lineParase.Last(), NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+
+                            outModels.AddModel(new ModelBGGM
+                                {
+                                    Type = lineParase.First(),
+                                    Year = tempDbl
+                                });
 
                         }
+                        else if (modelI > -1)
+                        {
+                        
+                            /* read in more values for this era */
+
+                            foreach (var ptr in lineParase)
+                            {
+                         
+                                double.TryParse(ptr, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+
+                                outModels.AddCoefficients(modelI, tempDbl);
+                            }
+                        }
+
                     }
 
-                    
                 }
 
-                if (currentModel != null)
-                {
-                    currentModel.YearMax = outModels.YearMax;
-
-                    outModels.AddModel(currentModel);
-                }
             }
 
             return outModels;

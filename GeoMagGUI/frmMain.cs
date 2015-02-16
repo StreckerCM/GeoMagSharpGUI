@@ -145,7 +145,7 @@ namespace GeoMagGUI
                     return;
                 }
 
-                double latitude = Convert.ToDouble(textBoxLatitudeDecimal.Text);
+                //double latitude = Convert.ToDouble(textBoxLatitudeDecimal.Text);
 
                 if (string.IsNullOrEmpty(textBoxLongitudeDecimal.Text) || !Helper.IsNumeric(textBoxLongitudeDecimal.Text))
                 {
@@ -156,33 +156,44 @@ namespace GeoMagGUI
 
                 Cursor = Cursors.WaitCursor;
 
-                double longitude = Convert.ToDouble(textBoxLongitudeDecimal.Text);
+                var calcOptions = new Options
+                    {
+                        Latitude = Convert.ToDouble(textBoxLatitudeDecimal.Text),
+                        Longitude = Convert.ToDouble(textBoxLongitudeDecimal.Text),
+                        StartDate = dateTimePicker1.Value,
+                        StepInterval = Convert.ToDouble(numericUpDownStepSize.Value),
+                        Depth = altitude
+                    };
 
-                double stepInterval = Convert.ToDouble(numericUpDownStepSize.Value);
+                //double longitude = Convert.ToDouble(textBoxLongitudeDecimal.Text);
+
+                //double stepInterval = Convert.ToDouble(numericUpDownStepSize.Value);
 
                 dataGridViewResults.Rows.Clear();
 
                 GeoMag magCalc = null;
 
-                try
-                {
+                //try
+                //{
                     
                     magCalc = new GeoMag(modelFile);
 
-                    if (!toolStripMenuItemUseRangeOfDates.Checked)
-                    {
-                        magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker1.Value, latitude, longitude, altitude);
-                    }
-                    else
-                    {
-                        magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker2.Value, latitude, longitude, altitude, stepInterval);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error: Calculating Magnetics", MessageBoxButtons.OK, MessageBoxIcon.Error); 
-                    magCalc = null;
-                }
+                    if (!toolStripMenuItemUseRangeOfDates.Checked) calcOptions.EndDate = dateTimePicker2.Value;
+
+                    magCalc.MagneticCalculations(calcOptions);
+                    //{
+                    //    //magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker1.Value, latitude, longitude, altitude);
+                    //}
+                    //else
+                    //{
+                    //    //magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker2.Value, latitude, longitude, altitude, stepInterval);
+                    //}
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show(ex.Message, "Error: Calculating Magnetics", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                //    magCalc = null;
+                //}
 
                 if (magCalc == null)
                 {
@@ -193,7 +204,7 @@ namespace GeoMagGUI
                 if (magCalc.MagneticResults == null || !magCalc.MagneticResults.Any())
                 {
                     Cursor = Cursors.Default;
-                    MessageBox.Show("", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, "No Calculations were returned for the given parameters", "No Calculation", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 

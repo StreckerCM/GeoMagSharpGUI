@@ -5,6 +5,14 @@ using System.Text;
 
 namespace GeoMagSharp
 {
+    public enum CalculationModel
+    {
+        Unknown = 0,
+        IGRFWMM = 1,
+        BGGM = 2,
+        HDGM = 3
+    }
+
     public enum CoordinateSystem
     {
         Geodetic = 1,
@@ -52,6 +60,29 @@ namespace GeoMagSharp
 
         public const double KilometerToMeter = 1000;
         public const double KilometerToFeet = 3280.84;
+
+    }
+
+    public class Options
+    {
+        public Options()
+        {
+            Latitude = 0;
+            Longitude = 0;
+            Depth = 0;
+            StartDate = DateTime.MinValue;
+            EndDate = DateTime.MinValue;
+            StepInterval = 0;
+            SecularVariation = true;
+        }
+
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public double Depth { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public double StepInterval { get; set; }
+        public bool SecularVariation { get; set; }
 
     }
 
