@@ -379,4 +379,37 @@ namespace GeoMagSharp
         public Int32 MaxDegree { get; set; }
     }
 
+    public class vectorBGGM 
+    {
+        public vectorBGGM()
+        {
+            d = 0;
+            s = 0;
+            h = 0;
+            x = 0;
+            y = 0;
+            z = 0;
+            f = 0;
+        }
+
+        public vectorBGGM(vectorBGGM other)
+        {
+            d = other.d;
+            s = other.s;
+            h = other.h;
+            x = other.x;
+            y = other.y;
+            z = other.z;
+            f = other.f;
+        }
+
+        public double d { get; set; } /* declination (deg +ve east) */
+        public double s { get; set; } /* inclination (deg +ve down) */
+        public double h { get; set; } /* horizontal intensity (nT) */
+        public double x { get; set; } /* north intensity (NT) */
+        public double y { get; set; } /* east intensity (nT) */
+        public double z { get; set; } /* vertical intensity (nT) */
+        public double f { get; set; } /* total intensity (nT) */
+    };
+
 }

@@ -72,6 +72,7 @@ namespace GeoMagSharp
         //public void MagneticCalculations(DateTime startDate, DateTime endDate, double latitude, double longitude, double altitude, double stepInterval = 0)
         public void MagneticCalculations(Options CalculationOptions)
         {
+            MagneticResults = new List<MagneticCalculations>();
 
             switch (_CalculationModel)
             {
@@ -82,7 +83,7 @@ namespace GeoMagSharp
 
                 case CalculationModel.BGGM:
                     if (_ModelsBGGM == null) throw new GeoMagExceptionModelNotLoaded("Model Not Loaded");
-                    GeoMagBGGM.MagneticCalculations(_ModelsBGGM, CalculationOptions);
+                    MagneticResults.Add(GeoMagBGGM.MagneticCalculations(_ModelsBGGM, CalculationOptions));
                     break;
 
                 case CalculationModel.HDGM:

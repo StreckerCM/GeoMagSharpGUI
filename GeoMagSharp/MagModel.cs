@@ -309,6 +309,54 @@ namespace GeoMagSharp
             TotalField = new MagneticValue(other.TotalField);
         }
 
+        public MagneticCalculations(DateTime inDate, vectorBGGM fieldCalculations, vectorBGGM SecVarCalculations = null)
+        {
+            Date = inDate;
+
+            Declination = new MagneticValue
+                {
+                    Value = fieldCalculations.d,
+                    ChangePerYear = SecVarCalculations == null ? 0 : SecVarCalculations.d
+                };
+
+            Inclination = new MagneticValue
+                {
+                    Value = fieldCalculations.s,
+                    ChangePerYear = SecVarCalculations == null ? 0 : SecVarCalculations.s
+                };
+
+            HorizontalIntensity = new MagneticValue
+                {
+                    Value = fieldCalculations.h,
+                    ChangePerYear = SecVarCalculations == null ? 0 : SecVarCalculations.h
+                };
+
+            NorthComp = new MagneticValue
+                {
+                    Value = fieldCalculations.x,
+                    ChangePerYear = SecVarCalculations == null ? 0 : SecVarCalculations.x
+                };
+
+            EastComp = new MagneticValue
+                {
+                    Value = fieldCalculations.y,
+                    ChangePerYear = SecVarCalculations == null ? 0 : SecVarCalculations.y
+                };
+
+            VerticalComp = new MagneticValue
+                {
+                    Value = fieldCalculations.z,
+                    ChangePerYear = SecVarCalculations == null ? 0 : SecVarCalculations.z
+                };
+
+            TotalField = new MagneticValue
+                {
+                    Value = fieldCalculations.f,
+                    ChangePerYear = SecVarCalculations == null ? 0 : SecVarCalculations.f
+                };
+
+        }
+
         public DateTime Date { get; set; }
         public MagneticValue Declination { get; set; }
         public MagneticValue Inclination { get; set; }
