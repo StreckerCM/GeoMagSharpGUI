@@ -44,13 +44,17 @@ namespace GeoMagSharp
 
         public const double SN = 0.0001;
 
-        public const double ThreeHundredFeetFromNorthPole = 89.999;
-        public const double ThreeHundredFeetFromSouthPole = -89.999;
+        public const double ThreeHundredFeetFromNorthPole = 89.999D;
+        public const double ThreeHundredFeetFromSouthPole = -89.999D;
 
-        public const double EarthsRadiusInKm = 6371.2;
+        public const double EarthsRadiusInKm = 6371.2D;
+        public const double EarthsRadiusInKmBGGM = 6371.001D;
+        
 
         public const double A2WGS84 = 40680631.59;            /* WGS84 */
         public const double B2WGS84 = 40408299.98;            /* WGS84 */
+
+        public const double B2WGS84BGGM = 40408296.0;            /* WGS84 */
 
         public const double FeetToKilometer = 0.0003048;
         public const double FeetToMeter = 0.3048;
@@ -69,7 +73,8 @@ namespace GeoMagSharp
         {
             Latitude = 0;
             Longitude = 0;
-            Depth = 0;
+            //Depth = 0;
+            AltitudeInKm = 0;
             StartDate = DateTime.MinValue;
             EndDate = DateTime.MinValue;
             StepInterval = 0;
@@ -78,11 +83,28 @@ namespace GeoMagSharp
 
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public double Depth { get; set; }
+        //public double DepthInM { get; set; }
+        public double AltitudeInKm { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public double StepInterval { get; set; }
         public bool SecularVariation { get; set; }
+
+        public double DepthInM
+        {
+            get
+            {
+                return -(AltitudeInKm * 1000);
+            }
+        }
+        //public double AltitudeInKm
+        //{
+        //    get
+        //    {
+        //        return -(DepthInM * 0.001);
+        //    }
+        //}
+        /* convert depth in m to altitude in km and from geodetic to geocentric */
 
         public double CoLatitude 
         { 

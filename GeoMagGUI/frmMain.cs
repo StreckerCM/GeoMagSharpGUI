@@ -162,7 +162,7 @@ namespace GeoMagGUI
                         Longitude = Convert.ToDouble(textBoxLongitudeDecimal.Text),
                         StartDate = dateTimePicker1.Value,
                         StepInterval = Convert.ToDouble(numericUpDownStepSize.Value),
-                        Depth = altitude
+                        AltitudeInKm = altitude
                     };
 
                 //double longitude = Convert.ToDouble(textBoxLongitudeDecimal.Text);
@@ -173,27 +173,21 @@ namespace GeoMagGUI
 
                 GeoMag magCalc = null;
 
-                //try
-                //{
+                try
+                {
                     
                     magCalc = new GeoMag(modelFile);
 
-                    if (!toolStripMenuItemUseRangeOfDates.Checked) calcOptions.EndDate = dateTimePicker2.Value;
+                    if (toolStripMenuItemUseRangeOfDates.Checked) calcOptions.EndDate = dateTimePicker2.Value;
 
                     magCalc.MagneticCalculations(calcOptions);
-                    //{
-                    //    //magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker1.Value, latitude, longitude, altitude);
-                    //}
-                    //else
-                    //{
-                    //    //magCalc.MagneticCalculations(dateTimePicker1.Value, dateTimePicker2.Value, latitude, longitude, altitude, stepInterval);
-                    //}
-                //}
-                //catch (Exception ex)
-                //{
-                //    MessageBox.Show(ex.Message, "Error: Calculating Magnetics", MessageBoxButtons.OK, MessageBoxIcon.Error); 
-                //    magCalc = null;
-                //}
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error: Calculating Magnetics", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                    magCalc = null;
+                }
 
                 if (magCalc == null)
                 {
@@ -210,6 +204,8 @@ namespace GeoMagGUI
 
                 foreach (var mag in magCalc.MagneticResults)
                 {
+                    if (mag == null) continue;
+
                     dataGridViewResults.Rows.Add();
 
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Value = mag.Date.ToShortDateString();
@@ -642,6 +638,20 @@ namespace GeoMagGUI
         {
             // Start the watcher.
             Watcher.Start();
+        }
+
+        private void dateTimePicker_Validated(object sender, EventArgs e)
+        {
+            if (_processingEvents) return;
+
+            TimeSpan timespan = (dateTimePicker2.Value - dateTimePicker1.Value);
+
+            numericUpDownStepSize.Minimum = 1;
+            numericUpDownStepSize.Maximum = Convert.ToDecimal(timespan.Days);
+            numericUpDownStepSize.Value = Convert.ToDecimal(timespan.Days);
+            numericUpDownStepSize.Increment = Convert.ToDecimal(Math.Round(timespan.Days / 4D, 0));
+
+            if (numericUpDownStepSize.Increment < 1) numericUpDownStepSize.Increment = 1M;
         }
 
     }

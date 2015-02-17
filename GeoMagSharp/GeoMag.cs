@@ -50,7 +50,9 @@ namespace GeoMagSharp
                 {
                     case ".cof":
                         _ModelsIGRFWMM = FileReader.ReadFileCOF(modelFile);
-                        _CalculationModel = CalculationModel.IGRFWMM;
+                        _ModelsBGGM = FileReader.ReadFileCOF2(modelFile);
+                        //_CalculationModel = CalculationModel.IGRFWMM;
+                        _CalculationModel = CalculationModel.BGGM;
                         break;
 
                     case ".dat":
@@ -74,24 +76,26 @@ namespace GeoMagSharp
         {
             MagneticResults = new List<MagneticCalculations>();
 
-            switch (_CalculationModel)
-            {
-                case CalculationModel.IGRFWMM:
-                    if (_ModelsIGRFWMM == null) throw new GeoMagExceptionModelNotLoaded("Model Not Loaded");
-                    MagneticCalculationsIGRFWMM(_ModelsIGRFWMM, CalculationOptions);
-                    break;
+                switch (_CalculationModel)
+                {
+                    case CalculationModel.IGRFWMM:
+                        if (_ModelsIGRFWMM == null) throw new GeoMagExceptionModelNotLoaded("Model Not Loaded");
+                        MagneticCalculationsIGRFWMM(_ModelsIGRFWMM, CalculationOptions);
+                        break;
 
-                case CalculationModel.BGGM:
-                    if (_ModelsBGGM == null) throw new GeoMagExceptionModelNotLoaded("Model Not Loaded");
-                    MagneticResults.Add(GeoMagBGGM.MagneticCalculations(_ModelsBGGM, CalculationOptions));
-                    break;
+                    case CalculationModel.BGGM:
+                        if (_ModelsBGGM == null) throw new GeoMagExceptionModelNotLoaded("Model Not Loaded");
+                        var mCalc = GeoMagBGGM.MagneticCalculations(_ModelsBGGM, CalculationOptions);
+                        if(mCalc != null) MagneticResults.AddRange(mCalc);
+                        break;
 
-                case CalculationModel.HDGM:
-                    break;
+                    case CalculationModel.HDGM:
+                        break;
 
-                default:
-                    break;
-            }
+                    default:
+                        break;
+                }
+
         }
 
         //public void MagneticCalculationsIGRFWMM(DateTime startDate, DateTime endDate, double latitude, double longitude, double altitude, double stepInterval = 0)
@@ -144,8 +148,8 @@ namespace GeoMagSharp
                 }
 
 
-                var aPoint = (gha == null ? null : CalculateSphericalHarmonicField(CoordinateSystem.Geodetic, CalculationOptions.Latitude, CalculationOptions.Longitude, CalculationOptions.Depth, ghaNmax, gha));
-                var bPoint = (ghb == null ? null : CalculateSphericalHarmonicField(CoordinateSystem.Geodetic, CalculationOptions.Latitude, CalculationOptions.Longitude, CalculationOptions.Depth, ghbNmax, ghb));
+                var aPoint = (gha == null ? null : CalculateSphericalHarmonicField(CoordinateSystem.Geodetic, CalculationOptions.Latitude, CalculationOptions.Longitude, CalculationOptions.DepthInM, ghaNmax, gha));
+                var bPoint = (ghb == null ? null : CalculateSphericalHarmonicField(CoordinateSystem.Geodetic, CalculationOptions.Latitude, CalculationOptions.Longitude, CalculationOptions.DepthInM, ghbNmax, ghb));
 
                 double da = 0;
                 double fa = 0;

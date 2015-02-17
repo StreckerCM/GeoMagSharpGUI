@@ -1,4 +1,16 @@
-﻿using System;
+﻿/****************************************************************************
+ * File:            GeoMagBGGM.cs
+ * Description:     routines to handle bggm coefficients file and calculate
+ *                  field values
+ * Akowlegements:   Ported from the C++ model code created by the British Geological Survey
+ * Warnings:        This code can be used with the BGGM coeficent file.  The file is
+ *                  Commerically avalable from the British Geological Survey and is not
+ *                  distributed with this project.  Please contcact the BGS for more information
+ *                  http://www.geomag.bgs.ac.uk/data_service/directionaldrilling/bggm.html
+ * Current version: 2.21
+ *  ****************************************************************************/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,49 +19,126 @@ namespace GeoMagSharp
 {
     public static class GeoMagBGGM
     {
-        public static MagneticCalculations MagneticCalculations(ModelSetBGGM magModels, Options CalculationOptions) 
+        public static List<MagneticCalculations> MagneticCalculations(ModelSetBGGM magModels, Options CalculationOptions) 
         {
 
-            if (!magModels.IsDateInRange(CalculationOptions.StartDate)) 
-                throw new GeoMagExceptionOutOfRange(string.Format("The Date {0} is not in the file range of {1} to {2}",
-                    CalculationOptions.StartDate.ToDecimal(), magModels.MinDate, magModels.MaxDate));
+            if (!magModels.IsDateInRange(CalculationOptions.StartDate))
+            {
+                throw new GeoMagExceptionOutOfRange(string.Format("Error: the date {0} is out of range for this model{1}The valid date range for the is {2} to {3}",
+                    CalculationOptions.StartDate.ToShortDateString(), Environment.NewLine, magModels.MinDate.ToDateTime().ToShortDateString(), 
+                    magModels.MaxDate.ToDateTime().ToShortDateString()));
+
+            }
+
+            //Calculation is for a single point in time
+            if (CalculationOptions.EndDate.Equals(DateTime.MinValue)) CalculationOptions.EndDate = CalculationOptions.StartDate;
 
             if (!magModels.IsDateInRange(CalculationOptions.EndDate))
-                throw new GeoMagExceptionOutOfRange(string.Format("The Date {0} is not in the file range of {1} to {2}",
-                    CalculationOptions.EndDate.ToDecimal(), magModels.MinDate, magModels.MaxDate));
-
-            var internalSH = new coefficientsBGGM();
-
-            var externalSH = new coefficientsBGGM();
-
-            bool wasLoadSuccessful = false;
-            
-            try
             {
-                magModels.GetIntExt(CalculationOptions.StartDate.ToDecimal(), out internalSH, out externalSH);
-
-                wasLoadSuccessful = true;
-            }
-            catch(Exception ex)
-            {
-                wasLoadSuccessful = false;
+                throw new GeoMagExceptionOutOfRange(string.Format("Error: the date {0} is out of range for this model{1}The valid date range for the is {2} to {3}",
+                    CalculationOptions.EndDate.ToShortDateString(), Environment.NewLine, magModels.MinDate.ToDateTime().ToShortDateString(),
+                    magModels.MaxDate.ToDateTime().ToShortDateString()));
             }
 
-            if(!wasLoadSuccessful) return null;
+            TimeSpan timespan = (CalculationOptions.EndDate.Date - CalculationOptions.StartDate.Date);
 
-            return SpotCalculation(CalculationOptions, magModels, internalSH, externalSH);
+            double dayInc = CalculationOptions.StepInterval < 0 ? 1 : CalculationOptions.StepInterval;
+
+            var magResults = new List<MagneticCalculations>();
+
+            //for (double dateIdx = 0; dateIdx <= timespan.Days; dateIdx += dayInc)
+            double dateIdx = 0;
+
+            while(dateIdx <= timespan.Days)
+            {
+
+                var internalSH = new coefficientsBGGM();
+
+                var externalSH = new coefficientsBGGM();
+
+                DateTime intervalDate = CalculationOptions.StartDate.AddDays(dateIdx);
+
+                magModels.GetIntExt(intervalDate.ToDecimal(), out internalSH, out externalSH);
+
+                var magCalcDate = SpotCalculation(CalculationOptions, intervalDate, magModels, internalSH, externalSH, magModels.GetModels.First().EarthRadius);
+
+                if(magCalcDate != null) magResults.Add(magCalcDate);
+
+                dateIdx = ((dateIdx < timespan.Days) && ((dateIdx + dayInc) > timespan.Days))
+                            ? timespan.Days
+                            : dateIdx + dayInc;
+
+            }
+
+            return magResults;
 
         }
 
-        private static MagneticCalculations SpotCalculation(Options CalculationOptions, ModelSetBGGM magModels, coefficientsBGGM internalSH, coefficientsBGGM externalSH)
+        /*****************************************************************************
+         * SpotCalculation
+         *
+         * Description: calculate main field and field change at a 'spot' in time and
+         *              space
+         *
+         * Input parameters: options - details of the time and space to calculate for -
+         *                             not all fields in this structure are used - only
+         *                             the following are needed:
+         *                               options->secvarcalc - set to SECVARCALC to 
+         *                                                     calculate changes as well
+         *                                                     as main field
+         *                               options->lat - latitude in decimal degrees
+         *                               options->lon - longitude in decimal degrees
+         *                               options->depth - depth below MSL in metres
+         *                   mindate, maxdate, coeff, num_models - model as read in by
+         *                                                         get_coefficients()
+         *                   internalSH - internal coeffiecients for a particular date,
+         *                                as calculated by getintext()
+         *                   externalSH - external coeffiecients for a particular date,
+         *                                as calculated by getintext()
+         * Output parameters: geomagfield - the main field values
+         *                    fielddiffs - rate of change (only value if
+         *                                 options->secvarcalc is set to SECVARCALC)
+         * Returns: any of the error return codes from bggmc.h
+         *
+         * Comments:
+         *****************************************************************************/
+        private static MagneticCalculations SpotCalculation(Options CalculationOptions, DateTime dateOfCalc, ModelSetBGGM magModels, coefficientsBGGM internalSH, coefficientsBGGM externalSH, double earthRadius = Constants.EarthsRadiusInKm)
         {
             /* call procedure GETFIELD - values returned in geomagfield*/
-            var fieldCalculations = GetField(CalculationOptions, internalSH, externalSH, Constants.EarthsRadiusInKm);
+            var fieldCalculations = GetField(CalculationOptions, internalSH, externalSH, earthRadius);
 
             //if (status != BGGM_SUCCESS) return status;
 
+            vectorBGGM svCalculations = null;
+
             if (CalculationOptions.SecularVariation)
-                {
+            {
+                double date1 = -1;
+                double date2 = -1;
+
+                CalculateDatesForVariation(CalculationOptions.StartDate.ToDecimal(), magModels.MinDate, magModels.MaxDate, out date1, out date2);
+
+                /* get coefficients and field for date1 */
+                var SVintSH = new coefficientsBGGM();
+                var SVextSH = new coefficientsBGGM();
+
+                magModels.GetIntExt(date1, out SVintSH, out SVextSH);
+
+                var geomagfield1 = GetField(CalculationOptions, SVintSH, SVextSH, earthRadius);
+
+                /* get coefficients and field for date2 */
+
+                magModels.GetIntExt(date2, out SVintSH, out SVextSH);
+
+                var geomagfield2 = GetField(CalculationOptions, SVintSH, SVextSH, earthRadius);
+
+                /* calculate changes - difference between 
+                fields 1 & 2 returned in fielddiffs */
+
+                svCalculations = geomagfield2.Subtract(geomagfield1);
+
+                //var date1Cal2culations = getintext(date1, coeff, num_models, &SVintSH, &SVextSH);
+
                     //calculate_dates_for_variation(options->date, mindate, maxdate,
                     //                               &date1, &date2);
                     ///* get coefficients and field for date1 */
@@ -70,9 +159,9 @@ namespace GeoMagSharp
                     //fields 1 & 2 returned in fielddiffs */
                     //calculate_changes(&geomagfield1, &geomagfield2, fielddiffs);
 
-                } /* end of secular variation calc. for SPOT */
+            } /* end of secular variation calc. for SPOT */
 
-            return new MagneticCalculations(CalculationOptions.EndDate, fieldCalculations);
+            return new MagneticCalculations(dateOfCalc, fieldCalculations, svCalculations);
 
         }
 
@@ -105,41 +194,29 @@ namespace GeoMagSharp
                 }
                 else
                 {
-                    //j = aghIdx - isize;
                     agh[aghIdx] = externalSH.coeffs[aghIdx - isize];
-                    /*    printf("COEFFS: i: %d j:%d coeff: %lf %lf\n",
-                    i,j,externalSH->coeffs[j], agh[i]); */
                 }
             } /* end of setting agh */
 
-
-            /* convert depth in m to altitude in km and from geodetic to geocentric */
-            double altitude = -(CalculationOptions.Depth * 0.001);
+            double altitude = CalculationOptions.AltitudeInKm;
 
             double gcCoLat = 0;
-            double lon = 0;
             double earthRadius = 0;
             double cd = 0;
             double sd = 0;
 
             GeodeticToGeocentric(CalculationOptions.CoLatitude, altitude, out gcCoLat, out earthRadius, out cd, out sd);
-            /* printf("GDTOGC: %lf %lf %lf %lf\n", clt,r,cd,sd); */
             double one = gcCoLat;
 
             double slat = Math.Cos(one * Math.PI / 180);
+            double clat = Math.Sin(one * Math.PI / 180);
 
-            gcCoLat = Math.Sin(one * Math.PI / 180);
-            
-            one = lon;
+            one = CalculationOptions.Longitude;
             cl[0] = (Math.Cos(one * Math.PI / 180));
             sl[0] = (Math.Sin(one * Math.PI / 180));
 
             var geomagfield = new vectorBGGM();
-            //geomagfield->x = 0.0;
-            //geomagfield->y = 0.0;
-            //geomagfield->z = 0.0;
-    
-            
+
             /* printf("GETFIELD 2: %lf %lf %lf %lf\n", slat, clat, cl[0],sl[0]); */
 
             /****Computation of the spherical harmonics using
@@ -155,7 +232,7 @@ namespace GeoMagSharp
             double rri = ratio * ratio;
             double rre = ratio;
             p[0] = 1.0;
-            p[2] = gcCoLat;
+            p[2] = clat;
             q[0] = 0.0;
             q[2] = slat;
 
@@ -190,15 +267,15 @@ namespace GeoMagSharp
                     i = k - n - 1;
                     j = k - 2 * (n + 1) + 1;
                     p[k] = three * slat * p[i] - two * p[j];
-                    q[k] = three * (slat * q[i] - gcCoLat * p[i]) - two * q[j];
+                    q[k] = three * (slat * q[i] - clat * p[i]) - two * q[j];
                 }
                 else if (k != 2)
                 {
                     /** block 2 **/
                     one = Math.Sqrt(1.0 - 0.5 / fm);
                     j = k - n - 2;
-                    p[k] = one * gcCoLat * p[j];
-                    q[k] = one * (gcCoLat * q[j] + slat * p[j]);
+                    p[k] = one * clat * p[j];
+                    q[k] = one * (clat * q[j] + slat * p[j]);
                     sl[m] = sl[m - 1] * cl[0] + cl[m - 1] * sl[0];
                     cl[m] = cl[m - 1] * cl[0] - sl[m - 1] * sl[0];
                 }
@@ -229,10 +306,10 @@ namespace GeoMagSharp
                     zmn[le] = fn * p[k] * rre * cl[m];
                     xmn[le] = q[k] * rre * cl[m];
 
-                    if (gcCoLat != 0)
+                    if (clat != 0)
                     {
-                        ymn[li] = fm * p[k] / gcCoLat * rri * sl[m];
-                        ymn[le] = fm * p[k] / gcCoLat * rre * sl[m];
+                        ymn[li] = fm * p[k] / clat * rri * sl[m];
+                        ymn[le] = fm * p[k] / clat * rre * sl[m];
                     }
                     else
                     {
@@ -248,10 +325,10 @@ namespace GeoMagSharp
                     zmn[le] = fn * p[k] * rre * sl[m];
                     xmn[le] = q[k] * rre * sl[m];
 
-                    if (gcCoLat != 0)
+                    if (clat != 0)
                     {
-                        ymn[li] = -fm * p[k] / gcCoLat * rri * cl[m];
-                        ymn[le] = -fm * p[k] / gcCoLat * rre * cl[m];
+                        ymn[li] = -fm * p[k] / clat * rri * cl[m];
+                        ymn[le] = -fm * p[k] / clat * rre * cl[m];
                     }
                     else
                     {
@@ -265,14 +342,6 @@ namespace GeoMagSharp
 
                 } /* end of if statement for m<=0 */
 
-                /*    print_array(xmn,2*isize); */
-                /*    print_array(ymn,2*isize); */
-                /*    print_array(zmn,2*isize);  */
-
-
-                /*    print_array(q,105); */
-                /*     print_array(sl,30);  */
-                /*     print_array(cl,30);  */
 
             } /* end of for loop */
 
@@ -307,7 +376,7 @@ namespace GeoMagSharp
         }
 
         /*****************************************************************************
-         * gdtogc
+         * GeodeticToGeocentric
          *
          * Description: conversion of position from geodetic, i.e. spheroidal, 
          *              to geocentric, i.e. spherical, coordinates using WGS84
@@ -350,6 +419,39 @@ namespace GeoMagSharp
             st = st * cd + one * sd;
 
             gcCoLat = Math.Atan2(st, ct) * 180 / Math.PI;
+
+        }
+
+        /*****************************************************************************
+         * CalculateDatesForVariation
+         *
+         * Description: calculate the dates used in secular variation calculation
+         *
+         * Input parameters: date - user entered date (decimal)
+         *                   mindate - minimum allowable date
+         *                   maxdate - maximum allowable date
+         * Output parameters: date1 first date (decimal)
+         *                    date2 second date (decimal)
+         * Returns: none
+         *
+         * Comments:
+         *****************************************************************************/
+        static void CalculateDatesForVariation(double date, double mindate, double maxdate,
+                                                   out double date1, out double date2)
+        {
+            date1 = date - 0.5;
+            date2 = date + 0.5;
+
+            if (date1 < mindate)
+            {
+                date1 = mindate;
+                date2 = mindate + 1;
+            }
+            if (date2 > maxdate)
+            {
+                date1 = maxdate - 1;
+                date2 = maxdate;
+            }
 
         }
 

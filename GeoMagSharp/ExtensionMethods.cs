@@ -92,6 +92,98 @@ namespace GeoMagSharp
 
         }
 
+        public static DateTime ToDateTime(this double decDate)
+        {
+            double daysDbl = decDate - Math.Truncate(decDate);
+
+            Int32 yearInt = Convert.ToInt32(decDate - daysDbl);
+
+            double day = 0;
+
+            if (!DateTime.IsLeapYear(yearInt))
+            {
+                day = daysDbl * 365D;
+            }
+            else
+            {
+                if (daysDbl < 0.165D)
+                {
+                    day = daysDbl * 366D;
+                }
+                else
+                {
+                    day = daysDbl * 366D;
+                    day--;
+                }
+            }
+
+            Int32 dayInt = 0;
+            Int32 monthInt = -1;
+
+            if((day + 0.5) < 31)
+            {
+                monthInt = 1;
+                dayInt = Convert.ToInt32(day + 1);
+            }
+            else if((day - 0.5) < 59)
+            {
+                monthInt = 2;
+                dayInt = Convert.ToInt32(31 - day + 1);
+            }
+            else if ((day - 0.5) < 90)
+            {
+                monthInt = 3;
+                dayInt = Convert.ToInt32(59 - day + 1);
+            }
+            else if ((day - 0.5) < 120)
+            {
+                monthInt = 4;
+                dayInt = Convert.ToInt32(90 - day + 1);
+            }
+            else if ((day - 0.5) < 151)
+            {
+                monthInt = 5;
+                dayInt = Convert.ToInt32(120 - day + 1);
+            }
+            else if ((day - 0.5) < 181)
+            {
+                monthInt = 6;
+                dayInt = Convert.ToInt32(151 - day + 1);
+            }
+            else if ((day - 0.5) < 212)
+            {
+                monthInt = 7;
+                dayInt = Convert.ToInt32(181 - day + 1);
+            }
+            else if ((day - 0.5) < 243)
+            {
+                monthInt = 8;
+                dayInt = Convert.ToInt32(212 - day + 1);
+            }
+            else if ((day - 0.5) < 273)
+            {
+                monthInt = 9;
+                dayInt = Convert.ToInt32(243 - day + 1);
+            }
+            else if ((day - 0.5) < 304)
+            {
+                monthInt = 10;
+                dayInt = Convert.ToInt32(273 - day + 1);
+            }
+            else if ((day - 0.5) < 334)
+            {
+                monthInt = 11;
+                dayInt = Convert.ToInt32(304 - day + 1);
+            }
+            else
+            {
+                monthInt = 12;
+                dayInt = Convert.ToInt32(334 - day + 1);
+            }
+
+            return new DateTime(yearInt, monthInt, dayInt);
+        }
+
         public static double ToDegree(this double inRadians)
         {
             return inRadians * (180.0 / Math.PI);

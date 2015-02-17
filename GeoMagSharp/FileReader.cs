@@ -199,6 +199,121 @@ namespace GeoMagSharp
             return outModels;
         }
 
+        public static ModelSetBGGM ReadFileCOF2(string modelFile)
+        {
+            var outModels = new ModelSetBGGM
+            {
+                FileName = modelFile
+            };
+
+            double tempDbl = 0;
+
+            using (var stream = new StreamReader(modelFile))
+            {
+                string inbuff;
+
+                Int32 modelI = -1;                             /* First model will be 0 */
+
+                Int32 lineNumber = 0;
+
+                List<double> one = null;
+
+                List<double> two = null;
+
+                while ((inbuff = stream.ReadLine()) != null)
+                {
+                    lineNumber++;
+
+                    inbuff = inbuff.Trim();
+
+                    if (!string.IsNullOrEmpty(inbuff))
+                    {
+                        var lineParase = inbuff.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (inbuff.IndexOf("IGRF", StringComparison.OrdinalIgnoreCase).Equals(0) ||
+                            inbuff.IndexOf("DGRF", StringComparison.OrdinalIgnoreCase).Equals(0))
+                        {
+                            modelI++;                                           /* New model */
+
+                            one = new List<double>();
+
+                            two = new List<double>();
+
+                            double.TryParse(lineParase[1], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+
+                            outModels.AddModel(new ModelBGGM
+                            {
+                                Type = @"M",
+                                Year = tempDbl
+                            });
+                        }
+                        else if (modelI > -1)
+                        {
+                             
+                            for (Int32 itemIdx = 0; itemIdx < lineParase.Count(); itemIdx++)
+                            {
+                                switch (itemIdx)
+                                {
+                                    //Degree(n) (int)
+                                    case 0:
+                                        //Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+                                        //coeffLine.Degree = tempInt;
+                                        break;
+
+                                    //Order(m) (int)
+                                    case 1:
+                                        //Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+                                        //coeffLine.Order = tempInt;
+                                        break;
+
+                                    //g1 (double)
+                                    case 2:
+                                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                        if (!tempDbl.Equals(0)) outModels.AddCoefficients(modelI, tempDbl);
+                                        break;
+
+                                    //h1 (double)
+                                    case 3:
+                                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                        if (!tempDbl.Equals(0)) outModels.AddCoefficients(modelI, tempDbl);
+                                        break;
+
+                                    //g2 (double)
+                                    case 4:
+                                        //double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                        //coeffLine.G2 = tempDbl;
+                                        break;
+
+                                    //h2 (double)
+                                    case 5:
+                                        //double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                        //coeffLine.H2 = tempDbl;
+                                        break;
+
+                                    //irat (string)
+                                    case 6:
+                                        //coeffLine.Model = lineParase[itemIdx];
+                                        break;
+
+                                    //LineNum (int)
+                                    case 7:
+                                        //Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+                                        //coeffLine.LineNum = tempInt;
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            //Add 5 years to the start date of the final model
+            outModels.MaxDate += 5;
+
+            return outModels;
+        }
+
         public static ModelSetBGGM ReadFileDAT(string modelFile)
         {
             var outModels = new ModelSetBGGM

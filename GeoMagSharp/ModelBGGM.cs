@@ -34,6 +34,14 @@ namespace GeoMagSharp
             if (Models == null) Models = new List<ModelBGGM>();
 
             Models.Add(newModel);
+
+            //Update data range to include added model
+            if (MinDate.Equals(-1) ||
+                MinDate > newModel.Year) MinDate = newModel.Year;
+
+            if (MaxDate.Equals(-1) ||
+                MaxDate < newModel.Year) MaxDate = newModel.Year;
+
         }
 
         public void AddCoefficients(Int32 modelIdx, double coeff)
@@ -51,6 +59,24 @@ namespace GeoMagSharp
             return !((date.ToDecimal() < MinDate) || (date.ToDecimal() > MaxDate));
         }
 
+        /*****************************************************************************
+         * GetIntExt
+         *
+         * Description: given models of different types for different epochs,
+         *              determine internal and external coefficients for given date.
+         *
+         * Input parameters: date - decimal year
+         *                   coeff, nmodels - model details from get_coefficients()
+         * Output parameters: internalSH, externalSH - internal and external SH coeffs
+         *
+         * Returns SUCCESS for coefficients calculated OK, 
+         *         NOT_ENOUGH_MEM is there was an allocation error 
+         *
+         * Comments: Once you have used (and no longer need) the calculated 
+         *           coefficients, call freeintext() to release the memory
+         *           allocated to them
+         *
+         *****************************************************************************/
         public void GetIntExt(double date, out coefficientsBGGM internalSH, out coefficientsBGGM externalSH)
         {
             internalSH = new coefficientsBGGM();
@@ -59,27 +85,10 @@ namespace GeoMagSharp
 
             Int32 nModels = NumberOfModels -1;
 
-            //ModelBGGM coeff_set;
-
-            //int Mmodel1, Mmodel2;  /* M type model just before and after date */
-            //int Emodel1, Emodel2;  /* E type model just before and after date */
-            //int Smodel1=0, Smodel2=0;  /* S type model */
-            //double frs, fre;
-            ////int i,j; 
-            
-            //List<double> coeff1, coeff2;
-            //int num_coeff;
-            //int ncoeff1, ncoeff2;
-            //int maxdeg1, maxdeg2;
-            //double f1,f2,z;   /* date increments used in linear interpolation */
-            //double x,y;
-
             /* Find M model with epoch = date or just before */
             Int32 Mmodel1 = -1;
             for (Int32 mIdx = nModels; mIdx >= 0 && Mmodel1 == -1; mIdx--)
             {
-                //coeff_set = new ModelBGGM(Models[mIdx]);
-
                 if (Models[mIdx].Year <= date && Models[mIdx].Type.Equals("M", StringComparison.OrdinalIgnoreCase)) Mmodel1 = mIdx;
             }
 
@@ -87,8 +96,6 @@ namespace GeoMagSharp
             Int32 Emodel1 = -1;
             for (Int32 eIdx = nModels; eIdx >= 0 && Emodel1 == -1; eIdx--)
             {
-                //coeff_set = new ModelBGGM(Models[eIdx]);
-
                 if (Models[eIdx].Year <= date && Models[eIdx].Type.Equals("E", StringComparison.OrdinalIgnoreCase)) Emodel1 = eIdx;
             }
 
@@ -96,8 +103,6 @@ namespace GeoMagSharp
             Int32 Mmodel2 = -1;
             for (Int32 mIdx = Mmodel1; mIdx <= nModels && Mmodel2 == -1; mIdx++)
             {
-                //coeff_set = new ModelBGGM(Models[mIdx]);
-
                 if (Models[mIdx].Year > date && Models[mIdx].Type.Equals("M", StringComparison.OrdinalIgnoreCase)) Mmodel2 = mIdx;
             }
 
@@ -149,10 +154,6 @@ namespace GeoMagSharp
 
                 numCoeff = internalSH.MaxDegree * (internalSH.MaxDegree + 2);
 
-                //internalSH.coeffs = (double*)malloc(num_coeff * sizeof(double));
-
-                //if (!internalSH->coeffs) return BGGM_NOT_ENOUGH_MEM;
-
                 /* get dates */
                 double f1 = date - Models[Mmodel1].Year;
                 double f2 = Models[Mmodel2].Year - date;
@@ -180,10 +181,6 @@ namespace GeoMagSharp
 
                 internalSH.MaxDegree = Models[Mmodel1].Max_Degree;
                 numCoeff = internalSH.MaxDegree * (internalSH.MaxDegree + 2);
-
-                //internalSH->coeffs = (double*)malloc(num_coeff * sizeof(double));
-
-                //if (!internalSH->coeffs) return BGGM_NOT_ENOUGH_MEM;
 
                 for (Int32 cIdx = 0; cIdx < numCoeff; cIdx++)
                 {
@@ -234,9 +231,6 @@ namespace GeoMagSharp
 
                 numCoeff = externalSH.MaxDegree * (externalSH.MaxDegree + 2);
 
-                //externalSH->coeffs = (double*)malloc(num_coeff * sizeof(double));
-                //if (!externalSH->coeffs) return BGGM_NOT_ENOUGH_MEM;
-
                 for (Int32 cIdx = 0; cIdx < numCoeff; cIdx++)
                     externalSH.coeffs.Add(Models[Emodel1].SharmCoeff[cIdx]);
                 
@@ -261,8 +255,6 @@ namespace GeoMagSharp
                 
                 numCoeff = externalSH.MaxDegree * (externalSH.MaxDegree + 2);
 
-                //externalSH->coeffs = (double*)malloc(num_coeff * sizeof(double));
-                //if (!externalSH->coeffs) return BGGM_NOT_ENOUGH_MEM;
                 /* get dates */
                 double f1 = date - Models[Emodel1].Year;
                 double f2 = Models[Emodel2].Year - date;
@@ -352,7 +344,7 @@ namespace GeoMagSharp
 
                 double rmax = Math.Sqrt(j) - 1.0;
 
-                if (Math.IEEERemainder(rmax, 1.0) != 0) throw new GeoMagExceptionBadNumberOfCoefficients(string.Format("Number of Coefficients: {0} | Max Degree: {1}", Num_Coeff, rmax));
+                if (Math.IEEERemainder(rmax, 1.0) != 0) throw new GeoMagExceptionBadNumberOfCoefficients(string.Format("Error: Bad Number of Coefficients in file{0}Number of Coefficients: {1}{0}Max Degree: {2}", Environment.NewLine, Num_Coeff, rmax.ToString("F2")));
                 
                 return Convert.ToInt32(rmax);
             }
@@ -401,6 +393,20 @@ namespace GeoMagSharp
             y = other.y;
             z = other.z;
             f = other.f;
+        }
+
+        public vectorBGGM Subtract(vectorBGGM vector2)
+        {
+            return new vectorBGGM
+                {
+                    d = d - vector2.d,
+                    s = s - vector2.s,
+                    h = h - vector2.h,
+                    x = x - vector2.x,
+                    y = y - vector2.y,
+                    z = z - vector2.z,
+                    f = f - vector2.f
+                };
         }
 
         public double d { get; set; } /* declination (deg +ve east) */
