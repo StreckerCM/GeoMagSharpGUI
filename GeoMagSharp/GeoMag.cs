@@ -144,9 +144,11 @@ namespace GeoMagSharp
             tabStrRight.AppendFormat("{0}:\t{1}{2}", "longitude".PadLeft(15, ' '), _CalculationOptions.Longitude.ToString("F7"), Environment.NewLine);
             lineCount++;
 
-            tabStrRight.AppendFormat("{0}:\t{1}{2}", string.Format("Altitude ({0})", "km").PadLeft(15, ' '), _CalculationOptions.AltitudeInKm.ToString("F4"), Environment.NewLine);
-            lineCount++;
+            var elevation =  _CalculationOptions.GetElevation;
 
+            tabStrRight.AppendFormat("{0}:\t{1}\t{2}{3}", string.Format("{0}", elevation[0]).PadLeft(15, ' '), Convert.ToDouble(elevation[1]).ToString("F4"), elevation[2], Environment.NewLine);
+            lineCount++;
+             
             tabStrRight.AppendFormat("{0}", Environment.NewLine);
             lineCount++;
 

@@ -142,22 +142,28 @@ namespace GeoMagGUI
                     return;
                 }
 
-                double altitude = 0;
+                double altitude = Convert.ToDouble(textBoxAltitude.Text);
+                DistanceUnit altUnit = DistanceUnit.kilometer;
 
                 switch (comboBoxAltitudeUnits.SelectedItem.ToString().ToLower())
                 {
                     case "ft":
-                        altitude = Convert.ToDouble(textBoxAltitude.Text) * Constants.FeetToKilometer;
+                        altUnit = DistanceUnit.foot;
                         break;
 
                     case "m":
-                        altitude = Convert.ToDouble(textBoxAltitude.Text) * Constants.MeterToKilometer;
+                        altUnit = DistanceUnit.meter;
+                        break;
+
+                    case "mi":
+                        altUnit = DistanceUnit.mile;
                         break;
 
                     default:
-                        altitude = Convert.ToDouble(textBoxAltitude.Text);
+                        altUnit = DistanceUnit.kilometer;
                         break;
                 }
+
                 //if (comboBoxUnits.SelectedItem.ToString().Equals("ft", StringComparison.OrdinalIgnoreCase))
                 //{
                 //    altitude *= Constants.FeetToKilometer;
@@ -190,8 +196,9 @@ namespace GeoMagGUI
                         Longitude = Convert.ToDouble(textBoxLongitudeDecimal.Text),
                         StartDate = dateTimePicker1.Value,
                         StepInterval = Convert.ToDouble(numericUpDownStepSize.Value),
-                        AltitudeInKm = altitude
                     };
+
+                calcOptions.SetElevation(altitude, altUnit, _useAltitude);
 
                 dataGridViewResults.Rows.Clear();
 

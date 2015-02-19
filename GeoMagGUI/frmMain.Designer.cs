@@ -91,10 +91,9 @@
             this.dateTimePicker1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.dateTimePicker1, 2);
             this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePicker1.Location = new System.Drawing.Point(502, 14);
-            this.dateTimePicker1.Margin = new System.Windows.Forms.Padding(4);
+            this.dateTimePicker1.Location = new System.Drawing.Point(376, 11);
             this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(107, 22);
+            this.dateTimePicker1.Size = new System.Drawing.Size(81, 20);
             this.dateTimePicker1.TabIndex = 1;
             this.dateTimePicker1.Validated += new System.EventHandler(this.dateTimePicker_Validated);
             // 
@@ -102,8 +101,7 @@
             // 
             this.numericUpDownStepSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.numericUpDownStepSize, 2);
-            this.numericUpDownStepSize.Location = new System.Drawing.Point(957, 14);
-            this.numericUpDownStepSize.Margin = new System.Windows.Forms.Padding(4);
+            this.numericUpDownStepSize.Location = new System.Drawing.Point(717, 11);
             this.numericUpDownStepSize.Maximum = new decimal(new int[] {
             1,
             0,
@@ -115,7 +113,7 @@
             0,
             0});
             this.numericUpDownStepSize.Name = "numericUpDownStepSize";
-            this.numericUpDownStepSize.Size = new System.Drawing.Size(76, 22);
+            this.numericUpDownStepSize.Size = new System.Drawing.Size(57, 20);
             this.numericUpDownStepSize.TabIndex = 3;
             this.numericUpDownStepSize.Value = new decimal(new int[] {
             1,
@@ -128,10 +126,9 @@
             // 
             this.labelStepSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.labelStepSize.AutoSize = true;
-            this.labelStepSize.Location = new System.Drawing.Point(873, 16);
-            this.labelStepSize.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelStepSize.Location = new System.Drawing.Point(654, 13);
             this.labelStepSize.Name = "labelStepSize";
-            this.labelStepSize.Size = new System.Drawing.Size(76, 17);
+            this.labelStepSize.Size = new System.Drawing.Size(57, 13);
             this.labelStepSize.TabIndex = 9;
             this.labelStepSize.Text = "Step Size:";
             this.labelStepSize.Visible = false;
@@ -140,10 +137,9 @@
             // 
             this.labelDateTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.labelDateTo.AutoSize = true;
-            this.labelDateTo.Location = new System.Drawing.Point(617, 16);
-            this.labelDateTo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDateTo.Location = new System.Drawing.Point(463, 13);
             this.labelDateTo.Name = "labelDateTo";
-            this.labelDateTo.Size = new System.Drawing.Size(37, 17);
+            this.labelDateTo.Size = new System.Drawing.Size(28, 13);
             this.labelDateTo.TabIndex = 7;
             this.labelDateTo.Text = "To:";
             this.labelDateTo.Visible = false;
@@ -152,10 +148,9 @@
             // 
             this.labelDateFrom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.labelDateFrom.AutoSize = true;
-            this.labelDateFrom.Location = new System.Drawing.Point(417, 16);
-            this.labelDateFrom.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelDateFrom.Location = new System.Drawing.Point(312, 13);
             this.labelDateFrom.Name = "labelDateFrom";
-            this.labelDateFrom.Size = new System.Drawing.Size(77, 17);
+            this.labelDateFrom.Size = new System.Drawing.Size(58, 13);
             this.labelDateFrom.TabIndex = 5;
             this.labelDateFrom.Text = "From:";
             // 
@@ -164,10 +159,9 @@
             this.dateTimePicker2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.dateTimePicker2, 2);
             this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePicker2.Location = new System.Drawing.Point(662, 14);
-            this.dateTimePicker2.Margin = new System.Windows.Forms.Padding(4);
+            this.dateTimePicker2.Location = new System.Drawing.Point(497, 11);
             this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(113, 22);
+            this.dateTimePicker2.Size = new System.Drawing.Size(83, 20);
             this.dateTimePicker2.TabIndex = 2;
             this.dateTimePicker2.Visible = false;
             this.dateTimePicker2.Validated += new System.EventHandler(this.dateTimePicker_Validated);
@@ -179,20 +173,18 @@
             this.comboBoxModels.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.tableLayoutPanel1.SetColumnSpan(this.comboBoxModels, 4);
             this.comboBoxModels.FormattingEnabled = true;
-            this.comboBoxModels.Location = new System.Drawing.Point(94, 14);
-            this.comboBoxModels.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxModels.Location = new System.Drawing.Point(71, 11);
             this.comboBoxModels.Name = "comboBoxModels";
-            this.comboBoxModels.Size = new System.Drawing.Size(305, 24);
+            this.comboBoxModels.Size = new System.Drawing.Size(227, 21);
             this.comboBoxModels.TabIndex = 0;
             // 
             // textBoxAltitude
             // 
             this.textBoxAltitude.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.textBoxAltitude, 2);
-            this.textBoxAltitude.Location = new System.Drawing.Point(957, 54);
-            this.textBoxAltitude.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxAltitude.Location = new System.Drawing.Point(717, 43);
             this.textBoxAltitude.Name = "textBoxAltitude";
-            this.textBoxAltitude.Size = new System.Drawing.Size(76, 22);
+            this.textBoxAltitude.Size = new System.Drawing.Size(57, 20);
             this.textBoxAltitude.TabIndex = 15;
             this.textBoxAltitude.Tag = "";
             this.textBoxAltitude.Text = "0";
@@ -203,10 +195,9 @@
             // 
             this.label_Elevation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label_Elevation.AutoSize = true;
-            this.label_Elevation.Location = new System.Drawing.Point(873, 56);
-            this.label_Elevation.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label_Elevation.Location = new System.Drawing.Point(654, 45);
             this.label_Elevation.Name = "label_Elevation";
-            this.label_Elevation.Size = new System.Drawing.Size(76, 17);
+            this.label_Elevation.Size = new System.Drawing.Size(57, 13);
             this.label_Elevation.TabIndex = 16;
             this.label_Elevation.Text = "Altitude:";
             // 
@@ -214,10 +205,9 @@
             // 
             this.buttonCalculate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.buttonCalculate, 19);
-            this.buttonCalculate.Location = new System.Drawing.Point(14, 124);
-            this.buttonCalculate.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonCalculate.Location = new System.Drawing.Point(11, 99);
             this.buttonCalculate.Name = "buttonCalculate";
-            this.buttonCalculate.Size = new System.Drawing.Size(1084, 32);
+            this.buttonCalculate.Size = new System.Drawing.Size(812, 26);
             this.buttonCalculate.TabIndex = 18;
             this.buttonCalculate.Text = "Calculate";
             this.buttonCalculate.UseVisualStyleBackColor = true;
@@ -227,20 +217,18 @@
             // 
             this.label85.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label85.AutoSize = true;
-            this.label85.Location = new System.Drawing.Point(417, 56);
-            this.label85.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label85.Location = new System.Drawing.Point(312, 45);
             this.label85.Name = "label85";
-            this.label85.Size = new System.Drawing.Size(77, 17);
+            this.label85.Size = new System.Drawing.Size(58, 13);
             this.label85.TabIndex = 14;
             this.label85.Text = "Longitude:";
             // 
             // TextBoxLongDeg
             // 
             this.TextBoxLongDeg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.TextBoxLongDeg.Location = new System.Drawing.Point(502, 84);
-            this.TextBoxLongDeg.Margin = new System.Windows.Forms.Padding(4);
+            this.TextBoxLongDeg.Location = new System.Drawing.Point(376, 67);
             this.TextBoxLongDeg.Name = "TextBoxLongDeg";
-            this.TextBoxLongDeg.Size = new System.Drawing.Size(57, 22);
+            this.TextBoxLongDeg.Size = new System.Drawing.Size(43, 20);
             this.TextBoxLongDeg.TabIndex = 10;
             this.TextBoxLongDeg.Tag = "";
             this.TextBoxLongDeg.Text = "0";
@@ -250,10 +238,9 @@
             // TextBoxLatSec
             // 
             this.TextBoxLatSec.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.TextBoxLatSec.Location = new System.Drawing.Point(218, 84);
-            this.TextBoxLatSec.Margin = new System.Windows.Forms.Padding(4);
+            this.TextBoxLatSec.Location = new System.Drawing.Point(165, 67);
             this.TextBoxLatSec.Name = "TextBoxLatSec";
-            this.TextBoxLatSec.Size = new System.Drawing.Size(111, 22);
+            this.TextBoxLatSec.Size = new System.Drawing.Size(81, 20);
             this.TextBoxLatSec.TabIndex = 7;
             this.TextBoxLatSec.Tag = "";
             this.TextBoxLatSec.Text = "0.0000";
@@ -263,10 +250,9 @@
             // TextBoxLongMin
             // 
             this.TextBoxLongMin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.TextBoxLongMin.Location = new System.Drawing.Point(567, 84);
-            this.TextBoxLongMin.Margin = new System.Windows.Forms.Padding(4);
+            this.TextBoxLongMin.Location = new System.Drawing.Point(425, 67);
             this.TextBoxLongMin.Name = "TextBoxLongMin";
-            this.TextBoxLongMin.Size = new System.Drawing.Size(42, 22);
+            this.TextBoxLongMin.Size = new System.Drawing.Size(32, 20);
             this.TextBoxLongMin.TabIndex = 11;
             this.TextBoxLongMin.Tag = "";
             this.TextBoxLongMin.Text = "0";
@@ -276,10 +262,9 @@
             // TextBoxLatMin
             // 
             this.TextBoxLatMin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.TextBoxLatMin.Location = new System.Drawing.Point(168, 84);
-            this.TextBoxLatMin.Margin = new System.Windows.Forms.Padding(4);
+            this.TextBoxLatMin.Location = new System.Drawing.Point(127, 67);
             this.TextBoxLatMin.Name = "TextBoxLatMin";
-            this.TextBoxLatMin.Size = new System.Drawing.Size(42, 22);
+            this.TextBoxLatMin.Size = new System.Drawing.Size(32, 20);
             this.TextBoxLatMin.TabIndex = 6;
             this.TextBoxLatMin.Tag = "";
             this.TextBoxLatMin.Text = "0";
@@ -290,10 +275,9 @@
             // 
             this.TextBoxLongSec.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.TextBoxLongSec, 2);
-            this.TextBoxLongSec.Location = new System.Drawing.Point(617, 84);
-            this.TextBoxLongSec.Margin = new System.Windows.Forms.Padding(4);
+            this.TextBoxLongSec.Location = new System.Drawing.Point(463, 67);
             this.TextBoxLongSec.Name = "TextBoxLongSec";
-            this.TextBoxLongSec.Size = new System.Drawing.Size(88, 22);
+            this.TextBoxLongSec.Size = new System.Drawing.Size(65, 20);
             this.TextBoxLongSec.TabIndex = 12;
             this.TextBoxLongSec.Tag = "";
             this.TextBoxLongSec.Text = "0.0000";
@@ -303,10 +287,9 @@
             // TextBoxLatDeg
             // 
             this.TextBoxLatDeg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.TextBoxLatDeg.Location = new System.Drawing.Point(94, 84);
-            this.TextBoxLatDeg.Margin = new System.Windows.Forms.Padding(4);
+            this.TextBoxLatDeg.Location = new System.Drawing.Point(71, 67);
             this.TextBoxLatDeg.Name = "TextBoxLatDeg";
-            this.TextBoxLatDeg.Size = new System.Drawing.Size(66, 22);
+            this.TextBoxLatDeg.Size = new System.Drawing.Size(50, 20);
             this.TextBoxLatDeg.TabIndex = 5;
             this.TextBoxLatDeg.Tag = "";
             this.TextBoxLatDeg.Text = "0";
@@ -317,10 +300,9 @@
             // 
             this.label80.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label80.AutoSize = true;
-            this.label80.Location = new System.Drawing.Point(14, 56);
-            this.label80.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label80.Location = new System.Drawing.Point(11, 45);
             this.label80.Name = "label80";
-            this.label80.Size = new System.Drawing.Size(72, 17);
+            this.label80.Size = new System.Drawing.Size(54, 13);
             this.label80.TabIndex = 12;
             this.label80.Text = "Latitude:";
             // 
@@ -328,10 +310,9 @@
             // 
             this.textBoxLatitudeDecimal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.textBoxLatitudeDecimal, 4);
-            this.textBoxLatitudeDecimal.Location = new System.Drawing.Point(94, 54);
-            this.textBoxLatitudeDecimal.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxLatitudeDecimal.Location = new System.Drawing.Point(71, 43);
             this.textBoxLatitudeDecimal.Name = "textBoxLatitudeDecimal";
-            this.textBoxLatitudeDecimal.Size = new System.Drawing.Size(305, 22);
+            this.textBoxLatitudeDecimal.Size = new System.Drawing.Size(227, 20);
             this.textBoxLatitudeDecimal.TabIndex = 4;
             this.textBoxLatitudeDecimal.Tag = "";
             this.textBoxLatitudeDecimal.Text = "0";
@@ -343,10 +324,9 @@
             // 
             this.textBoxLongitudeDecimal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.textBoxLongitudeDecimal, 5);
-            this.textBoxLongitudeDecimal.Location = new System.Drawing.Point(502, 54);
-            this.textBoxLongitudeDecimal.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxLongitudeDecimal.Location = new System.Drawing.Point(376, 43);
             this.textBoxLongitudeDecimal.Name = "textBoxLongitudeDecimal";
-            this.textBoxLongitudeDecimal.Size = new System.Drawing.Size(273, 22);
+            this.textBoxLongitudeDecimal.Size = new System.Drawing.Size(204, 20);
             this.textBoxLongitudeDecimal.TabIndex = 9;
             this.textBoxLongitudeDecimal.Tag = "";
             this.textBoxLongitudeDecimal.Text = "0";
@@ -361,8 +341,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1125, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(844, 24);
             this.menuStrip1.TabIndex = 20;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -374,33 +353,33 @@
             this.saveToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // loadModelToolStripMenuItem
             // 
             this.loadModelToolStripMenuItem.Name = "loadModelToolStripMenuItem";
-            this.loadModelToolStripMenuItem.Size = new System.Drawing.Size(158, 24);
+            this.loadModelToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.loadModelToolStripMenuItem.Text = "Load Model";
             this.loadModelToolStripMenuItem.Click += new System.EventHandler(this.loadModelToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(155, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(134, 6);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(158, 24);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(158, 24);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -411,26 +390,26 @@
             this.toolStripSeparator2,
             this.toolStripMenuItemUseRangeOfDates});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(74, 24);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.settingsToolStripMenuItem.Text = "Settings";
             // 
             // preferencesToolStripMenuItem
             // 
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(246, 24);
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.preferencesToolStripMenuItem.Text = "Preferences...";
             this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(243, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(203, 6);
             // 
             // toolStripMenuItemUseRangeOfDates
             // 
             this.toolStripMenuItemUseRangeOfDates.CheckOnClick = true;
             this.toolStripMenuItemUseRangeOfDates.Name = "toolStripMenuItemUseRangeOfDates";
-            this.toolStripMenuItemUseRangeOfDates.Size = new System.Drawing.Size(246, 24);
+            this.toolStripMenuItemUseRangeOfDates.Size = new System.Drawing.Size(206, 22);
             this.toolStripMenuItemUseRangeOfDates.Text = "Calculate For Date Range";
             this.toolStripMenuItemUseRangeOfDates.CheckedChanged += new System.EventHandler(this.toolStripMenuItemUseRangeOfDates_CheckedChanged);
             // 
@@ -439,13 +418,13 @@
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutGeoMagToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(53, 24);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutGeoMagToolStripMenuItem
             // 
             this.aboutGeoMagToolStripMenuItem.Name = "aboutGeoMagToolStripMenuItem";
-            this.aboutGeoMagToolStripMenuItem.Size = new System.Drawing.Size(128, 24);
+            this.aboutGeoMagToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.aboutGeoMagToolStripMenuItem.Text = "About...";
             this.aboutGeoMagToolStripMenuItem.Click += new System.EventHandler(this.aboutGeoMagToolStripMenuItem_Click);
             // 
@@ -473,11 +452,10 @@
             this.ColumnVerticalComp,
             this.ColumnTotalField});
             this.tableLayoutPanel1.SetColumnSpan(this.dataGridViewResults, 19);
-            this.dataGridViewResults.Location = new System.Drawing.Point(14, 174);
-            this.dataGridViewResults.Margin = new System.Windows.Forms.Padding(4);
+            this.dataGridViewResults.Location = new System.Drawing.Point(11, 139);
             this.dataGridViewResults.Name = "dataGridViewResults";
             this.tableLayoutPanel1.SetRowSpan(this.dataGridViewResults, 2);
-            this.dataGridViewResults.Size = new System.Drawing.Size(1084, 137);
+            this.dataGridViewResults.Size = new System.Drawing.Size(812, 117);
             this.dataGridViewResults.TabIndex = 19;
             // 
             // ColumnDate
@@ -487,7 +465,7 @@
             this.ColumnDate.HeaderText = "Date";
             this.ColumnDate.Name = "ColumnDate";
             this.ColumnDate.ReadOnly = true;
-            this.ColumnDate.Width = 63;
+            this.ColumnDate.Width = 55;
             // 
             // ColumnDeclination
             // 
@@ -495,7 +473,7 @@
             this.ColumnDeclination.HeaderText = "Declination (+E/-W)";
             this.ColumnDeclination.Name = "ColumnDeclination";
             this.ColumnDeclination.ReadOnly = true;
-            this.ColumnDeclination.Width = 142;
+            this.ColumnDeclination.Width = 115;
             // 
             // ColumnInclination
             // 
@@ -503,7 +481,7 @@
             this.ColumnInclination.HeaderText = "Inclination (+D/-U)";
             this.ColumnInclination.Name = "ColumnInclination";
             this.ColumnInclination.ReadOnly = true;
-            this.ColumnInclination.Width = 134;
+            this.ColumnInclination.Width = 109;
             // 
             // ColumnHorizontalIntensity
             // 
@@ -511,7 +489,7 @@
             this.ColumnHorizontalIntensity.HeaderText = "Horizontal Intensity";
             this.ColumnHorizontalIntensity.Name = "ColumnHorizontalIntensity";
             this.ColumnHorizontalIntensity.ReadOnly = true;
-            this.ColumnHorizontalIntensity.Width = 140;
+            this.ColumnHorizontalIntensity.Width = 111;
             // 
             // ColumnNorthComp
             // 
@@ -519,7 +497,7 @@
             this.ColumnNorthComp.HeaderText = "North Comp (+N/-S)";
             this.ColumnNorthComp.Name = "ColumnNorthComp";
             this.ColumnNorthComp.ReadOnly = true;
-            this.ColumnNorthComp.Width = 144;
+            this.ColumnNorthComp.Width = 115;
             // 
             // ColumnEastComp
             // 
@@ -527,7 +505,7 @@
             this.ColumnEastComp.HeaderText = "East Comp (+E/-W)";
             this.ColumnEastComp.Name = "ColumnEastComp";
             this.ColumnEastComp.ReadOnly = true;
-            this.ColumnEastComp.Width = 141;
+            this.ColumnEastComp.Width = 114;
             // 
             // ColumnVerticalComp
             // 
@@ -535,7 +513,7 @@
             this.ColumnVerticalComp.HeaderText = "Vertical Comp (+D/-U)";
             this.ColumnVerticalComp.Name = "ColumnVerticalComp";
             this.ColumnVerticalComp.ReadOnly = true;
-            this.ColumnVerticalComp.Width = 156;
+            this.ColumnVerticalComp.Width = 124;
             // 
             // ColumnTotalField
             // 
@@ -543,32 +521,32 @@
             this.ColumnTotalField.HeaderText = "Total Field";
             this.ColumnTotalField.Name = "ColumnTotalField";
             this.ColumnTotalField.ReadOnly = true;
-            this.ColumnTotalField.Width = 91;
+            this.ColumnTotalField.Width = 75;
             // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 21;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 74F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 38F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 85F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 65F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 52F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 64F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 44F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 84F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 9F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 75F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 65F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 22F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 52F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 33F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 63F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 7F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 17F));
             this.tableLayoutPanel1.Controls.Add(this.textBoxLatitudeDecimal, 2, 3);
             this.tableLayoutPanel1.Controls.Add(this.comboBoxModels, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.label3, 1, 1);
@@ -597,51 +575,49 @@
             this.tableLayoutPanel1.Controls.Add(this.ComboBoxLongDir, 12, 4);
             this.tableLayoutPanel1.Controls.Add(this.ComboBoxLatDir, 5, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 28);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 11;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1125, 325);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(844, 267);
             this.tableLayoutPanel1.TabIndex = 23;
             // 
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(14, 16);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(11, 13);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(72, 17);
+            this.label3.Size = new System.Drawing.Size(54, 13);
             this.label3.TabIndex = 11;
             this.label3.Text = "Model:";
             // 
             // buttonMyLocation
             // 
-            this.buttonMyLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.buttonMyLocation, 2);
             this.buttonMyLocation.Image = ((System.Drawing.Image)(resources.GetObject("buttonMyLocation.Image")));
-            this.buttonMyLocation.Location = new System.Drawing.Point(793, 54);
-            this.buttonMyLocation.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonMyLocation.Location = new System.Drawing.Point(594, 43);
             this.buttonMyLocation.Name = "buttonMyLocation";
-            this.buttonMyLocation.Size = new System.Drawing.Size(28, 22);
+            this.tableLayoutPanel1.SetRowSpan(this.buttonMyLocation, 2);
+            this.buttonMyLocation.Size = new System.Drawing.Size(26, 25);
             this.buttonMyLocation.TabIndex = 14;
             this.buttonMyLocation.UseVisualStyleBackColor = true;
             this.buttonMyLocation.Click += new System.EventHandler(this.buttonMyLocation_Click);
@@ -650,10 +626,9 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(1041, 16);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(780, 13);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(57, 17);
+            this.label4.Size = new System.Drawing.Size(43, 13);
             this.label4.TabIndex = 23;
             this.label4.Text = "Days";
             this.label4.Visible = false;
@@ -667,9 +642,10 @@
             "km",
             "m",
             "ft"});
-            this.comboBoxAltitudeUnits.Location = new System.Drawing.Point(1040, 53);
+            this.comboBoxAltitudeUnits.Location = new System.Drawing.Point(779, 42);
+            this.comboBoxAltitudeUnits.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.comboBoxAltitudeUnits.Name = "comboBoxAltitudeUnits";
-            this.comboBoxAltitudeUnits.Size = new System.Drawing.Size(59, 24);
+            this.comboBoxAltitudeUnits.Size = new System.Drawing.Size(45, 21);
             this.comboBoxAltitudeUnits.TabIndex = 16;
             // 
             // ComboBoxLongDir
@@ -680,9 +656,10 @@
             this.ComboBoxLongDir.Items.AddRange(new object[] {
             "E",
             "W"});
-            this.ComboBoxLongDir.Location = new System.Drawing.Point(712, 83);
+            this.ComboBoxLongDir.Location = new System.Drawing.Point(533, 66);
+            this.ComboBoxLongDir.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ComboBoxLongDir.Name = "ComboBoxLongDir";
-            this.ComboBoxLongDir.Size = new System.Drawing.Size(64, 24);
+            this.ComboBoxLongDir.Size = new System.Drawing.Size(48, 21);
             this.ComboBoxLongDir.TabIndex = 13;
             this.ComboBoxLongDir.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLongitude_Validating);
             this.ComboBoxLongDir.Validated += new System.EventHandler(this.TextBoxLongitude_Validated);
@@ -695,24 +672,24 @@
             this.ComboBoxLatDir.Items.AddRange(new object[] {
             "N",
             "S"});
-            this.ComboBoxLatDir.Location = new System.Drawing.Point(336, 83);
+            this.ComboBoxLatDir.Location = new System.Drawing.Point(251, 66);
+            this.ComboBoxLatDir.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ComboBoxLatDir.Name = "ComboBoxLatDir";
-            this.ComboBoxLatDir.Size = new System.Drawing.Size(64, 24);
+            this.ComboBoxLatDir.Size = new System.Drawing.Size(48, 21);
             this.ComboBoxLatDir.TabIndex = 8;
             this.ComboBoxLatDir.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLatitude_Validating);
             this.ComboBoxLatDir.Validated += new System.EventHandler(this.TextBoxLatitude_Validated);
             // 
             // FrmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1125, 353);
+            this.ClientSize = new System.Drawing.Size(844, 291);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.MinimumSize = new System.Drawing.Size(1067, 396);
+            this.MinimumSize = new System.Drawing.Size(804, 329);
             this.Name = "FrmMain";
             this.Text = "GeoMag #";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStepSize)).EndInit();

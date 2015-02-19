@@ -20,6 +20,14 @@ namespace GeoMagSharp
         Geocentric = 2
     }
 
+    public enum DistanceUnit
+    {
+        meter = 1,
+        kilometer = 2,
+        foot = 3,
+        mile = 4
+    }
+
     public static class Constants
     {
         public const Int32 RecordLen = 80;
@@ -62,39 +70,137 @@ namespace GeoMagSharp
         {
             Latitude = 0;
             Longitude = 0;
-            AltitudeInKm = 0;
+            //AltitudeInKm = 0;
             StartDate = DateTime.MinValue;
             EndDate = DateTime.MinValue;
             StepInterval = 0;
             SecularVariation = true;
+
+            ElevationValue = 0;
+            ElevationUnit = DistanceUnit.meter;
+            ElevationIsAltitude = true;
         }
 
         public Options(Options other)
         {
             Latitude = other.Latitude;
             Longitude = other.Longitude;
-            AltitudeInKm = other.AltitudeInKm;
+            //AltitudeInKm = other.AltitudeInKm;
             StartDate = other.StartDate;
             EndDate = other.EndDate;
             StepInterval = other.StepInterval;
             SecularVariation = other.SecularVariation;
+
+            ElevationValue = other.ElevationValue;
+            ElevationUnit = other.ElevationUnit;
+            ElevationIsAltitude = other.ElevationIsAltitude;
         }
 
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public double AltitudeInKm { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public double StepInterval { get; set; }
         public bool SecularVariation { get; set; }
 
+        public void SetElevation(double value, DistanceUnit unit, bool isAltitude = true)
+        {
+            ElevationValue = value;
+            ElevationUnit = unit;
+            ElevationIsAltitude = isAltitude;
+        }
+    
         public double DepthInM
         {
             get
             {
-                return -(AltitudeInKm * 1000);
+                double depth = ElevationValue;
+
+                switch(ElevationUnit)
+                {
+                    case DistanceUnit.kilometer:
+                        depth = ElevationValue * 1000;
+                        break;
+
+                    case DistanceUnit.foot:
+                        depth = ElevationValue * 0.3048;
+                        break;
+
+                    case DistanceUnit.mile:
+                        depth = ElevationValue * 1609.34;
+                        break;
+                }
+
+                return ElevationIsAltitude
+                                ? -depth
+                                : depth;
             }
         }
+
+        public double AltitudeInKm
+        {
+            get
+            {
+                double altitude = ElevationValue;
+
+                switch (ElevationUnit)
+                {
+                    case DistanceUnit.meter:
+                        altitude = ElevationValue * 0.001;
+                        break;
+
+                    case DistanceUnit.foot:
+                        altitude = ElevationValue * 0.0003048;
+                        break;
+
+                    case DistanceUnit.mile:
+                        altitude = ElevationValue * 1.60934;
+                        break;
+                }
+
+                return ElevationIsAltitude
+                                ? altitude
+                                : -altitude;
+            }
+        }
+
+        public List<object> GetElevation
+        {
+            get
+            {
+                var unitStr = @"km";
+
+                switch(ElevationUnit)
+                {
+                    case DistanceUnit.meter:
+                        unitStr = @"m";
+                        break;
+
+                    case DistanceUnit.foot:
+                        unitStr = @"ft";
+                        break;
+
+                    case DistanceUnit.mile:
+                        unitStr = @"mi";
+                        break;
+                }
+
+                return new List<object>
+                    {
+                        ElevationIsAltitude ? @"Altitude" : @"Depth",
+                        ElevationValue,
+                        unitStr
+                    };
+            }
+        }
+
+        //public double AltitudeInKm
+        //{
+        //    get
+        //    {
+        //        return -(AltitudeInKm * 1000);
+        //    }
+        //}
 
         public double CoLatitude 
         { 
@@ -103,6 +209,10 @@ namespace GeoMagSharp
                 return 90 - Latitude;
             }
         }
+
+        private double ElevationValue { get; set; }
+        private DistanceUnit ElevationUnit { get; set; }
+        private bool ElevationIsAltitude { get; set; }
 
     }
 
