@@ -1,30 +1,23 @@
-﻿using System;
+﻿/****************************************************************************
+ * File:            DataType.cs
+ * Description:     Contains Data Types used for calculations
+ * Author:          Christopher Strecker   
+ * Website:         https://github.com/StreckerCM/GeoMagSharpGUI  
+ * Warnings:
+ * Current version: 
+ *  ****************************************************************************/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace GeoMagSharp
 {
-    public enum CalculationModel
-    {
-        Unknown = 0,
-        IGRFWMM = 1,
-        BGGM = 2,
-        HDGM = 3
-    }
-
     public enum CoordinateSystem
     {
         Geodetic = 1,
         Geocentric = 2
-    }
-
-    public enum GH
-    {
-        One = 1,
-        Two = 2,
-        A = 3,
-        B = 4,
     }
 
     public static class Constants
@@ -48,13 +41,9 @@ namespace GeoMagSharp
         public const double ThreeHundredFeetFromSouthPole = -89.999D;
 
         public const double EarthsRadiusInKm = 6371.2D;
-        public const double EarthsRadiusInKmBGGM = 6371.001D;
-        
 
         public const double A2WGS84 = 40680631.59;            /* WGS84 */
         public const double B2WGS84 = 40408299.98;            /* WGS84 */
-
-        public const double B2WGS84BGGM = 40408296.0;            /* WGS84 */
 
         public const double FeetToKilometer = 0.0003048;
         public const double FeetToMeter = 0.3048;
@@ -73,7 +62,6 @@ namespace GeoMagSharp
         {
             Latitude = 0;
             Longitude = 0;
-            //Depth = 0;
             AltitudeInKm = 0;
             StartDate = DateTime.MinValue;
             EndDate = DateTime.MinValue;
@@ -81,9 +69,19 @@ namespace GeoMagSharp
             SecularVariation = true;
         }
 
+        public Options(Options other)
+        {
+            Latitude = other.Latitude;
+            Longitude = other.Longitude;
+            AltitudeInKm = other.AltitudeInKm;
+            StartDate = other.StartDate;
+            EndDate = other.EndDate;
+            StepInterval = other.StepInterval;
+            SecularVariation = other.SecularVariation;
+        }
+
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        //public double DepthInM { get; set; }
         public double AltitudeInKm { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
@@ -97,14 +95,6 @@ namespace GeoMagSharp
                 return -(AltitudeInKm * 1000);
             }
         }
-        //public double AltitudeInKm
-        //{
-        //    get
-        //    {
-        //        return -(DepthInM * 0.001);
-        //    }
-        //}
-        /* convert depth in m to altitude in km and from geodetic to geocentric */
 
         public double CoLatitude 
         { 
@@ -114,195 +104,6 @@ namespace GeoMagSharp
             }
         }
 
-    }
-
-    public class Point3D
-    {
-        public Point3D()
-        {
-            X = 0;
-            Y = 0;
-            Z = 0;
-        }
-
-        public Point3D(Point3D other)
-        {
-            X = other.X;
-            Y = other.Y;
-            Z = other.Z;
-        }
-
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
-    }
-
-    public class MagModelSet
-    {
-        public MagModelSet()
-        {
-            Models = new List<MagModel>();
-            YearMin = 0.0;
-            YearMax = 0.0;
-        }
-
-        public MagModelSet(MagModelSet other)
-        {
-            Models = new List<MagModel>();
-            if(other.Models!=null)Models.AddRange(other.Models);
-
-            YearMin = other.YearMin;
-            YearMax = other.YearMax;
-        }
-
-        public void AddModel(MagModel newModel)
-        {
-            if (Models == null) Models = new List<MagModel>();
-
-            Models.Add(newModel);
-
-            /* Compute date range for all models */
-            if (Models.Count.Equals(1))
-            {
-                if (YearMin.Equals(0)) YearMin = newModel.YearMin;
-                if (YearMax.Equals(0)) YearMax = newModel.YearMax;
-            }
-            else if(Models.Count > 1)
-            {
-                if (!newModel.YearMin.Equals(0) && newModel.YearMin < YearMin) YearMin = newModel.YearMin;
-
-                if (!newModel.YearMax.Equals(0) && newModel.YearMax > YearMax) YearMax = newModel.YearMax;
-            }
-        }
-
-        private List<MagModel> Models { get; set; }
-        public double YearMin { get; set; }
-        public double YearMax { get; set; }
-
-        public List<MagModel> GetModels { get { return new List<MagModel>(Models); } }
-    }
-
-    public class MagModel
-    {
-        public MagModel()
-        {
-            Model = string.Empty;
-            Epoch = 0.0;
-            Max1 = 0;
-            Max2 = 0;
-            Max3 = 0;
-            YearMin = 0.0;
-            YearMax = 0.0;
-            AltitudeMin = 0.0;
-            AltitudeMax = 0.0;
-
-            Coefficients = new List<SphericalHarmonicCoefficient>();
-        }
-
-        public MagModel(MagModel other)
-        {
-            Model = other.Model;
-            Epoch = other.Epoch;
-            Max1 = other.Max1;
-            Max2 = other.Max2;
-            Max3 = other.Max3;
-            YearMin = other.YearMin;
-            YearMax = other.YearMax;
-            AltitudeMin = other.AltitudeMin;
-            AltitudeMax = other.AltitudeMax;
-
-            Coefficients = new List<SphericalHarmonicCoefficient>();
-
-            if (other.Coefficients != null && other.Coefficients.Any()) Coefficients.AddRange(other.Coefficients);
-        }
-
-        public string Model {get; set;}
-        public double Epoch {get; set;}
-        public Int32 Max1 {get; set;}
-        public Int32 Max2 {get; set;}
-        public Int32 Max3 {get; set;}
-        public double YearMin {get; set;}
-        public double YearMax {get; set;}
-        public double AltitudeMin {get; set;}
-        public double AltitudeMax {get; set;}
-
-        public double[] GH1 
-            { 
-                    get 
-                    {
-                        var gh1Out = new List<double>();
-
-                        foreach (var Coeff in Coefficients)
-                        {
-                            gh1Out.Add(Coeff.G1);
-
-                            if (Coeff.Order != 0) gh1Out.Add(Coeff.H1);
-                        }
-
-                        return gh1Out.ToArray();
-                    } 
-            }
-
-        public double[] GH2
-            {
-                get
-                {
-                    var gh2Out = new List<double>();
-
-                    foreach (var Coeff in Coefficients)
-                    {
-                        gh2Out.Add(Coeff.G2);
-
-                        if (Coeff.Order != 0) gh2Out.Add(Coeff.H2);
-                    }
-
-                    return gh2Out.ToArray();
-                }
-            }
-
-        public List<SphericalHarmonicCoefficient> Coefficients { get; set; }
-
-    }
-
-    public class SphericalHarmonicCoefficient
-    {
-        public SphericalHarmonicCoefficient()
-        {
-            LineNum = -1;
-            Degree = 0;
-            Order = 0;
-            G1 = 0.0;
-            H1 = 0.0;
-            G2 = 0.0;
-            H2 = 0.0;
-            Model = string.Empty;
-            //Trash = new List<double>();
-        }
-
-        public SphericalHarmonicCoefficient(SphericalHarmonicCoefficient other)
-        {
-            LineNum = other.LineNum;
-            Degree = other.Degree;
-            Order = other.Order;
-            G1 = other.G1;
-            H1 = other.H1;
-            G2 = other.G2;
-            H2 = other.H2;
-            Model = other.Model;
-            //Trash = new List<double>();
-
-            //if (other.Trash != null && other.Trash.Any()) Trash.AddRange(other.Trash);
-        }
-
-        public Int32 LineNum { get; set; }
-        public Int32 Degree { get; set; }
-        public Int32 Order { get; set; }
-        public double G1 { get; set; }
-        public double H1 { get; set; }
-        public double G2 { get; set; }
-        public double H2 { get; set; }
-        public string Model { get; set; }
-        //public List<double> Trash { get; set; }
     }
 
     public class MagneticCalculations
@@ -331,7 +132,7 @@ namespace GeoMagSharp
             TotalField = new MagneticValue(other.TotalField);
         }
 
-        public MagneticCalculations(DateTime inDate, vectorBGGM fieldCalculations, vectorBGGM SecVarCalculations = null)
+        public MagneticCalculations(DateTime inDate, vector fieldCalculations, vector SecVarCalculations = null)
         {
             Date = inDate;
 

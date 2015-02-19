@@ -1,4 +1,13 @@
-﻿using System;
+﻿/****************************************************************************
+ * File:            ExtensionMethods.cs
+ * Description:     Routines extend basic functionality to built in classes
+ * Author:          Christopher Strecker   
+ * Website:         https://github.com/StreckerCM/GeoMagSharpGUI  
+ * Warnings:
+ * Current version: 
+ *  ****************************************************************************/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,43 +16,21 @@ namespace GeoMagSharp
 {
     public static class ExtensionMethods
     {
-        /****************************************************************************/
-        /*                                                                          */
-        /*                           Subroutine ToDecimal                            */
-        /*                                                                          */
-        /****************************************************************************/
-        /*                                                                          */
-        /*     Computes the decimal day of year from month, day, year.              */
-        /*     Supplied by Daniel Bergstrom                                         */
-        /*                                                                          */
-        /* References:                                                              */
-        /*                                                                          */
-        /* 1. Nachum Dershowitz and Edward M. Reingold, Calendrical Calculations,   */
-        /*    Cambridge University Press, 3rd edition, ISBN 978-0-521-88540-9.      */
-        /*                                                                          */
-        /* 2. Claus Tøndering, Frequently Asked Questions about Calendars,          */
-        /*    Version 2.9, http://www.tondering.dk/claus/calendar.html              */
-        /*                                                                          */
-        /****************************************************************************/
-
+        /*****************************************************************************
+         * ToDecimal
+         *
+         * Description: converts dd mm year into decimal year, returned in decyear
+         *
+         * Input parameters: dd - day of the month (1 to 31)
+         *                   mm - month of the year (1 to 12)
+         *                   year - integer year
+         * Output parameters: 
+         * Returns: decyear - the equivalent decimal year
+         *
+         * Comments:
+         *****************************************************************************/
         public static double ToDecimal(this DateTime date)
         {
-            //Int32 year = date.Year;
-
-            //Int32 month = date.Month;
-
-            //Int32 day = date.Day;
-
-            //Int32[] days = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
-
-            //Boolean isleapYear = (((year % 4) == 0) && (((year % 100) != 0) || ((year % 400) == 0)));
-
-            //Int32 leapYear = Convert.ToInt32(isleapYear);
-
-            //double dayInYear = (days[month - 1] + day + (month > 2 ? leapYear : 0));
-
-            //return ((double)year + (dayInYear / (365.0 + leapYear)));
-
             double decYear = -1;
 
             if (date.Equals(DateTime.MinValue)) return decYear;
@@ -92,6 +79,19 @@ namespace GeoMagSharp
 
         }
 
+        /*****************************************************************************
+         * ToDateTime
+         *
+         * Description: converts decimal year into dd mm year
+         *
+         * Input parameters: dd - day of the month (1 to 31)
+         *                   mm - month of the year (1 to 12)
+         *                   year - integer year
+         * Output parameters:
+         * Returns:  DateTime value of the decimal year
+         *
+         * Comments:
+         *****************************************************************************/
         public static DateTime ToDateTime(this double decDate)
         {
             double daysDbl = decDate - Math.Truncate(decDate);
@@ -184,24 +184,58 @@ namespace GeoMagSharp
             return new DateTime(yearInt, monthInt, dayInt);
         }
 
+        /*****************************************************************************
+         * ToDegree
+         *
+         * Description: converts radians to degrees
+         *
+         * Input parameters: inRadians - double for the radian value
+         * 
+         * Output parameters:
+         * Returns:  decimal value in degrees
+         *
+         * Comments:
+         *****************************************************************************/
         public static double ToDegree(this double inRadians)
         {
             return inRadians * (180.0 / Math.PI);
         }
 
+        /*****************************************************************************
+         * ToRadian
+         *
+         * Description: converts degrees to radians
+         *
+         * Input parameters: inDegree - double for the degree value
+         * 
+         * Output parameters:
+         * Returns:  decimal value in radian
+         *
+         * Comments:
+         *****************************************************************************/
         public static double ToRadian(this double inDegree)
         {
             return inDegree * (Math.PI / 180);
         }
 
+        /*****************************************************************************
+         * Truncate
+         *
+         * Description: truncates the double value
+         *
+         * Input parameters: number - double for the number to truncate
+         * 
+         * Output parameters:
+         * Returns:  number the truncated value
+         *
+         * Comments:
+         *****************************************************************************/
         public static double Truncate(this double number)
         {
             var numStr = number.ToString("F15");
 
-            if (numStr.IndexOf('.') == -1)
-            {
-                return number;
-            }
+            //Check to see if number has a decimal value
+            if (numStr.IndexOf('.').Equals(-1)) return number;
 
             return Convert.ToDouble(numStr.Substring(0, numStr.IndexOf('.')));
         }

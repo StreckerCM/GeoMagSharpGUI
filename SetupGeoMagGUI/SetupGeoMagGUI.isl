@@ -1055,8 +1055,6 @@
 		<col key="yes" def="s72">Directory_</col>
 		<col key="yes" def="s72">Component_</col>
 		<row><td>COEFFICIENT</td><td>ISX_DEFAULTCOMPONENT</td></row>
-		<row><td>CommonAppDataFolder</td><td>ISO19770_SystemTag</td></row>
-		<row><td>INSTALLDIR</td><td>ISO19770_LocalTag</td></row>
 	</table>
 
 	<table name="CustomAction">
@@ -1890,6 +1888,8 @@
 		<row><td>geomaggui.content_files</td><td>GeoMagGUI.Content_Files</td><td>GeoMagGUI.Content Files</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;GeoMagGUI&gt;|ContentFiles</td><td>3</td><td/></row>
 		<row><td>geomaggui.primary_output</td><td>GeoMagGUI.Primary_output</td><td>GeoMagGUI.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;GeoMagGUI&gt;|Built</td><td>3</td><td/></row>
 		<row><td>geomagsharp.primary_output</td><td>GeoMagSharp.Primary_output</td><td>GeoMagSharp.Primary output</td><td>0</td><td/><td/><td/><td>1</td><td>&lt;GeoMagSharp&gt;|Built</td><td>3</td><td/></row>
+		<row><td>regid.2011_08.com.streckercm</td><td>ISO19770_SystemTag</td><td>REGID2~1.SWI|regid.2011-08.com.streckercm_8508A09A-0503-4B3E-B2A4-F3D4C429F56C.swidtag</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Development\Projects\Git Repos\GeoMagSharpGUI\SetupGeoMagGUI\SetupGeoMagGUI\Express\Interm\regid.2011-08.com.streckercm_8508A09A-0503-4B3E-B2A4-F3D4C429F56C.swidtag</td><td>1</td><td/></row>
+		<row><td>regid.2011_08.com.streckercm1</td><td>ISO19770_LocalTag</td><td>REGID2~1.SWI|regid.2011-08.com.streckercm_8508A09A-0503-4B3E-B2A4-F3D4C429F56C.swidtag</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Development\Projects\Git Repos\GeoMagSharpGUI\SetupGeoMagGUI\SetupGeoMagGUI\Express\Interm\regid.2011-08.com.streckercm_8508A09A-0503-4B3E-B2A4-F3D4C429F56C.swidtag</td><td>1</td><td/></row>
 	</table>
 
 	<table name="FileSFPCatalog">

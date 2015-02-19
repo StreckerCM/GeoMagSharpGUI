@@ -1,37 +1,48 @@
-﻿using System;
+﻿/****************************************************************************
+ * File:            DataTypeModel.cs
+ * Description:     Contains Data Types to hold the magnetic model definitions
+ * Author:          Christopher Strecker   
+ * Website:         https://github.com/StreckerCM/GeoMagSharpGUI  
+ * Warnings:
+ * Current version: 
+ *  ****************************************************************************/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace GeoMagSharp
 {
-    public class ModelSetBGGM
+    public class ModelSet
     {
-        public ModelSetBGGM()
+        public ModelSet()
         {
             FileName = string.Empty;
             MinDate = -1;
             MaxDate = -1;
+            EarthRadius = Constants.EarthsRadiusInKm;
 
-            Models = new List<ModelBGGM>();
+            Models = new List<DataTypeModel>();
         }
 
-        public ModelSetBGGM(ModelSetBGGM other)
+        public ModelSet(ModelSet other)
         {
             FileName = other.FileName;
             MinDate = other.MinDate;
             MaxDate = other.MaxDate;
+            EarthRadius = other.EarthRadius;
 
-            Models = new List<ModelBGGM>();
+            Models = new List<DataTypeModel>();
             if (other.Models.Any()) Models.AddRange(other.Models);
 
         }
 
-        public void AddModel(ModelBGGM newModel)
+        public void AddModel(DataTypeModel newModel)
         {
             if (newModel == null) return;
 
-            if (Models == null) Models = new List<ModelBGGM>();
+            if (Models == null) Models = new List<DataTypeModel>();
 
             Models.Add(newModel);
 
@@ -77,11 +88,11 @@ namespace GeoMagSharp
          *           allocated to them
          *
          *****************************************************************************/
-        public void GetIntExt(double date, out coefficientsBGGM internalSH, out coefficientsBGGM externalSH)
+        public void GetIntExt(double date, out coefficients internalSH, out coefficients externalSH)
         {
-            internalSH = new coefficientsBGGM();
+            internalSH = new coefficients();
 
-            externalSH = new coefficientsBGGM();
+            externalSH = new coefficients();
 
             Int32 nModels = NumberOfModels -1;
 
@@ -112,8 +123,6 @@ namespace GeoMagSharp
             {
                 for (Int32 eIdx = Emodel1; eIdx <= nModels && Emodel2 == -1; eIdx++)
                 {
-                    //coeff_set = new ModelBGGM(Models[eIdx]);
-
                     if (Models[eIdx].Year > date && Models[eIdx].Type.Equals("E", StringComparison.OrdinalIgnoreCase)) Emodel2 = eIdx;
                 }
             }
@@ -279,13 +288,14 @@ namespace GeoMagSharp
         public string FileName { get; set; }
         public double MinDate { get; set; }
         public double MaxDate { get; set; }
-        private List<ModelBGGM> Models { get; set; }
+        public double EarthRadius { get; set; }
+        private List<DataTypeModel> Models { get; set; }
 
-        public List<ModelBGGM> GetModels 
+        public List<DataTypeModel> GetModels 
         { 
             get
             {
-                return new List<ModelBGGM>(Models);
+                return new List<DataTypeModel>(Models);
             }
         }
 
@@ -300,22 +310,22 @@ namespace GeoMagSharp
         }
     }
 
-    public class ModelBGGM
+    public class DataTypeModel
     {
-        public ModelBGGM()
+        public DataTypeModel()
         {
             Type = string.Empty;
             Year = -1;
-            EarthRadius = Constants.EarthsRadiusInKm;
+            //EarthRadius = Constants.EarthsRadiusInKm;
 
             SharmCoeff = new List<double>();
         }
 
-        public ModelBGGM(ModelBGGM other)
+        public DataTypeModel(DataTypeModel other)
         {
             Type = other.Type;
             Year = other.Year;
-            EarthRadius = other.EarthRadius;
+            //EarthRadius = other.EarthRadius;
 
             SharmCoeff = new List<double>();
             if (other.SharmCoeff.Any()) SharmCoeff.AddRange(SharmCoeff);
@@ -324,7 +334,7 @@ namespace GeoMagSharp
         public string Type { get; set; }
         public double Year { get; set; }
         public List<double> SharmCoeff;
-        public double EarthRadius;
+        //public double EarthRadius;
 
         public Int32 Num_Coeff
         {
@@ -344,22 +354,23 @@ namespace GeoMagSharp
 
                 double rmax = Math.Sqrt(j) - 1.0;
 
-                if (Math.IEEERemainder(rmax, 1.0) != 0) throw new GeoMagExceptionBadNumberOfCoefficients(string.Format("Error: Bad Number of Coefficients in file{0}Number of Coefficients: {1}{0}Max Degree: {2}", Environment.NewLine, Num_Coeff, rmax.ToString("F2")));
+                if (Math.IEEERemainder(rmax, 1.0) != 0) return -1;
+                    //throw new GeoMagExceptionBadNumberOfCoefficients(string.Format("Error: Bad Number of Coefficients in file{0}Number of Coefficients: {1}{0}Max Degree: {2}", Environment.NewLine, Num_Coeff, rmax.ToString("F2")));
                 
                 return Convert.ToInt32(rmax);
             }
         }
     }
 
-    public class coefficientsBGGM
+    public class coefficients
     {
-        public coefficientsBGGM()
+        public coefficients()
         {
             coeffs = new List<double>();
             MaxDegree = 0;
         }
 
-        public coefficientsBGGM(coefficientsBGGM other)
+        public coefficients(coefficients other)
         {
             coeffs = new List<double>();
             if (other.coeffs.Any()) coeffs.AddRange(other.coeffs);
@@ -371,9 +382,9 @@ namespace GeoMagSharp
         public Int32 MaxDegree { get; set; }
     }
 
-    public class vectorBGGM 
+    public class vector 
     {
-        public vectorBGGM()
+        public vector()
         {
             d = 0;
             s = 0;
@@ -384,7 +395,7 @@ namespace GeoMagSharp
             f = 0;
         }
 
-        public vectorBGGM(vectorBGGM other)
+        public vector(vector other)
         {
             d = other.d;
             s = other.s;
@@ -395,9 +406,9 @@ namespace GeoMagSharp
             f = other.f;
         }
 
-        public vectorBGGM Subtract(vectorBGGM vector2)
+        public vector Subtract(vector vector2)
         {
-            return new vectorBGGM
+            return new vector
                 {
                     d = d - vector2.d,
                     s = s - vector2.s,
