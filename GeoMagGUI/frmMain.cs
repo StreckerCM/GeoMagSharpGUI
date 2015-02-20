@@ -143,26 +143,29 @@ namespace GeoMagGUI
                 }
 
                 double altitude = Convert.ToDouble(textBoxAltitude.Text);
-                DistanceUnit altUnit = DistanceUnit.kilometer;
 
-                switch (comboBoxAltitudeUnits.SelectedItem.ToString().ToLower())
-                {
-                    case "ft":
-                        altUnit = DistanceUnit.foot;
-                        break;
+                var altUnit = GeoMagDistance.FromString(comboBoxAltitudeUnits.SelectedItem.ToString());
 
-                    case "m":
-                        altUnit = DistanceUnit.meter;
-                        break;
+                //GeoMagDistance altUnit = GeoMagDistance.kilometer;
 
-                    case "mi":
-                        altUnit = DistanceUnit.mile;
-                        break;
+                //switch (comboBoxAltitudeUnits.SelectedItem.ToString().ToLower())
+                //{
+                //    case "ft":
+                //        altUnit = GeoMagDistance.Unit.foot;
+                //        break;
 
-                    default:
-                        altUnit = DistanceUnit.kilometer;
-                        break;
-                }
+                //    case "m":
+                //        altUnit = GeoMagDistance.meter;
+                //        break;
+
+                //    case "mi":
+                //        altUnit = GeoMagDistance.mile;
+                //        break;
+
+                //    default:
+                //        altUnit = GeoMagDistance.kilometer;
+                //        break;
+                //}
 
                 //if (comboBoxUnits.SelectedItem.ToString().Equals("ft", StringComparison.OrdinalIgnoreCase))
                 //{
@@ -190,7 +193,7 @@ namespace GeoMagGUI
 
                 Cursor = Cursors.WaitCursor;
 
-                var calcOptions = new Options
+                var calcOptions = new GeoMagOptions
                     {
                         Latitude = Convert.ToDouble(textBoxLatitudeDecimal.Text),
                         Longitude = Convert.ToDouble(textBoxLongitudeDecimal.Text),

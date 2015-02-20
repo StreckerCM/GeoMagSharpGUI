@@ -20,7 +20,7 @@ namespace GeoMagSharp
 {
     public static class ModelReader
     {
-        public static ModelSet Load(string modelFile)
+        public static GeoMagModelSet Load(string modelFile)
         {
             if (IsFileLocked(modelFile))
                 throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' is locked by another user or application",
@@ -40,9 +40,9 @@ namespace GeoMagSharp
                                     Path.GetExtension(modelFile).ToUpper())));
         }
 
-        private static ModelSet Reader_COF(string modelFile)
+        private static GeoMagModelSet Reader_COF(string modelFile)
         {
-            var outModels = new ModelSet
+            var outModels = new GeoMagModelSet
             {
                 FileName = modelFile
             };
@@ -85,7 +85,7 @@ namespace GeoMagSharp
 
                             double.TryParse(lineParase[1], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
 
-                            outModels.AddModel(new DataTypeModel
+                            outModels.AddModel(new GeoMagModel
                             {
                                 Type = @"M",
                                 Year = tempDbl
@@ -93,7 +93,7 @@ namespace GeoMagSharp
 
                             mModelIdx = outModels.GetModels.Count() - 1; 
 
-                            outModels.AddModel(new DataTypeModel
+                            outModels.AddModel(new GeoMagModel
                             {
                                 Type = @"S",
                                 Year = tempDbl
@@ -175,9 +175,9 @@ namespace GeoMagSharp
             return outModels;
         }
 
-        private static ModelSet Reader_DAT(string modelFile)
+        private static GeoMagModelSet Reader_DAT(string modelFile)
         {
-            var outModels = new ModelSet
+            var outModels = new GeoMagModelSet
                 {
                     FileName = modelFile
                 };
@@ -231,7 +231,7 @@ namespace GeoMagSharp
 
                             double.TryParse(lineParase.Last(), NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
 
-                            outModels.AddModel(new DataTypeModel
+                            outModels.AddModel(new GeoMagModel
                                 {
                                     Type = lineParase.First(),
                                     Year = tempDbl

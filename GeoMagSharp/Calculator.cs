@@ -49,12 +49,12 @@ namespace GeoMagSharp
          *
          * Comments:
          *****************************************************************************/
-        public static MagneticCalculations SpotCalculation(Options CalculationOptions, DateTime dateOfCalc, ModelSet magModels, coefficients internalSH, coefficients externalSH, double earthRadius = Constants.EarthsRadiusInKm)
+        public static MagneticCalculations SpotCalculation(GeoMagOptions CalculationOptions, DateTime dateOfCalc, GeoMagModelSet magModels, GeoMagCoefficients internalSH, GeoMagCoefficients externalSH, double earthRadius = Constants.EarthsRadiusInKm)
         {
             /* call procedure GETFIELD - values returned in geomagfield*/
             var fieldCalculations = GetField(CalculationOptions, internalSH, externalSH, earthRadius);
 
-            vector svCalculations = null;
+            GeoMagVector svCalculations = null;
 
             if (CalculationOptions.SecularVariation)
             {
@@ -64,8 +64,8 @@ namespace GeoMagSharp
                 CalculateDatesForVariation(CalculationOptions.StartDate.ToDecimal(), magModels.MinDate, magModels.MaxDate, out date1, out date2);
 
                 /* get coefficients and field for date1 */
-                var SVintSH = new coefficients();
-                var SVextSH = new coefficients();
+                var SVintSH = new GeoMagCoefficients();
+                var SVextSH = new GeoMagCoefficients();
 
                 magModels.GetIntExt(date1, out SVintSH, out SVextSH);
 
@@ -88,7 +88,7 @@ namespace GeoMagSharp
 
         }
 
-        private static vector GetField(Options CalculationOptions, coefficients internalSH, coefficients externalSH, double er_rad)
+        private static GeoMagVector GetField(GeoMagOptions CalculationOptions, GeoMagCoefficients internalSH, GeoMagCoefficients externalSH, double er_rad)
         {
             /* allocate storage for arrays */
             Int32 kmx = (internalSH.MaxDegree + 1) * (internalSH.MaxDegree + 2) / 2;
@@ -131,14 +131,14 @@ namespace GeoMagSharp
             GeodeticToGeocentric(CalculationOptions.CoLatitude, altitude, out gcCoLat, out earthRadius, out cd, out sd);
             double one = gcCoLat;
 
-            double slat = Math.Cos(one * Math.PI / 180);
-            double clat = Math.Sin(one * Math.PI / 180);
+            double slat = Math.Cos(one.ToRadian());
+            double clat = Math.Sin(one.ToRadian());
 
             one = CalculationOptions.Longitude;
-            cl[0] = (Math.Cos(one * Math.PI / 180));
-            sl[0] = (Math.Sin(one * Math.PI / 180));
+            cl[0] = (Math.Cos(one.ToRadian()));
+            sl[0] = (Math.Sin(one.ToRadian()));
 
-            var geomagfield = new vector();
+            var geomagfield = new GeoMagVector();
 
             /* printf("GETFIELD 2: %lf %lf %lf %lf\n", slat, clat, cl[0],sl[0]); */
 
@@ -284,9 +284,9 @@ namespace GeoMagSharp
             geomagfield.z = (geomagfield.z) * cd - one * sd;
 
             /* compute remaining elements */
-            geomagfield.d = Math.Atan2(geomagfield.y, geomagfield.x) * 180 / Math.PI;
+            geomagfield.d = Math.Atan2(geomagfield.y, geomagfield.x).ToDegree();
             geomagfield.h = Math.Sqrt(geomagfield.x * geomagfield.x + geomagfield.y * geomagfield.y);
-            geomagfield.s = Math.Atan2(geomagfield.z, geomagfield.h) * 180 / Math.PI;
+            geomagfield.s = Math.Atan2(geomagfield.z, geomagfield.h).ToDegree();
             geomagfield.f = Math.Sqrt(geomagfield.x * geomagfield.x + geomagfield.y * geomagfield.y + geomagfield.z * geomagfield.z);
 
             return geomagfield;
@@ -317,8 +317,8 @@ namespace GeoMagSharp
 
             one = gdCoLat;
 
-            ct = Math.Cos(one * Math.PI / 180);
-            st = Math.Sin(one * Math.PI / 180);
+            ct = Math.Cos(one.ToRadian());
+            st = Math.Sin(one.ToRadian());
             a2 = 40680631.6;
             b2 = 40408296.0;
             one = a2 * st * st;
@@ -335,7 +335,7 @@ namespace GeoMagSharp
             ct = ct * cd - st * sd;
             st = st * cd + one * sd;
 
-            gcCoLat = Math.Atan2(st, ct) * 180 / Math.PI;
+            gcCoLat = Math.Atan2(st, ct).ToDegree();
 
         }
 

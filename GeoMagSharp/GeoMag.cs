@@ -21,9 +21,9 @@ namespace GeoMagSharp
     {
         public List<MagneticCalculations> ResultsOfCalculation;
 
-        private ModelSet _Models;
+        private GeoMagModelSet _Models;
 
-        private Options _CalculationOptions;
+        private GeoMagOptions _CalculationOptions;
 
         public GeoMag()
         {
@@ -41,7 +41,7 @@ namespace GeoMagSharp
 
         }
 
-        public void MagneticCalculations(Options inCalculationOptions)
+        public void MagneticCalculations(GeoMagOptions inCalculationOptions)
         {
             _CalculationOptions = null;
             ResultsOfCalculation = null;
@@ -74,14 +74,14 @@ namespace GeoMagSharp
 
             ResultsOfCalculation = new List<MagneticCalculations>();
 
-            _CalculationOptions = new Options(inCalculationOptions);
+            _CalculationOptions = new GeoMagOptions(inCalculationOptions);
 
             while (dateIdx <= timespan.Days)
             {
 
-                var internalSH = new coefficients();
+                var internalSH = new GeoMagCoefficients();
 
-                var externalSH = new coefficients();
+                var externalSH = new GeoMagCoefficients();
 
                 DateTime intervalDate = _CalculationOptions.StartDate.AddDays(dateIdx);
 

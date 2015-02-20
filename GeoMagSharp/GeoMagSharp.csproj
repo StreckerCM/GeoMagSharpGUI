@@ -47,7 +47,6 @@
     <Compile Include="GeoMag.cs" />
     <Compile Include="Calculator.cs" />
     <Compile Include="DataTypes.cs" />
-    <Compile Include="DataTypeModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
