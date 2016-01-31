@@ -20,7 +20,7 @@ namespace GeoMagSharp
 {
     public static class ModelReader
     {
-        public static GeoMagModelSet Load(string modelFile)
+        public static MagneticModelSet Read(string modelFile)
         {
             if (IsFileLocked(modelFile))
                 throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' is locked by another user or application",
@@ -29,10 +29,10 @@ namespace GeoMagSharp
             switch(Path.GetExtension(modelFile).ToUpper())
             {
                 case ".COF":
-                    return Reader_COF(modelFile);
+                    return COFreader(modelFile);
 
                 case ".DAT":
-                    return Reader_DAT(modelFile);
+                    return DATreader(modelFile);
 
             }
 
@@ -40,9 +40,9 @@ namespace GeoMagSharp
                                     Path.GetExtension(modelFile).ToUpper())));
         }
 
-        private static GeoMagModelSet Reader_COF(string modelFile)
+        private static MagneticModelSet COFreader(string modelFile)
         {
-            var outModels = new GeoMagModelSet
+            var outModels = new MagneticModelSet
             {
                 FileName = modelFile
             };
@@ -59,10 +59,6 @@ namespace GeoMagSharp
 
                 Int32 lineNumber = 0;
 
-                //List<double> one = null;
-
-                //List<double> two = null;
-
                 while ((inbuff = stream.ReadLine()) != null)
                 {
                     lineNumber++;
@@ -77,15 +73,11 @@ namespace GeoMagSharp
                             inbuff.IndexOf("DGRF", StringComparison.OrdinalIgnoreCase).Equals(0) ||
                             inbuff.IndexOf("WMM", StringComparison.OrdinalIgnoreCase).Equals(0))
                         {
-                                                                      /* New model */
-
-                            //one = new List<double>();
-
-                            //two = new List<double>();
+                            /* New model */
 
                             double.TryParse(lineParase[1], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
 
-                            outModels.AddModel(new GeoMagModel
+                            outModels.AddModel(new MagneticModel
                             {
                                 Type = @"M",
                                 Year = tempDbl
@@ -93,7 +85,7 @@ namespace GeoMagSharp
 
                             mModelIdx = outModels.GetModels.Count() - 1; 
 
-                            outModels.AddModel(new GeoMagModel
+                            outModels.AddModel(new MagneticModel
                             {
                                 Type = @"S",
                                 Year = tempDbl
@@ -175,9 +167,9 @@ namespace GeoMagSharp
             return outModels;
         }
 
-        private static GeoMagModelSet Reader_DAT(string modelFile)
+        private static MagneticModelSet DATreader(string modelFile)
         {
-            var outModels = new GeoMagModelSet
+            var outModels = new MagneticModelSet
                 {
                     FileName = modelFile
                 };
@@ -231,7 +223,7 @@ namespace GeoMagSharp
 
                             double.TryParse(lineParase.Last(), NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
 
-                            outModels.AddModel(new GeoMagModel
+                            outModels.AddModel(new MagneticModel
                                 {
                                     Type = lineParase.First(),
                                     Year = tempDbl

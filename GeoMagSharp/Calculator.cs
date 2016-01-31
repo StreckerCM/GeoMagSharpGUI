@@ -21,35 +21,18 @@ namespace GeoMagSharp
     public static class Calculator
     {
 
-        /*****************************************************************************
-         * SpotCalculation
-         *
-         * Description: calculate main field and field change at a 'spot' in time and
-         *              space
-         *
-         * Input parameters: options - details of the time and space to calculate for -
-         *                             not all fields in this structure are used - only
-         *                             the following are needed:
-         *                               options->secvarcalc - set to SECVARCALC to 
-         *                                                     calculate changes as well
-         *                                                     as main field
-         *                               options->lat - latitude in decimal degrees
-         *                               options->lon - longitude in decimal degrees
-         *                               options->depth - depth below MSL in metres
-         *                   mindate, maxdate, coeff, num_models - model as read in by
-         *                                                         get_coefficients()
-         *                   internalSH - internal coeffiecients for a particular date,
-         *                                as calculated by getintext()
-         *                   externalSH - external coeffiecients for a particular date,
-         *                                as calculated by getintext()
-         * Output parameters: geomagfield - the main field values
-         *                    fielddiffs - rate of change (only value if
-         *                                 options->secvarcalc is set to SECVARCALC)
-         * Returns: any of the error return codes 
-         *
-         * Comments:
-         *****************************************************************************/
-        public static MagneticCalculations SpotCalculation(GeoMagOptions CalculationOptions, DateTime dateOfCalc, GeoMagModelSet magModels, GeoMagCoefficients internalSH, GeoMagCoefficients externalSH, double earthRadius = Constants.EarthsRadiusInKm)
+        /// <summary>
+        /// calculate main field and field change at a 'spot' in time and space
+        /// </summary>
+        /// <param name="CalculationOptions">details of the time and space to for which to calculate</param>
+        /// <param name="dateOfCalc">The DateTime object for the calculation date</param>
+        /// <param name="magModels">the models loaded by the Model Reader</param>
+        /// <param name="internalSH">internal coeffiecients for a particular date</param>
+        /// <param name="externalSH">external coeffiecients for a particular date</param>
+        /// <param name="earthRadius">Optional: Radius of the earth used by the model</param>
+        /// <returns>The result of the magnetic calculation</returns>
+        public static MagneticCalculations SpotCalculation(CalculationOptions CalculationOptions, DateTime dateOfCalc, MagneticModelSet magModels, 
+            Coefficients internalSH, Coefficients externalSH, double earthRadius = Constants.EarthsRadiusInKm)
         {
             /* call procedure GETFIELD - values returned in geomagfield*/
             var fieldCalculations = GetField(CalculationOptions, internalSH, externalSH, earthRadius);
@@ -64,8 +47,8 @@ namespace GeoMagSharp
                 CalculateDatesForVariation(CalculationOptions.StartDate.ToDecimal(), magModels.MinDate, magModels.MaxDate, out date1, out date2);
 
                 /* get coefficients and field for date1 */
-                var SVintSH = new GeoMagCoefficients();
-                var SVextSH = new GeoMagCoefficients();
+                var SVintSH = new Coefficients();
+                var SVextSH = new Coefficients();
 
                 magModels.GetIntExt(date1, out SVintSH, out SVextSH);
 
@@ -88,7 +71,7 @@ namespace GeoMagSharp
 
         }
 
-        private static GeoMagVector GetField(GeoMagOptions CalculationOptions, GeoMagCoefficients internalSH, GeoMagCoefficients externalSH, double er_rad)
+        private static GeoMagVector GetField(CalculationOptions CalculationOptions, Coefficients internalSH, Coefficients externalSH, double er_rad)
         {
             /* allocate storage for arrays */
             Int32 kmx = (internalSH.MaxDegree + 1) * (internalSH.MaxDegree + 2) / 2;

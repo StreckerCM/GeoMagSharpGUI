@@ -16,19 +16,11 @@ namespace GeoMagSharp
 {
     public static class ExtensionMethods
     {
-        /*****************************************************************************
-         * ToDecimal
-         *
-         * Description: converts dd mm year into decimal year, returned in decyear
-         *
-         * Input parameters: dd - day of the month (1 to 31)
-         *                   mm - month of the year (1 to 12)
-         *                   year - integer year
-         * Output parameters: 
-         * Returns: decyear - the equivalent decimal year
-         *
-         * Comments:
-         *****************************************************************************/
+        /// <summary>
+        /// converts DateTime object into decimal year, returned in decyear
+        /// </summary>
+        /// <param name="date">Date to convert</param>
+        /// <returns>decyear - the equivalent decimal year</returns>
         public static double ToDecimal(this DateTime date)
         {
             double decYear = -1;
@@ -79,19 +71,11 @@ namespace GeoMagSharp
 
         }
 
-        /*****************************************************************************
-         * ToDateTime
-         *
-         * Description: converts decimal year into dd mm year
-         *
-         * Input parameters: dd - day of the month (1 to 31)
-         *                   mm - month of the year (1 to 12)
-         *                   year - integer year
-         * Output parameters:
-         * Returns:  DateTime value of the decimal year
-         *
-         * Comments:
-         *****************************************************************************/
+        /// <summary>
+        /// converts decimal year into DateTime object
+        /// </summary>
+        /// <param name="decDate">The decimal year</param>
+        /// <returns>The equivalent DateTime object year</returns>
         public static DateTime ToDateTime(this double decDate)
         {
             double daysDbl = decDate - Math.Truncate(decDate);
@@ -184,52 +168,31 @@ namespace GeoMagSharp
             return new DateTime(yearInt, monthInt, dayInt);
         }
 
-        /*****************************************************************************
-         * ToDegree
-         *
-         * Description: converts radians to degrees
-         *
-         * Input parameters: inRadians - double for the radian value
-         * 
-         * Output parameters:
-         * Returns:  decimal value in degrees
-         *
-         * Comments:
-         *****************************************************************************/
+        /// <summary>
+        /// converts radians to degrees
+        /// </summary>
+        /// <param name="inRadians">the radian value as double</param>
+        /// <returns>the equivalent degree value as double</returns>
         public static double ToDegree(this double inRadians)
         {
             return inRadians * (180.0 / Math.PI);
         }
 
-        /*****************************************************************************
-         * ToRadian
-         *
-         * Description: converts degrees to radians
-         *
-         * Input parameters: inDegree - double for the degree value
-         * 
-         * Output parameters:
-         * Returns:  decimal value in radian
-         *
-         * Comments:
-         *****************************************************************************/
+        /// <summary>
+        /// converts degrees to radians
+        /// </summary>
+        /// <param name="inDegree">the degree value as double</param>
+        /// <returns>the equivalent radians value as double</returns>
         public static double ToRadian(this double inDegree)
         {
             return inDegree * (Math.PI / 180);
         }
 
-        /*****************************************************************************
-         * Truncate
-         *
-         * Description: truncates the double value
-         *
-         * Input parameters: number - double for the number to truncate
-         * 
-         * Output parameters:
-         * Returns:  number the truncated value
-         *
-         * Comments:
-         *****************************************************************************/
+        /// <summary>
+        /// Truncates a double value
+        /// </summary>
+        /// <param name="number">The number to truncate as double</param>
+        /// <returns>The truncated value as double</returns>
         public static double Truncate(this double number)
         {
             var numStr = number.ToString("F15");

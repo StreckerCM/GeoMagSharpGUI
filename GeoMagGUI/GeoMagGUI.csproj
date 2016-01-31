@@ -34,7 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Magnet.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -106,17 +107,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Content Include="Magnet.ico" />
-    <Content Include="Resources\LICENSE">
+    <Content Include="documentation\LICENSE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Resources\Magnet.ico" />
-    <None Include="Resources\Location-icon_16.png" />
-    <None Include="Resources\Location-icon_161.png" />
-    <Content Include="Resources\README.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="coefficient\WMM2010.COF">
+    <EmbeddedResource Include="assets\Magnet.ico" />
+    <EmbeddedResource Include="assets\Location-icon_16.png" />
+    <Content Include="documentation\README.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -21,9 +21,9 @@ namespace GeoMagSharp
     {
         public List<MagneticCalculations> ResultsOfCalculation;
 
-        private GeoMagModelSet _Models;
+        private MagneticModelSet _Models;
 
-        private GeoMagOptions _CalculationOptions;
+        private CalculationOptions _CalculationOptions;
 
         public GeoMag()
         {
@@ -37,11 +37,11 @@ namespace GeoMagSharp
             if (string.IsNullOrEmpty(modelFile))
                 throw new GeoMagExceptionFileNotFound("Error coefficient file name not specified");
 
-            _Models = ModelReader.Load(modelFile);
+            _Models = ModelReader.Read(modelFile);
 
         }
 
-        public void MagneticCalculations(GeoMagOptions inCalculationOptions)
+        public void MagneticCalculations(CalculationOptions inCalculationOptions)
         {
             _CalculationOptions = null;
             ResultsOfCalculation = null;
@@ -74,14 +74,14 @@ namespace GeoMagSharp
 
             ResultsOfCalculation = new List<MagneticCalculations>();
 
-            _CalculationOptions = new GeoMagOptions(inCalculationOptions);
+            _CalculationOptions = new CalculationOptions(inCalculationOptions);
 
             while (dateIdx <= timespan.Days)
             {
 
-                var internalSH = new GeoMagCoefficients();
+                var internalSH = new Coefficients();
 
-                var externalSH = new GeoMagCoefficients();
+                var externalSH = new Coefficients();
 
                 DateTime intervalDate = _CalculationOptions.StartDate.AddDays(dateIdx);
 

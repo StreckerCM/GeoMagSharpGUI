@@ -144,7 +144,7 @@ namespace GeoMagGUI
 
                 double altitude = Convert.ToDouble(textBoxAltitude.Text);
 
-                var altUnit = GeoMagDistance.FromString(comboBoxAltitudeUnits.SelectedItem.ToString());
+                var altUnit = Distance.FromString(comboBoxAltitudeUnits.SelectedItem.ToString());
 
                 //GeoMagDistance altUnit = GeoMagDistance.kilometer;
 
@@ -193,7 +193,7 @@ namespace GeoMagGUI
 
                 Cursor = Cursors.WaitCursor;
 
-                var calcOptions = new GeoMagOptions
+                var calcOptions = new CalculationOptions
                     {
                         Latitude = Convert.ToDouble(textBoxLatitudeDecimal.Text),
                         Longitude = Convert.ToDouble(textBoxLongitudeDecimal.Text),
