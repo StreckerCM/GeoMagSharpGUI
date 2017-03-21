@@ -12,6 +12,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Newtonsoft.Json;
+using System.IO;
+
 namespace GeoMagSharp
 {
     #region Enumeration
@@ -31,6 +34,7 @@ namespace GeoMagSharp
 
     #endregion
 
+    #region Constants 
     public static class Constants
     {
         public const Int32 RecordLen = 80;
@@ -66,12 +70,15 @@ namespace GeoMagSharp
         public const double KilometerToFeet = 3280.84;
 
     }
+    #endregion
 
     /// <summary>
     /// 
     /// </summary>
     public class CalculationOptions
     {
+        #region Constructors
+
         public CalculationOptions()
         {
             Latitude = 0;
@@ -102,6 +109,8 @@ namespace GeoMagSharp
             ElevationIsAltitude = other.ElevationIsAltitude;
         }
 
+        #endregion
+
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public DateTime StartDate { get; set; }
@@ -109,6 +118,8 @@ namespace GeoMagSharp
         public double StepInterval { get; set; }
         public bool SecularVariation { get; set; }
         public Algorithm CalculationMethod { get; set; }
+
+        #region Getters & Setters
 
         public void SetElevation(double value, Distance.Unit unit, bool isAltitude = true)
         {
@@ -196,10 +207,14 @@ namespace GeoMagSharp
         private Distance.Unit ElevationUnit { get; set; }
         private bool ElevationIsAltitude { get; set; }
 
+        #endregion
+
     }
 
     public class MagneticCalculations
     {
+        #region Constructors
+
         public MagneticCalculations()
         {
             Date = DateTime.Now;
@@ -272,6 +287,10 @@ namespace GeoMagSharp
 
         }
 
+        #endregion
+
+        #region Getters & Setters
+
         public DateTime Date { get; set; }
         public MagneticValue Declination { get; set; }
         public MagneticValue Inclination { get; set; }
@@ -280,10 +299,14 @@ namespace GeoMagSharp
         public MagneticValue EastComp { get; set; }
         public MagneticValue VerticalComp { get; set; }
         public MagneticValue TotalField { get; set; }
+
+        #endregion
     }
 
     public class MagneticValue
     {
+        #region Constructors
+
         public MagneticValue()
         {
             Value = 0.0;
@@ -296,12 +319,20 @@ namespace GeoMagSharp
             ChangePerYear = other.ChangePerYear;
         }
 
+        #endregion
+
+        #region Getters & Setters
+
         public double Value { get; set; }
         public double ChangePerYear { get; set; }
+
+        #endregion
     }
 
     public class Latitude
     {
+        #region Constructors
+
         public Latitude ()
         {
             Decimal = 0;
@@ -336,6 +367,10 @@ namespace GeoMagSharp
 
             Decimal = coordDec;
         }
+
+        #endregion
+
+        #region Getters & Setters
 
         public double Degrees
         {
@@ -392,10 +427,14 @@ namespace GeoMagSharp
         }
 
         public double Decimal { get; set; }
+
+        #endregion
     }
 
     public class Longitude
     {
+        #region Constructors
+
         public Longitude ()
         {
             Decimal = 0;
@@ -430,6 +469,10 @@ namespace GeoMagSharp
 
             Decimal = coordDec;
         }
+
+        #endregion
+
+        #region Getters & Setters
 
         public double Degrees
         {
@@ -486,6 +529,85 @@ namespace GeoMagSharp
         }
 
         public double Decimal { get; set; }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Magnetic Model Set Object
+    /// </summary>
+    public class MagneticModelCollection : System.Collections.CollectionBase
+    {
+        #region Object Serializers
+
+        public bool Save(string filename)
+        {
+            if (string.IsNullOrEmpty(filename)) return false;
+
+            bool wasSucessful;
+
+            var inData = this;
+
+            try
+            {
+                JsonSerializer serializer = new JsonSerializer
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    Formatting = Newtonsoft.Json.Formatting.Indented
+                };
+
+
+                using (StreamWriter sw = new StreamWriter(filename))
+                using (JsonWriter writer = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(writer, inData);
+                }
+
+                wasSucessful = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("MagneticModelCollection Error: {0}", ex.ToString());
+                wasSucessful = false;
+
+            }
+
+            return wasSucessful;
+        }
+
+        public static MagneticModelCollection Load(string filename)
+        {
+            if (string.IsNullOrEmpty(filename)) return new MagneticModelCollection();
+
+            if (!System.IO.File.Exists(filename)) return new MagneticModelCollection();
+
+            MagneticModelCollection outData = null;
+
+            try
+            {
+                JsonSerializer serializer = new JsonSerializer();
+
+                serializer.NullValueHandling = NullValueHandling.Ignore;
+                serializer.Formatting = Newtonsoft.Json.Formatting.Indented;
+
+                using (var sr = new System.IO.StreamReader(filename))
+                using (var reader = new JsonTextReader(sr))
+                {
+                    outData = JsonConvert.DeserializeObject<MagneticModelCollection>(serializer.Deserialize(reader).ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("MagneticModelCollection Error: {0}", ex.ToString());
+                outData = null;
+            }
+
+            return outData;
+
+        }
+
+        #endregion
+
     }
 
     /// <summary>
@@ -493,9 +615,14 @@ namespace GeoMagSharp
     /// </summary>
     public class MagneticModelSet
     {
+        #region Constructors
+
         public MagneticModelSet()
         {
+            MultiFile = false;
             FileName = string.Empty;
+            FileStaticCoefficients = string.Empty;
+            FileSecularVariationCoefficient = string.Empty;
             MinDate = -1;
             MaxDate = -1;
             EarthRadius = Constants.EarthsRadiusInKm;
@@ -505,7 +632,10 @@ namespace GeoMagSharp
 
         public MagneticModelSet(MagneticModelSet other)
         {
+            MultiFile = other.MultiFile;
             FileName = other.FileName;
+            FileStaticCoefficients = other.FileStaticCoefficients;
+            FileSecularVariationCoefficient = other.FileSecularVariationCoefficient;
             MinDate = other.MinDate;
             MaxDate = other.MaxDate;
             EarthRadius = other.EarthRadius;
@@ -514,6 +644,10 @@ namespace GeoMagSharp
             if (other.Models.Any()) Models.AddRange(other.Models);
 
         }
+
+        #endregion
+
+        #region Public Methods
 
         public void AddModel(MagneticModel newModel)
         {
@@ -541,6 +675,10 @@ namespace GeoMagSharp
             Models[modelIdx].SharmCoeff.Add(coeff);
 
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Validate that the given date is in range for the loaded models
@@ -756,7 +894,12 @@ namespace GeoMagSharp
             }
         }
 
+        #endregion
+
+        public bool MultiFile { get; set; }
         public string FileName { get; set; }
+        public string FileStaticCoefficients { get; set; }
+        public string FileSecularVariationCoefficient { get; set; }
         public double MinDate { get; set; }
         public double MaxDate { get; set; }
         public double EarthRadius { get; set; }
@@ -783,6 +926,8 @@ namespace GeoMagSharp
 
     public class MagneticModel
     {
+        #region Constructors
+
         public MagneticModel()
         {
             Type = string.Empty;
@@ -802,10 +947,11 @@ namespace GeoMagSharp
             if (other.SharmCoeff.Any()) SharmCoeff.AddRange(SharmCoeff);
         }
 
+        #endregion
+        
         public string Type { get; set; }
         public double Year { get; set; }
         public List<double> SharmCoeff;
-        //public double EarthRadius;
 
         public Int32 Num_Coeff
         {
@@ -826,7 +972,6 @@ namespace GeoMagSharp
                 double rmax = Math.Sqrt(j) - 1.0;
 
                 if (Math.IEEERemainder(rmax, 1.0) != 0) return -1;
-                //throw new GeoMagExceptionBadNumberOfCoefficients(string.Format("Error: Bad Number of Coefficients in file{0}Number of Coefficients: {1}{0}Max Degree: {2}", Environment.NewLine, Num_Coeff, rmax.ToString("F2")));
 
                 return Convert.ToInt32(rmax);
             }
@@ -838,6 +983,8 @@ namespace GeoMagSharp
     /// </summary>
     public class Coefficients
     {
+        #region Constructors
+
         public Coefficients()
         {
             coeffs = new List<double>();
@@ -852,6 +999,8 @@ namespace GeoMagSharp
             MaxDegree = other.MaxDegree;
         }
 
+        #endregion
+
         public List<double> coeffs { get; set; }
         public Int32 MaxDegree { get; set; }
     }
@@ -861,6 +1010,8 @@ namespace GeoMagSharp
     /// </summary>
     public class GeoMagVector
     {
+        #region Constructors
+
         public GeoMagVector()
         {
             d = 0;
@@ -883,6 +1034,10 @@ namespace GeoMagSharp
             f = other.f;
         }
 
+        #endregion
+
+        #region Public Memembers
+
         /// <summary>
         /// Subtracts one vector from another
         /// </summary>
@@ -901,6 +1056,10 @@ namespace GeoMagSharp
                 f = f - vector2.f
             };
         }
+
+        #endregion
+
+        #region Getters & Setters
 
         /// <summary>
         /// Declination (deg +ve east) 
@@ -936,6 +1095,8 @@ namespace GeoMagSharp
         ///  Total Intensity (nT)
         /// </summary>
         public double f { get; set; }
+
+        #endregion
 
     }
 

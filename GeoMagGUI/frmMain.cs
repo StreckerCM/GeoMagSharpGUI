@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Device.Location;
+
 using GeoMagGUI.Properties;
 using GeoMagSharp;
 
@@ -14,6 +15,8 @@ namespace GeoMagGUI
         public readonly string ModelFolder;
 
         private GeoCoordinateWatcher Watcher = null;
+
+        private MagneticModelCollection Models;
 
         public DataTable DtModels;
 
@@ -47,6 +50,8 @@ namespace GeoMagGUI
             ComboBoxLatDir.SelectedItem = @"N";
 
             ComboBoxLongDir.SelectedItem = @"W";
+
+            Models = MagneticModelCollection.Load(Path.Combine(ModelFolder, "Models.json"));
 
             DtModels = new DataTable();
 
@@ -146,48 +151,15 @@ namespace GeoMagGUI
 
                 var altUnit = Distance.FromString(comboBoxAltitudeUnits.SelectedItem.ToString());
 
-                //GeoMagDistance altUnit = GeoMagDistance.kilometer;
-
-                //switch (comboBoxAltitudeUnits.SelectedItem.ToString().ToLower())
-                //{
-                //    case "ft":
-                //        altUnit = GeoMagDistance.Unit.foot;
-                //        break;
-
-                //    case "m":
-                //        altUnit = GeoMagDistance.meter;
-                //        break;
-
-                //    case "mi":
-                //        altUnit = GeoMagDistance.mile;
-                //        break;
-
-                //    default:
-                //        altUnit = GeoMagDistance.kilometer;
-                //        break;
-                //}
-
-                //if (comboBoxUnits.SelectedItem.ToString().Equals("ft", StringComparison.OrdinalIgnoreCase))
-                //{
-                //    altitude *= Constants.FeetToKilometer;
-                //}
-                //else if (comboBoxUnits.SelectedItem.ToString().Equals("m", StringComparison.OrdinalIgnoreCase))
-                //{
-                //    altitude *= Constants.MeterToKilometer;
-                //}
-
                 if (string.IsNullOrEmpty(textBoxLatitudeDecimal.Text) || !Helper.IsNumeric(textBoxLatitudeDecimal.Text))
                 {
                     this.errorProviderCheck.SetError(textBoxLatitudeDecimal, @"Latitude must be a valid number");
                     return;
                 }
 
-                //double latitude = Convert.ToDouble(textBoxLatitudeDecimal.Text);
-
                 if (string.IsNullOrEmpty(textBoxLongitudeDecimal.Text) || !Helper.IsNumeric(textBoxLongitudeDecimal.Text))
                 {
                     this.errorProviderCheck.SetError(textBoxLongitudeDecimal, @"Longitude must be a valid number");
-                    //MessageBox.Show(string.Format("Longitude must be a valid number.{0}Please correct and try again.", Environment.NewLine), @"Error: Longitude Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
 
@@ -332,6 +304,25 @@ namespace GeoMagGUI
             comboBoxModels.ValueMember = "ID";
 
             comboBoxModels.SelectedValue = selectedIdx;
+        }
+
+        private void addModelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var fAddModel = new frmAddModel())
+            {
+                this.Cursor = Cursors.WaitCursor;
+
+                fAddModel.ShowDialog(this);
+
+                this.Cursor = Cursors.Default;
+
+                //var copyToLocation = string.Format("{0}{1}", ModelFolder, Path.GetFileName(fDlg.FileName));
+
+                //File.Copy(fDlg.FileName, copyToLocation);
+
+                //LoadModels(copyToLocation);
+            }
+
         }
 
         private void loadModelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -689,6 +680,7 @@ namespace GeoMagGUI
                 Cursor = Cursors.Default;
             }
         }
+
 
     }
 }

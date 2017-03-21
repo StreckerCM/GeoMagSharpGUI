@@ -41,6 +41,17 @@ namespace GeoMagSharp
 
         }
 
+        public void LoadModel(string modelFile, string svFile)
+        {
+            _Models = null;
+
+            if (string.IsNullOrEmpty(modelFile))
+                throw new GeoMagExceptionFileNotFound("Error coefficient file name not specified");
+
+            _Models = ModelReader.Read(modelFile, svFile);
+
+        }
+
         public void MagneticCalculations(CalculationOptions inCalculationOptions)
         {
             _CalculationOptions = null;

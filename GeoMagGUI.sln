@@ -1,17 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoMagGUI", "GeoMagGUI\GeoMagGUI.csproj", "{F4F726CC-6FE9-4C5A-8C07-7D120EFD957E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoMagSharp", "GeoMagSharp\GeoMagSharp.csproj", "{AE04340D-E45E-4BDC-942A-58BD0424CEFC}"
-EndProject
-Project("{6141683F-8A12-4E36-9623-2EB02B2C2303}") = "SetupGeoMagGUI", "SetupGeoMagGUI\SetupGeoMagGUI.isproj", "{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}"
-	ProjectSection(ProjectDependencies) = postProject
-		{AE04340D-E45E-4BDC-942A-58BD0424CEFC} = {AE04340D-E45E-4BDC-942A-58BD0424CEFC}
-		{F4F726CC-6FE9-4C5A-8C07-7D120EFD957E} = {F4F726CC-6FE9-4C5A-8C07-7D120EFD957E}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,36 +76,6 @@ Global
 		{AE04340D-E45E-4BDC-942A-58BD0424CEFC}.SingleImage|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{AE04340D-E45E-4BDC-942A-58BD0424CEFC}.SingleImage|Mixed Platforms.Build.0 = Release|Any CPU
 		{AE04340D-E45E-4BDC-942A-58BD0424CEFC}.SingleImage|x86.ActiveCfg = Release|Any CPU
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.CD_ROM|Any CPU.ActiveCfg = CD_ROM
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.CD_ROM|Any CPU.Build.0 = CD_ROM
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.CD_ROM|Mixed Platforms.ActiveCfg = CD_ROM
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.CD_ROM|Mixed Platforms.Build.0 = CD_ROM
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.CD_ROM|x86.ActiveCfg = CD_ROM
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.CD_ROM|x86.Build.0 = CD_ROM
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.Debug|Any CPU.ActiveCfg = DVD-5
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.Debug|Any CPU.Build.0 = DVD-5
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.Debug|Mixed Platforms.ActiveCfg = DVD-5
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.Debug|Mixed Platforms.Build.0 = DVD-5
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.Debug|x86.ActiveCfg = DVD-5
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.Debug|x86.Build.0 = DVD-5
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.DVD-5|Any CPU.ActiveCfg = DVD-5
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.DVD-5|Any CPU.Build.0 = DVD-5
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.DVD-5|Mixed Platforms.ActiveCfg = DVD-5
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.DVD-5|Mixed Platforms.Build.0 = DVD-5
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.DVD-5|x86.ActiveCfg = DVD-5
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.DVD-5|x86.Build.0 = DVD-5
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.Release|Any CPU.ActiveCfg = SingleImage
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.Release|Any CPU.Build.0 = SingleImage
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.Release|Mixed Platforms.ActiveCfg = SingleImage
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.Release|Mixed Platforms.Build.0 = SingleImage
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.Release|x86.ActiveCfg = SingleImage
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.Release|x86.Build.0 = SingleImage
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.SingleImage|Any CPU.ActiveCfg = SingleImage
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.SingleImage|Any CPU.Build.0 = SingleImage
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.SingleImage|Mixed Platforms.ActiveCfg = SingleImage
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.SingleImage|Mixed Platforms.Build.0 = SingleImage
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.SingleImage|x86.ActiveCfg = SingleImage
-		{6CF5DEBF-A933-421D-80BC-57FA36C4ACC6}.SingleImage|x86.Build.0 = SingleImage
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
