@@ -10,10 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.IO;
 
 using Newtonsoft.Json;
-using System.IO;
 
 namespace GeoMagSharp
 {
@@ -30,6 +29,15 @@ namespace GeoMagSharp
         BGS = 1,
         NOAA = 2,
         MAGVAR = 3
+    }
+
+    public enum knownModels
+    {
+        NONE = 0,
+        DGRF = 1,
+        EMM = 2,
+        IGRF = 3,
+        WMM = 4
     }
 
     #endregion
@@ -534,10 +542,31 @@ namespace GeoMagSharp
     }
 
     /// <summary>
-    /// Magnetic Model Set Object
+    /// Magnetic Model Collection Object
     /// </summary>
-    public class MagneticModelCollection : System.Collections.CollectionBase
+    public class MagneticModelCollection : IEnumerable<MagneticModelSet>
     {
+        public List<MagneticModelSet> TList { get; private set; }
+
+        public MagneticModelCollection()
+        {
+            TList = new List<MagneticModelSet>();
+        }
+
+        public void Add(MagneticModelSet item)
+        {
+            TList.Add(item);
+        }
+        public IEnumerator<MagneticModelSet> GetEnumerator()
+        {
+            return TList.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
         #region Object Serializers
 
         public bool Save(string filename)
@@ -619,23 +648,14 @@ namespace GeoMagSharp
 
         public MagneticModelSet()
         {
-            MultiFile = false;
-            FileName = string.Empty;
-            FileStaticCoefficients = string.Empty;
-            FileSecularVariationCoefficient = string.Empty;
-            MinDate = -1;
-            MaxDate = -1;
-            EarthRadius = Constants.EarthsRadiusInKm;
 
             Models = new List<MagneticModel>();
         }
 
         public MagneticModelSet(MagneticModelSet other)
         {
-            MultiFile = other.MultiFile;
             FileName = other.FileName;
-            FileStaticCoefficients = other.FileStaticCoefficients;
-            FileSecularVariationCoefficient = other.FileSecularVariationCoefficient;
+            Type = other.Type;
             MinDate = other.MinDate;
             MaxDate = other.MaxDate;
             EarthRadius = other.EarthRadius;
@@ -658,11 +678,15 @@ namespace GeoMagSharp
             Models.Add(newModel);
 
             //Update data range to include added model
-            if (MinDate.Equals(-1) ||
-                MinDate > newModel.Year) MinDate = newModel.Year;
+            MinDate = newModel.Year;
 
-            if (MaxDate.Equals(-1) ||
-                MaxDate < newModel.Year) MaxDate = newModel.Year;
+            MaxDate = newModel.Year;
+
+            //if (MinDate.Equals(-1) ||
+            //    MinDate > newModel.Year) MinDate = newModel.Year;
+
+            //if (MaxDate.Equals(-1) ||
+            //    MaxDate < newModel.Year) MaxDate = newModel.Year;
 
         }
 
@@ -896,15 +920,107 @@ namespace GeoMagSharp
 
         #endregion
 
-        public bool MultiFile { get; set; }
-        public string FileName { get; set; }
-        public string FileStaticCoefficients { get; set; }
-        public string FileSecularVariationCoefficient { get; set; }
-        public double MinDate { get; set; }
-        public double MaxDate { get; set; }
-        public double EarthRadius { get; set; }
+        private string _Name = string.Empty;
+        private string _FileName = string.Empty;
+        private knownModels _Type = knownModels.NONE;
+        private double? _MinDate = null;
+        private double? _MaxDate = null;
+        private double _EarthRadius = Constants.EarthsRadiusInKm;
+
+        [JsonProperty]
         private List<MagneticModel> Models { get; set; }
 
+        #region getters & setters
+
+        public string Name
+        {
+            get
+            {
+                if (Models == null) return string.Empty;
+
+                return _Name;
+            }
+            set
+            {
+                _Name = value;
+            }
+        }
+
+        public string FileName
+        {
+            get
+            {
+                if (Models == null) return string.Empty;
+
+                return _FileName;
+            }
+            set
+            {
+                _FileName = value;
+            }
+        }
+
+        public knownModels Type
+        {
+            get
+            {
+                if (Models == null) return knownModels.NONE;
+
+                return _Type;
+            }
+            set
+            {
+                _Type = value;
+            }
+        }
+
+        public double MinDate
+        {
+            get
+            {
+                if (Models == null) return double.NaN;
+
+                return Convert.ToDouble(_MinDate);
+            }
+            set
+            {
+                if (!value.IsValidYear()) return;
+
+                if(_MinDate == null || value <= _MinDate) _MinDate = value;
+            }
+        }
+
+        public double MaxDate
+        {
+            get
+            {
+                if (Models == null) return double.NaN;
+
+                return Convert.ToDouble(_MaxDate);
+            }
+            set
+            {
+                if (!value.IsValidYear()) return;
+
+                if (_MaxDate == null || _MaxDate <= value) _MaxDate = value;
+            }
+        }
+
+        public double EarthRadius
+        {
+            get
+            {
+                if (Models == null) return double.NaN;
+
+                return _EarthRadius;
+            }
+            set
+            {
+                _EarthRadius = value;
+            }
+        }
+
+        [JsonIgnore]
         public List<MagneticModel> GetModels
         {
             get
@@ -913,6 +1029,7 @@ namespace GeoMagSharp
             }
         }
 
+        [JsonIgnore]
         public Int32 NumberOfModels
         {
             get
@@ -922,6 +1039,7 @@ namespace GeoMagSharp
                 return Models.Count;
             }
         }
+        #endregion
     }
 
     public class MagneticModel

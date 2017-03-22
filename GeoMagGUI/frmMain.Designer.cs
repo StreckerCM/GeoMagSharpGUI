@@ -52,6 +52,7 @@
             this.textBoxLongitudeDecimal = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,14 +65,6 @@
             this.aboutGeoMagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.errorProviderCheck = new System.Windows.Forms.ErrorProvider(this.components);
             this.dataGridViewResults = new System.Windows.Forms.DataGridView();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.buttonMyLocation = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.comboBoxAltitudeUnits = new System.Windows.Forms.ComboBox();
-            this.ComboBoxLongDir = new System.Windows.Forms.ComboBox();
-            this.ComboBoxLatDir = new System.Windows.Forms.ComboBox();
-            this.addModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ColumnDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnDeclination = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnInclination = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -80,6 +73,13 @@
             this.ColumnEastComp = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnVerticalComp = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnTotalField = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.buttonMyLocation = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.comboBoxAltitudeUnits = new System.Windows.Forms.ComboBox();
+            this.ComboBoxLongDir = new System.Windows.Forms.ComboBox();
+            this.ComboBoxLatDir = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStepSize)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderCheck)).BeginInit();
@@ -92,7 +92,7 @@
             this.dateTimePicker1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.dateTimePicker1, 2);
             this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePicker1.Location = new System.Drawing.Point(375, 11);
+            this.dateTimePicker1.Location = new System.Drawing.Point(374, 11);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(81, 20);
             this.dateTimePicker1.TabIndex = 1;
@@ -102,7 +102,7 @@
             // 
             this.numericUpDownStepSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.numericUpDownStepSize, 2);
-            this.numericUpDownStepSize.Location = new System.Drawing.Point(715, 11);
+            this.numericUpDownStepSize.Location = new System.Drawing.Point(714, 11);
             this.numericUpDownStepSize.Maximum = new decimal(new int[] {
             1,
             0,
@@ -127,7 +127,7 @@
             // 
             this.labelStepSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.labelStepSize.AutoSize = true;
-            this.labelStepSize.Location = new System.Drawing.Point(652, 13);
+            this.labelStepSize.Location = new System.Drawing.Point(651, 13);
             this.labelStepSize.Name = "labelStepSize";
             this.labelStepSize.Size = new System.Drawing.Size(57, 13);
             this.labelStepSize.TabIndex = 9;
@@ -138,7 +138,7 @@
             // 
             this.labelDateTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.labelDateTo.AutoSize = true;
-            this.labelDateTo.Location = new System.Drawing.Point(462, 13);
+            this.labelDateTo.Location = new System.Drawing.Point(461, 13);
             this.labelDateTo.Name = "labelDateTo";
             this.labelDateTo.Size = new System.Drawing.Size(28, 13);
             this.labelDateTo.TabIndex = 7;
@@ -149,7 +149,7 @@
             // 
             this.labelDateFrom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.labelDateFrom.AutoSize = true;
-            this.labelDateFrom.Location = new System.Drawing.Point(311, 13);
+            this.labelDateFrom.Location = new System.Drawing.Point(310, 13);
             this.labelDateFrom.Name = "labelDateFrom";
             this.labelDateFrom.Size = new System.Drawing.Size(58, 13);
             this.labelDateFrom.TabIndex = 5;
@@ -160,7 +160,7 @@
             this.dateTimePicker2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.dateTimePicker2, 2);
             this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePicker2.Location = new System.Drawing.Point(496, 11);
+            this.dateTimePicker2.Location = new System.Drawing.Point(495, 11);
             this.dateTimePicker2.Name = "dateTimePicker2";
             this.dateTimePicker2.Size = new System.Drawing.Size(82, 20);
             this.dateTimePicker2.TabIndex = 2;
@@ -176,14 +176,14 @@
             this.comboBoxModels.FormattingEnabled = true;
             this.comboBoxModels.Location = new System.Drawing.Point(71, 11);
             this.comboBoxModels.Name = "comboBoxModels";
-            this.comboBoxModels.Size = new System.Drawing.Size(226, 21);
+            this.comboBoxModels.Size = new System.Drawing.Size(225, 21);
             this.comboBoxModels.TabIndex = 0;
             // 
             // textBoxAltitude
             // 
             this.textBoxAltitude.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.textBoxAltitude, 2);
-            this.textBoxAltitude.Location = new System.Drawing.Point(715, 43);
+            this.textBoxAltitude.Location = new System.Drawing.Point(714, 43);
             this.textBoxAltitude.Name = "textBoxAltitude";
             this.textBoxAltitude.Size = new System.Drawing.Size(57, 20);
             this.textBoxAltitude.TabIndex = 15;
@@ -196,7 +196,7 @@
             // 
             this.label_Elevation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label_Elevation.AutoSize = true;
-            this.label_Elevation.Location = new System.Drawing.Point(652, 45);
+            this.label_Elevation.Location = new System.Drawing.Point(651, 45);
             this.label_Elevation.Name = "label_Elevation";
             this.label_Elevation.Size = new System.Drawing.Size(57, 13);
             this.label_Elevation.TabIndex = 16;
@@ -208,7 +208,7 @@
             this.tableLayoutPanel1.SetColumnSpan(this.buttonCalculate, 19);
             this.buttonCalculate.Location = new System.Drawing.Point(11, 99);
             this.buttonCalculate.Name = "buttonCalculate";
-            this.buttonCalculate.Size = new System.Drawing.Size(810, 25);
+            this.buttonCalculate.Size = new System.Drawing.Size(809, 25);
             this.buttonCalculate.TabIndex = 18;
             this.buttonCalculate.Text = "Calculate";
             this.buttonCalculate.UseVisualStyleBackColor = true;
@@ -218,7 +218,7 @@
             // 
             this.label85.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label85.AutoSize = true;
-            this.label85.Location = new System.Drawing.Point(311, 45);
+            this.label85.Location = new System.Drawing.Point(310, 45);
             this.label85.Name = "label85";
             this.label85.Size = new System.Drawing.Size(58, 13);
             this.label85.TabIndex = 14;
@@ -227,7 +227,7 @@
             // TextBoxLongDeg
             // 
             this.TextBoxLongDeg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.TextBoxLongDeg.Location = new System.Drawing.Point(375, 67);
+            this.TextBoxLongDeg.Location = new System.Drawing.Point(374, 67);
             this.TextBoxLongDeg.Name = "TextBoxLongDeg";
             this.TextBoxLongDeg.Size = new System.Drawing.Size(43, 20);
             this.TextBoxLongDeg.TabIndex = 10;
@@ -241,7 +241,7 @@
             this.TextBoxLatSec.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.TextBoxLatSec.Location = new System.Drawing.Point(165, 67);
             this.TextBoxLatSec.Name = "TextBoxLatSec";
-            this.TextBoxLatSec.Size = new System.Drawing.Size(80, 20);
+            this.TextBoxLatSec.Size = new System.Drawing.Size(79, 20);
             this.TextBoxLatSec.TabIndex = 7;
             this.TextBoxLatSec.Tag = "";
             this.TextBoxLatSec.Text = "0.0000";
@@ -251,7 +251,7 @@
             // TextBoxLongMin
             // 
             this.TextBoxLongMin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.TextBoxLongMin.Location = new System.Drawing.Point(424, 67);
+            this.TextBoxLongMin.Location = new System.Drawing.Point(423, 67);
             this.TextBoxLongMin.Name = "TextBoxLongMin";
             this.TextBoxLongMin.Size = new System.Drawing.Size(32, 20);
             this.TextBoxLongMin.TabIndex = 11;
@@ -276,7 +276,7 @@
             // 
             this.TextBoxLongSec.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.TextBoxLongSec, 2);
-            this.TextBoxLongSec.Location = new System.Drawing.Point(462, 67);
+            this.TextBoxLongSec.Location = new System.Drawing.Point(461, 67);
             this.TextBoxLongSec.Name = "TextBoxLongSec";
             this.TextBoxLongSec.Size = new System.Drawing.Size(64, 20);
             this.TextBoxLongSec.TabIndex = 12;
@@ -313,7 +313,7 @@
             this.tableLayoutPanel1.SetColumnSpan(this.textBoxLatitudeDecimal, 4);
             this.textBoxLatitudeDecimal.Location = new System.Drawing.Point(71, 43);
             this.textBoxLatitudeDecimal.Name = "textBoxLatitudeDecimal";
-            this.textBoxLatitudeDecimal.Size = new System.Drawing.Size(226, 20);
+            this.textBoxLatitudeDecimal.Size = new System.Drawing.Size(225, 20);
             this.textBoxLatitudeDecimal.TabIndex = 4;
             this.textBoxLatitudeDecimal.Tag = "";
             this.textBoxLatitudeDecimal.Text = "0";
@@ -325,7 +325,7 @@
             // 
             this.textBoxLongitudeDecimal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.textBoxLongitudeDecimal, 5);
-            this.textBoxLongitudeDecimal.Location = new System.Drawing.Point(375, 43);
+            this.textBoxLongitudeDecimal.Location = new System.Drawing.Point(374, 43);
             this.textBoxLongitudeDecimal.Name = "textBoxLongitudeDecimal";
             this.textBoxLongitudeDecimal.Size = new System.Drawing.Size(203, 20);
             this.textBoxLongitudeDecimal.TabIndex = 9;
@@ -358,30 +358,37 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // addModelToolStripMenuItem
+            // 
+            this.addModelToolStripMenuItem.Name = "addModelToolStripMenuItem";
+            this.addModelToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.addModelToolStripMenuItem.Text = "Add Model";
+            this.addModelToolStripMenuItem.Click += new System.EventHandler(this.addModelToolStripMenuItem_Click);
+            // 
             // loadModelToolStripMenuItem
             // 
             this.loadModelToolStripMenuItem.Name = "loadModelToolStripMenuItem";
-            this.loadModelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadModelToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.loadModelToolStripMenuItem.Text = "Load Model";
             this.loadModelToolStripMenuItem.Click += new System.EventHandler(this.loadModelToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(134, 6);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -457,172 +464,8 @@
             this.dataGridViewResults.Location = new System.Drawing.Point(11, 139);
             this.dataGridViewResults.Name = "dataGridViewResults";
             this.tableLayoutPanel1.SetRowSpan(this.dataGridViewResults, 2);
-            this.dataGridViewResults.Size = new System.Drawing.Size(810, 117);
+            this.dataGridViewResults.Size = new System.Drawing.Size(809, 117);
             this.dataGridViewResults.TabIndex = 19;
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 21;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 56F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 38F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 52F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 64F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 49F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 38F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 52F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 27F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 33F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 63F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 7F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 56F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 49F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 19F));
-            this.tableLayoutPanel1.Controls.Add(this.textBoxLatitudeDecimal, 2, 3);
-            this.tableLayoutPanel1.Controls.Add(this.comboBoxModels, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label3, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label80, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.TextBoxLatDeg, 2, 4);
-            this.tableLayoutPanel1.Controls.Add(this.TextBoxLatMin, 3, 4);
-            this.tableLayoutPanel1.Controls.Add(this.TextBoxLatSec, 4, 4);
-            this.tableLayoutPanel1.Controls.Add(this.label85, 7, 3);
-            this.tableLayoutPanel1.Controls.Add(this.labelDateFrom, 7, 1);
-            this.tableLayoutPanel1.Controls.Add(this.textBoxLongitudeDecimal, 8, 3);
-            this.tableLayoutPanel1.Controls.Add(this.TextBoxLongDeg, 8, 4);
-            this.tableLayoutPanel1.Controls.Add(this.TextBoxLongMin, 9, 4);
-            this.tableLayoutPanel1.Controls.Add(this.TextBoxLongSec, 10, 4);
-            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker1, 8, 1);
-            this.tableLayoutPanel1.Controls.Add(this.dataGridViewResults, 1, 8);
-            this.tableLayoutPanel1.Controls.Add(this.buttonMyLocation, 14, 3);
-            this.tableLayoutPanel1.Controls.Add(this.buttonCalculate, 1, 6);
-            this.tableLayoutPanel1.Controls.Add(this.labelDateTo, 10, 1);
-            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker2, 11, 1);
-            this.tableLayoutPanel1.Controls.Add(this.labelStepSize, 16, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label_Elevation, 16, 3);
-            this.tableLayoutPanel1.Controls.Add(this.numericUpDownStepSize, 17, 1);
-            this.tableLayoutPanel1.Controls.Add(this.textBoxAltitude, 17, 3);
-            this.tableLayoutPanel1.Controls.Add(this.label4, 19, 1);
-            this.tableLayoutPanel1.Controls.Add(this.comboBoxAltitudeUnits, 19, 3);
-            this.tableLayoutPanel1.Controls.Add(this.ComboBoxLongDir, 12, 4);
-            this.tableLayoutPanel1.Controls.Add(this.ComboBoxLatDir, 5, 4);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 11;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(844, 267);
-            this.tableLayoutPanel1.TabIndex = 23;
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 13);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(54, 13);
-            this.label3.TabIndex = 11;
-            this.label3.Text = "Model:";
-            // 
-            // buttonMyLocation
-            // 
-            this.tableLayoutPanel1.SetColumnSpan(this.buttonMyLocation, 2);
-            this.buttonMyLocation.Image = ((System.Drawing.Image)(resources.GetObject("buttonMyLocation.Image")));
-            this.buttonMyLocation.Location = new System.Drawing.Point(592, 43);
-            this.buttonMyLocation.Name = "buttonMyLocation";
-            this.tableLayoutPanel1.SetRowSpan(this.buttonMyLocation, 2);
-            this.buttonMyLocation.Size = new System.Drawing.Size(26, 25);
-            this.buttonMyLocation.TabIndex = 14;
-            this.buttonMyLocation.UseVisualStyleBackColor = true;
-            this.buttonMyLocation.Click += new System.EventHandler(this.buttonMyLocation_Click);
-            // 
-            // label4
-            // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(778, 13);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(43, 13);
-            this.label4.TabIndex = 23;
-            this.label4.Text = "Days";
-            this.label4.Visible = false;
-            // 
-            // comboBoxAltitudeUnits
-            // 
-            this.comboBoxAltitudeUnits.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.comboBoxAltitudeUnits.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.comboBoxAltitudeUnits.FormattingEnabled = true;
-            this.comboBoxAltitudeUnits.Items.AddRange(new object[] {
-            "km",
-            "m",
-            "ft"});
-            this.comboBoxAltitudeUnits.Location = new System.Drawing.Point(777, 42);
-            this.comboBoxAltitudeUnits.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.comboBoxAltitudeUnits.Name = "comboBoxAltitudeUnits";
-            this.comboBoxAltitudeUnits.Size = new System.Drawing.Size(45, 21);
-            this.comboBoxAltitudeUnits.TabIndex = 16;
-            // 
-            // ComboBoxLongDir
-            // 
-            this.ComboBoxLongDir.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.ComboBoxLongDir.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.ComboBoxLongDir.FormattingEnabled = true;
-            this.ComboBoxLongDir.Items.AddRange(new object[] {
-            "E",
-            "W"});
-            this.ComboBoxLongDir.Location = new System.Drawing.Point(531, 66);
-            this.ComboBoxLongDir.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.ComboBoxLongDir.Name = "ComboBoxLongDir";
-            this.ComboBoxLongDir.Size = new System.Drawing.Size(48, 21);
-            this.ComboBoxLongDir.TabIndex = 13;
-            this.ComboBoxLongDir.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLongitude_Validating);
-            this.ComboBoxLongDir.Validated += new System.EventHandler(this.TextBoxLongitude_Validated);
-            // 
-            // ComboBoxLatDir
-            // 
-            this.ComboBoxLatDir.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.ComboBoxLatDir.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.ComboBoxLatDir.FormattingEnabled = true;
-            this.ComboBoxLatDir.Items.AddRange(new object[] {
-            "N",
-            "S"});
-            this.ComboBoxLatDir.Location = new System.Drawing.Point(250, 66);
-            this.ComboBoxLatDir.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.ComboBoxLatDir.Name = "ComboBoxLatDir";
-            this.ComboBoxLatDir.Size = new System.Drawing.Size(48, 21);
-            this.ComboBoxLatDir.TabIndex = 8;
-            this.ComboBoxLatDir.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLatitude_Validating);
-            this.ComboBoxLatDir.Validated += new System.EventHandler(this.TextBoxLatitude_Validated);
-            // 
-            // addModelToolStripMenuItem
-            // 
-            this.addModelToolStripMenuItem.Name = "addModelToolStripMenuItem";
-            this.addModelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.addModelToolStripMenuItem.Text = "Add Model";
-            this.addModelToolStripMenuItem.Click += new System.EventHandler(this.addModelToolStripMenuItem_Click);
             // 
             // ColumnDate
             // 
@@ -688,6 +531,163 @@
             this.ColumnTotalField.Name = "ColumnTotalField";
             this.ColumnTotalField.ReadOnly = true;
             this.ColumnTotalField.Width = 75;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 21;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 52F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 64F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 52F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 33F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 63F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 7F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 56F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Controls.Add(this.textBoxLatitudeDecimal, 2, 3);
+            this.tableLayoutPanel1.Controls.Add(this.comboBoxModels, 2, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label3, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label80, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.TextBoxLatDeg, 2, 4);
+            this.tableLayoutPanel1.Controls.Add(this.TextBoxLatMin, 3, 4);
+            this.tableLayoutPanel1.Controls.Add(this.TextBoxLatSec, 4, 4);
+            this.tableLayoutPanel1.Controls.Add(this.label85, 7, 3);
+            this.tableLayoutPanel1.Controls.Add(this.labelDateFrom, 7, 1);
+            this.tableLayoutPanel1.Controls.Add(this.textBoxLongitudeDecimal, 8, 3);
+            this.tableLayoutPanel1.Controls.Add(this.TextBoxLongDeg, 8, 4);
+            this.tableLayoutPanel1.Controls.Add(this.TextBoxLongMin, 9, 4);
+            this.tableLayoutPanel1.Controls.Add(this.TextBoxLongSec, 10, 4);
+            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker1, 8, 1);
+            this.tableLayoutPanel1.Controls.Add(this.dataGridViewResults, 1, 8);
+            this.tableLayoutPanel1.Controls.Add(this.buttonMyLocation, 14, 3);
+            this.tableLayoutPanel1.Controls.Add(this.buttonCalculate, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.labelDateTo, 10, 1);
+            this.tableLayoutPanel1.Controls.Add(this.dateTimePicker2, 11, 1);
+            this.tableLayoutPanel1.Controls.Add(this.labelStepSize, 16, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label_Elevation, 16, 3);
+            this.tableLayoutPanel1.Controls.Add(this.numericUpDownStepSize, 17, 1);
+            this.tableLayoutPanel1.Controls.Add(this.textBoxAltitude, 17, 3);
+            this.tableLayoutPanel1.Controls.Add(this.label4, 19, 1);
+            this.tableLayoutPanel1.Controls.Add(this.comboBoxAltitudeUnits, 19, 3);
+            this.tableLayoutPanel1.Controls.Add(this.ComboBoxLongDir, 12, 4);
+            this.tableLayoutPanel1.Controls.Add(this.ComboBoxLatDir, 5, 4);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 11;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(844, 267);
+            this.tableLayoutPanel1.TabIndex = 23;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(11, 13);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(54, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "Model:";
+            // 
+            // buttonMyLocation
+            // 
+            this.tableLayoutPanel1.SetColumnSpan(this.buttonMyLocation, 2);
+            this.buttonMyLocation.Image = ((System.Drawing.Image)(resources.GetObject("buttonMyLocation.Image")));
+            this.buttonMyLocation.Location = new System.Drawing.Point(591, 43);
+            this.buttonMyLocation.Name = "buttonMyLocation";
+            this.tableLayoutPanel1.SetRowSpan(this.buttonMyLocation, 2);
+            this.buttonMyLocation.Size = new System.Drawing.Size(26, 25);
+            this.buttonMyLocation.TabIndex = 14;
+            this.buttonMyLocation.UseVisualStyleBackColor = true;
+            this.buttonMyLocation.Click += new System.EventHandler(this.buttonMyLocation_Click);
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(777, 13);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(43, 13);
+            this.label4.TabIndex = 23;
+            this.label4.Text = "Days";
+            this.label4.Visible = false;
+            // 
+            // comboBoxAltitudeUnits
+            // 
+            this.comboBoxAltitudeUnits.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.comboBoxAltitudeUnits.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxAltitudeUnits.FormattingEnabled = true;
+            this.comboBoxAltitudeUnits.Items.AddRange(new object[] {
+            "km",
+            "m",
+            "ft"});
+            this.comboBoxAltitudeUnits.Location = new System.Drawing.Point(776, 42);
+            this.comboBoxAltitudeUnits.Margin = new System.Windows.Forms.Padding(2);
+            this.comboBoxAltitudeUnits.Name = "comboBoxAltitudeUnits";
+            this.comboBoxAltitudeUnits.Size = new System.Drawing.Size(45, 21);
+            this.comboBoxAltitudeUnits.TabIndex = 16;
+            // 
+            // ComboBoxLongDir
+            // 
+            this.ComboBoxLongDir.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.ComboBoxLongDir.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.ComboBoxLongDir.FormattingEnabled = true;
+            this.ComboBoxLongDir.Items.AddRange(new object[] {
+            "E",
+            "W"});
+            this.ComboBoxLongDir.Location = new System.Drawing.Point(530, 66);
+            this.ComboBoxLongDir.Margin = new System.Windows.Forms.Padding(2);
+            this.ComboBoxLongDir.Name = "ComboBoxLongDir";
+            this.ComboBoxLongDir.Size = new System.Drawing.Size(48, 21);
+            this.ComboBoxLongDir.TabIndex = 13;
+            this.ComboBoxLongDir.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLongitude_Validating);
+            this.ComboBoxLongDir.Validated += new System.EventHandler(this.TextBoxLongitude_Validated);
+            // 
+            // ComboBoxLatDir
+            // 
+            this.ComboBoxLatDir.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.ComboBoxLatDir.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.ComboBoxLatDir.FormattingEnabled = true;
+            this.ComboBoxLatDir.Items.AddRange(new object[] {
+            "N",
+            "S"});
+            this.ComboBoxLatDir.Location = new System.Drawing.Point(249, 66);
+            this.ComboBoxLatDir.Margin = new System.Windows.Forms.Padding(2);
+            this.ComboBoxLatDir.Name = "ComboBoxLatDir";
+            this.ComboBoxLatDir.Size = new System.Drawing.Size(48, 21);
+            this.ComboBoxLatDir.TabIndex = 8;
+            this.ComboBoxLatDir.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLatitude_Validating);
+            this.ComboBoxLatDir.Validated += new System.EventHandler(this.TextBoxLatitude_Validated);
             // 
             // FrmMain
             // 

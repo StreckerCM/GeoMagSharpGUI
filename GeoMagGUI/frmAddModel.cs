@@ -14,7 +14,15 @@ namespace GeoMagGUI
 {
     public partial class frmAddModel : Form
     {
-        private MagneticModelSet Model;
+        private MagneticModelSet _Model;
+
+        public MagneticModelSet Model
+        {
+            get
+            {
+                return _Model;
+            }
+        }
 
         public frmAddModel()
         {
@@ -28,19 +36,21 @@ namespace GeoMagGUI
 
         private void LoadModelData(string modelFile)
         {
-            Model = ModelReader.Read(modelFile);
+            _Model = ModelReader.Read(modelFile);
 
-            if(Model != null)
+            if(_Model != null)
             {
-                textBoxModelName.Text = Path.GetFileNameWithoutExtension(Model.FileName);
+                _Model.Name = Path.GetFileNameWithoutExtension(Model.FileName);
 
-                dateTimePickerMin.Value = Model.MinDate.ToDateTime();
+                textBoxModelName.Text = _Model.Name;
 
-                dateTimePickerMax.Value = Model.MaxDate.ToDateTime();
+                labelModelType.Text = Model.Type.ToString();
 
-                textBoxEarthRadius.Text = Model.EarthRadius.ToString();
+                labelModelNumberOfModels.Text = Model.NumberOfModels.ToString();
 
-                comboBoxEarthRadiusUnit.SelectedIndex = 0;
+                labelModelDateMin.Text = Model.MinDate.ToDateTime().ToShortDateString();
+
+                labelModelDateMax.Text = Model.MaxDate.ToDateTime().ToShortDateString();
             }
             else
             {
@@ -75,6 +85,16 @@ namespace GeoMagGUI
         private void buttonAddFile_Click(object sender, EventArgs e)
         {
             var modelFile = AddFile();
+        }
+
+        private void buttonOK_Click(object sender, EventArgs e)
+        {
+            Hide();
+        }
+
+        private void textBoxModelName_Validated(object sender, EventArgs e)
+        {
+            Model.Name = textBoxModelName.Text;
         }
     }
 }

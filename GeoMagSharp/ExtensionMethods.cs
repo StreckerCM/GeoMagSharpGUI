@@ -8,9 +8,6 @@
  *  ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace GeoMagSharp
 {
@@ -25,7 +22,7 @@ namespace GeoMagSharp
         {
             double decYear = -1;
 
-            if (date.Equals(DateTime.MinValue)) return decYear;
+            if (date.Equals(DateTime.MinValue) || !date.IsValidYear()) return decYear;
 
             Int32 im = -1;
 
@@ -82,8 +79,10 @@ namespace GeoMagSharp
 
             Int32 yearInt = Convert.ToInt32(decDate - daysDbl);
 
-            double day = 0;
+            if (!decDate.IsValidYear()) return DateTime.MaxValue;
 
+            double day = 0;
+            
             if (!DateTime.IsLeapYear(yearInt))
             {
                 day = daysDbl * 365D;
@@ -168,6 +167,16 @@ namespace GeoMagSharp
             return new DateTime(yearInt, monthInt, dayInt);
         }
 
+        public static bool IsValidYear(this DateTime date)
+        {
+            return (1900 <= date.Year && date.Year <= DateTime.MaxValue.Year);
+        }
+
+        public static bool IsValidYear(this double decDate)
+        {
+            return (1900D <= decDate && decDate <= DateTime.MaxValue.ToDecimal());
+        }
+
         /// <summary>
         /// converts radians to degrees
         /// </summary>
@@ -203,6 +212,26 @@ namespace GeoMagSharp
             return Convert.ToDouble(numStr.Substring(0, numStr.IndexOf('.')));
         }
 
-    }
+        public static knownModels CheckStringForModel(this string value)
+        {
+            foreach (knownModels model in Enum.GetValues(typeof(knownModels)))
+            {
+                Int32 idx = value.IndexOf(model.ToString(), StringComparison.OrdinalIgnoreCase);
+
+                if (!idx.Equals(-1) && model.Equals(knownModels.EMM))
+                {
+                    return model;
+                }
+                else if (idx.Equals(0) && !(model.Equals(knownModels.EMM) || model.Equals(knownModels.NONE)))
+                {
+                    return model;
+                }
+            }
+
+            return knownModels.NONE;
+
+        }
     
+    }
+
 }

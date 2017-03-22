@@ -51,7 +51,9 @@ namespace GeoMagGUI
 
             ComboBoxLongDir.SelectedItem = @"W";
 
-            Models = MagneticModelCollection.Load(Path.Combine(ModelFolder, "Models.json"));
+            Models = MagneticModelCollection.Load(Path.Combine(ModelFolder, "Models.JSON"));
+
+            if (Models == null) Models = new MagneticModelCollection();
 
             DtModels = new DataTable();
 
@@ -313,6 +315,10 @@ namespace GeoMagGUI
                 this.Cursor = Cursors.WaitCursor;
 
                 fAddModel.ShowDialog(this);
+
+                Models.Add(fAddModel.Model);
+
+                Models.Save(Path.Combine(ModelFolder, "Models.JSON"));
 
                 this.Cursor = Cursors.Default;
 

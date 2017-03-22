@@ -9,14 +9,9 @@
  *  ****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.IO;
-using System.Data;
-
-using Newtonsoft;
 
 namespace GeoMagSharp
 {
@@ -70,7 +65,7 @@ namespace GeoMagSharp
         {
             var outModels = new MagneticModelSet
             {
-                FileName = modelFile
+                FileName = Path.GetFileName(modelFile)
             };
 
             double tempDbl = 0;
@@ -95,140 +90,19 @@ namespace GeoMagSharp
                     {
                         var lineParase = inbuff.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        if (inbuff.IndexOf("IGRF", StringComparison.OrdinalIgnoreCase).Equals(0) ||
-                            inbuff.IndexOf("DGRF", StringComparison.OrdinalIgnoreCase).Equals(0) ||
-                            inbuff.IndexOf("WMM", StringComparison.OrdinalIgnoreCase).Equals(0))
+                        if(lineNumber.Equals(1)) outModels.Type = inbuff.CheckStringForModel();
+
+                        if (!inbuff.CheckStringForModel().Equals(knownModels.NONE))
                         {
                             /* New model */
-
-                            double.TryParse(lineParase[1], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-
-                            outModels.AddModel(new MagneticModel
+                            if (outModels.Type.Equals(knownModels.EMM))
                             {
-                                Type = @"M",
-                                Year = tempDbl
-                            });
-
-                            mModelIdx = outModels.GetModels.Count() - 1; 
-
-                            outModels.AddModel(new MagneticModel
-                            {
-                                Type = @"S",
-                                Year = tempDbl
-                            });
-
-                            eModelIdx = outModels.GetModels.Count() - 1;
-                        }
-                        else if (mModelIdx > -1)
-                        {
-                            Int32 lineDegree = -1;
-
-                            Int32 lineOrder = -1;
-
-                            for (Int32 itemIdx = 0; itemIdx < lineParase.Count(); itemIdx++)
-                            {
-                                
-
-                                switch (itemIdx)
-                                {
-                                    //Degree(n) (int)
-                                    case 0:
-                                        Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out lineDegree);
-                                        break;
-
-                                    //Order(m) (int)
-                                    case 1:
-                                        Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out lineOrder);
-                                        break;
-
-                                    //g1 (double)
-                                    case 2:
-                                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                        outModels.AddCoefficients(mModelIdx, tempDbl);
-                                        break;
-
-                                    //h1 (double)
-                                    case 3:
-                                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                        if (lineOrder > 0) outModels.AddCoefficients(mModelIdx, tempDbl);
-                                        break;
-
-                                    //g2 (double)
-                                    case 4:
-                                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                        outModels.AddCoefficients(eModelIdx, tempDbl);
-                                        break;
-
-                                    //h2 (double)
-                                    case 5:
-                                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                        if (lineOrder > 0) outModels.AddCoefficients(eModelIdx, tempDbl);
-                                        break;
-
-                                    //irat (string)
-                                    case 6:
-                                        //coeffLine.Model = lineParase[itemIdx];
-                                        break;
-
-                                    //LineNum (int)
-                                    case 7:
-                                        //Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
-                                        //coeffLine.LineNum = tempInt;
-                                        break;
-                                }
+                                double.TryParse(lineParase[0], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
                             }
-                        }
-                    }
-                }
-
-            }
-
-            //Add 5 years to the start date of the final model
-            outModels.MaxDate += 5;
-
-            if (outModels.NumberOfModels.Equals(0))
-                throw new GeoMagExceptionModelNotLoaded(string.Format("Error: No models were detected in the specified file{0}File Name: {1}", 
-                                                        Environment.NewLine, Path.GetFileName(modelFile)));
-
-            return outModels;
-        }
-
-        private static MagneticModelSet COFreader(string modelFile, string svFile)
-        {
-            var outModels = new MagneticModelSet
-            {
-                FileName = modelFile
-            };
-
-            double tempDbl = 0;
-
-            using (var stream = new StreamReader(modelFile))
-            {
-                string inbuff;
-
-                Int32 mModelIdx = -1;                             /* First model will be 0 */
-
-                Int32 eModelIdx = -1;                             /* First model will be 0 */
-
-                Int32 lineNumber = 0;
-
-                while ((inbuff = stream.ReadLine()) != null)
-                {
-                    lineNumber++;
-
-                    inbuff = inbuff.Trim();
-
-                    if (!string.IsNullOrEmpty(inbuff))
-                    {
-                        var lineParase = inbuff.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        if (inbuff.IndexOf("IGRF", StringComparison.OrdinalIgnoreCase).Equals(0) ||
-                            inbuff.IndexOf("DGRF", StringComparison.OrdinalIgnoreCase).Equals(0) ||
-                            inbuff.IndexOf("WMM", StringComparison.OrdinalIgnoreCase).Equals(0))
-                        {
-                            /* New model */
-
-                            double.TryParse(lineParase[1], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                            else
+                            {
+                                double.TryParse(lineParase[1], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                            }
 
                             outModels.AddModel(new MagneticModel
                             {
@@ -245,64 +119,128 @@ namespace GeoMagSharp
                             });
 
                             eModelIdx = outModels.GetModels.Count() - 1;
+                                
+
                         }
                         else if (mModelIdx > -1)
                         {
-                            Int32 lineDegree = -1;
-
-                            Int32 lineOrder = -1;
-
-                            for (Int32 itemIdx = 0; itemIdx < lineParase.Count(); itemIdx++)
+                            if(outModels.Type.Equals(knownModels.EMM))
                             {
+                                #region Split File Line Reader
+                                Int32 lineDegree = -1;
 
+                                Int32 lineOrder = -1;
 
-                                switch (itemIdx)
+                                for (Int32 itemIdx = 0; itemIdx < lineParase.Count(); itemIdx++)
                                 {
-                                    //Degree(n) (int)
-                                    case 0:
-                                        Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out lineDegree);
-                                        break;
+                                    switch (itemIdx)
+                                    {
+                                        //Degree(n) (int)
+                                        case 0:
+                                            Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out lineDegree);
+                                            break;
 
-                                    //Order(m) (int)
-                                    case 1:
-                                        Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out lineOrder);
-                                        break;
+                                        //Order(m) (int)
+                                        case 1:
+                                            Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out lineOrder);
+                                            break;
 
-                                    //g1 (double)
-                                    case 2:
-                                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                        outModels.AddCoefficients(mModelIdx, tempDbl);
-                                        break;
+                                        //g1 (double)
+                                        case 2:
+                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                            outModels.AddCoefficients(mModelIdx, tempDbl);
+                                            break;
 
-                                    //h1 (double)
-                                    case 3:
-                                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                        if (lineOrder > 0) outModels.AddCoefficients(mModelIdx, tempDbl);
-                                        break;
+                                        //h1 (double)
+                                        case 3:
+                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                            if (lineOrder > 0) outModels.AddCoefficients(mModelIdx, tempDbl);
+                                            break;
 
-                                    //g2 (double)
-                                    case 4:
-                                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                        outModels.AddCoefficients(eModelIdx, tempDbl);
-                                        break;
+                                        //g2 (double)
+                                        case 4:
+                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                            outModels.AddCoefficients(eModelIdx, tempDbl);
+                                            break;
 
-                                    //h2 (double)
-                                    case 5:
-                                        double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                        if (lineOrder > 0) outModels.AddCoefficients(eModelIdx, tempDbl);
-                                        break;
+                                        //h2 (double)
+                                        case 5:
+                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                            if (lineOrder > 0) outModels.AddCoefficients(eModelIdx, tempDbl);
+                                            break;
 
-                                    //irat (string)
-                                    case 6:
-                                        //coeffLine.Model = lineParase[itemIdx];
-                                        break;
+                                        //irat (string)
+                                        case 6:
+                                            //coeffLine.Model = lineParase[itemIdx];
+                                            break;
 
-                                    //LineNum (int)
-                                    case 7:
-                                        //Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
-                                        //coeffLine.LineNum = tempInt;
-                                        break;
+                                        //LineNum (int)
+                                        case 7:
+                                            //Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+                                            //coeffLine.LineNum = tempInt;
+                                            break;
+                                    }
                                 }
+                                #endregion
+                            }
+                            else
+                            {
+                                #region Single File Line Reader
+                                Int32 lineDegree = -1;
+
+                                Int32 lineOrder = -1;
+
+                                for (Int32 itemIdx = 0; itemIdx < lineParase.Count(); itemIdx++)
+                                {
+                                    switch (itemIdx)
+                                    {
+                                        //Degree(n) (int)
+                                        case 0:
+                                            Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out lineDegree);
+                                            break;
+
+                                        //Order(m) (int)
+                                        case 1:
+                                            Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out lineOrder);
+                                            break;
+
+                                        //g1 (double)
+                                        case 2:
+                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                            outModels.AddCoefficients(mModelIdx, tempDbl);
+                                            break;
+
+                                        //h1 (double)
+                                        case 3:
+                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                            if (lineOrder > 0) outModels.AddCoefficients(mModelIdx, tempDbl);
+                                            break;
+
+                                        //g2 (double)
+                                        case 4:
+                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                            outModels.AddCoefficients(eModelIdx, tempDbl);
+                                            break;
+
+                                        //h2 (double)
+                                        case 5:
+                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                            if (lineOrder > 0) outModels.AddCoefficients(eModelIdx, tempDbl);
+                                            break;
+
+                                        //irat (string)
+                                        case 6:
+                                            //coeffLine.Model = lineParase[itemIdx];
+                                            break;
+
+                                        //LineNum (int)
+                                        case 7:
+                                            //Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
+                                            //coeffLine.LineNum = tempInt;
+                                            break;
+                                    }
+                                }
+                                #endregion
                             }
                         }
                     }
@@ -324,7 +262,7 @@ namespace GeoMagSharp
         {
             var outModels = new MagneticModelSet
                 {
-                    FileName = modelFile
+                    FileName = Path.GetFileName(modelFile)
                 };
 
             double tempDbl = 0;
@@ -415,15 +353,18 @@ namespace GeoMagSharp
 
         public static bool IsFileLocked(string filePath)
         {
-            try
+            if (!filePath.Equals(string.Empty))
             {
-                using (File.Open(filePath, FileMode.Open)) { }
-            }
-            catch (IOException e)
-            {
-                var errorCode = System.Runtime.InteropServices.Marshal.GetHRForException(e) & ((1 << 16) - 1);
+                try
+                {
+                    using (File.Open(filePath, FileMode.Open)) { }
+                }
+                catch (IOException e)
+                {
+                    var errorCode = System.Runtime.InteropServices.Marshal.GetHRForException(e) & ((1 << 16) - 1);
 
-                return errorCode == 32 || errorCode == 33;
+                    return errorCode == 32 || errorCode == 33;
+                }
             }
 
             return false;
