@@ -40,6 +40,17 @@ namespace GeoMagSharp
 
         }
 
+        public void LoadModel(MagneticModelSet modelSet)
+        {
+            _Models = null;
+
+            if (modelSet == null)
+                throw new GeoMagExceptionFileNotFound("Error coefficient file name not specified");
+
+            _Models = modelSet;
+
+        }
+
         public void LoadModel(string modelFile, string svFile)
         {
             _Models = null;
@@ -129,15 +140,15 @@ namespace GeoMagSharp
                 catch (Exception e)
                 {
 
-                    throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' could not be deleted",
-                    System.IO.Path.GetFileName(fileName)));
+                    throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' could not be deleted: {1}",
+                    System.IO.Path.GetFileName(fileName), e.ToString()));
                 }
 
             }
 
             Int32 lineCount = 0;
 
-            Int32 lineNumColIdx = -1;
+            //Int32 lineNumColIdx = -1;
 
             var tabStrRight = new StringBuilder();
 
@@ -145,7 +156,7 @@ namespace GeoMagSharp
 
             
 
-            tabStrRight.AppendFormat("{0}:\t{1}{2}", "Model".PadLeft(15, ' '), Path.GetFileNameWithoutExtension(_Models.FileName).ToUpper(), Environment.NewLine);
+            tabStrRight.AppendFormat("{0}:\t{1}{2}", "Model".PadLeft(15, ' '), Path.GetFileNameWithoutExtension(_Models.Name).ToUpper(), Environment.NewLine);
             lineCount++;
 
             tabStrRight.AppendFormat("{0}:\t{1}{2}", "latitude".PadLeft(15, ' '), _CalculationOptions.Latitude.ToString("F7"), Environment.NewLine);

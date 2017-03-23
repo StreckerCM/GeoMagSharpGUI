@@ -13,6 +13,7 @@ using System.Linq;
 using System.IO;
 
 using Newtonsoft.Json;
+using System.Data;
 
 namespace GeoMagSharp
 {
@@ -29,6 +30,12 @@ namespace GeoMagSharp
         BGS = 1,
         NOAA = 2,
         MAGVAR = 3
+    }
+
+    public enum MagneticFieldUnit
+    {
+        NanoTesla = 1,
+        Gauss = 2
     }
 
     public enum knownModels
@@ -79,6 +86,187 @@ namespace GeoMagSharp
 
     }
     #endregion
+
+    /// <summary>
+    /// Application preferences
+    /// </summary>
+    public class Preferences
+    {
+        private bool _UseDecimalDegrees = true;
+
+        private bool _UseAltitude = true;
+
+        private string _FieldUnit = @"nT";
+
+        private string _AltitudeUnits = @"ft";
+
+        private string _LatitudeHemisphere = @"N";
+
+        private string _LongitudeHemisphere = @"W";
+
+        #region Getters & Setters
+
+        public bool UseDecimalDegrees
+        {
+            get
+            {
+                return _UseDecimalDegrees;
+            }
+            set
+            {
+                _UseDecimalDegrees = value;
+            }
+        }
+
+        public bool UseAltitude
+        {
+            get
+            {
+                return _UseAltitude;
+            }
+            set
+            {
+                _UseAltitude = value;
+            }
+        }
+
+        public string FieldUnit
+        {
+            get
+            {
+                return _FieldUnit;
+            }
+            set
+            {
+                _FieldUnit = value;
+            }
+        }
+
+        public string AltitudeUnits
+        {
+            get
+            {
+                return _AltitudeUnits;
+            }
+            set
+            {
+                _AltitudeUnits = value;
+            }
+        }
+
+        public string LatitudeHemisphere
+        {
+            get
+            {
+                return _LatitudeHemisphere;
+            }
+            set
+            {
+                _LatitudeHemisphere = value;
+            }
+        }
+
+        public string LongitudeHemisphere
+        {
+            get
+            {
+                return _LongitudeHemisphere;
+            }
+            set
+            {
+                _LongitudeHemisphere = value;
+            }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        public Preferences()
+        {
+
+
+        }
+
+        public Preferences(Preferences other)
+        {
+            UseDecimalDegrees = other.UseDecimalDegrees;
+            UseAltitude = other.UseAltitude;
+            FieldUnit = other.FieldUnit;
+        }
+
+        #endregion
+
+        #region Object Serializers
+
+        public bool Save(string filename)
+        {
+            if (string.IsNullOrEmpty(filename)) return false;
+
+            bool wasSucessful;
+
+            var inData = this;
+
+            try
+            {
+                JsonSerializer serializer = new JsonSerializer
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    Formatting = Newtonsoft.Json.Formatting.Indented
+                };
+
+
+                using (StreamWriter sw = new StreamWriter(filename))
+                using (JsonWriter writer = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(writer, inData);
+                }
+
+                wasSucessful = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Preferences Error: {0}", ex.ToString());
+                wasSucessful = false;
+
+            }
+
+            return wasSucessful;
+        }
+
+        public static Preferences Load(string filename)
+        {
+            if (string.IsNullOrEmpty(filename)) return new Preferences();
+
+            if (!System.IO.File.Exists(filename)) return new Preferences();
+
+            Preferences outData = null;
+
+            try
+            {
+                JsonSerializer serializer = new JsonSerializer();
+
+                serializer.NullValueHandling = NullValueHandling.Ignore;
+                serializer.Formatting = Newtonsoft.Json.Formatting.Indented;
+
+                using (var sr = new System.IO.StreamReader(filename))
+                using (var reader = new JsonTextReader(sr))
+                {
+                    outData = JsonConvert.DeserializeObject<Preferences>(serializer.Deserialize(reader).ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Preferences Error: {0}", ex.ToString());
+                outData = null;
+            }
+
+            return outData;
+
+        }
+
+        #endregion
+    }
 
     /// <summary>
     /// 
@@ -546,17 +734,40 @@ namespace GeoMagSharp
     /// </summary>
     public class MagneticModelCollection : IEnumerable<MagneticModelSet>
     {
+        [JsonProperty(TypeNameHandling = TypeNameHandling.None)]
         public List<MagneticModelSet> TList { get; private set; }
+
+        #region Constructors
 
         public MagneticModelCollection()
         {
             TList = new List<MagneticModelSet>();
         }
 
+        #endregion
+
+        #region Base Class Methods
+
         public void Add(MagneticModelSet item)
         {
             TList.Add(item);
         }
+
+        public void AddRange(IEnumerable<MagneticModelSet> collection)
+        {
+            TList.AddRange(collection);
+        }
+
+        public MagneticModelSet Find(Predicate<MagneticModelSet> match)
+        {
+            return TList.Find(match);
+        }
+
+        public List<MagneticModelSet> FindAll(Predicate<MagneticModelSet> match)
+        {
+            return TList.FindAll(match);
+        }
+
         public IEnumerator<MagneticModelSet> GetEnumerator()
         {
             return TList.GetEnumerator();
@@ -567,6 +778,10 @@ namespace GeoMagSharp
             return GetEnumerator();
         }
 
+        
+
+        #endregion
+
         #region Object Serializers
 
         public bool Save(string filename)
@@ -576,7 +791,7 @@ namespace GeoMagSharp
             bool wasSucessful;
 
             var inData = this;
-
+            
             try
             {
                 JsonSerializer serializer = new JsonSerializer
@@ -622,7 +837,11 @@ namespace GeoMagSharp
                 using (var sr = new System.IO.StreamReader(filename))
                 using (var reader = new JsonTextReader(sr))
                 {
-                    outData = JsonConvert.DeserializeObject<MagneticModelCollection>(serializer.Deserialize(reader).ToString());
+                    var deserializeList = JsonConvert.DeserializeObject<IEnumerable<MagneticModelSet>>(serializer.Deserialize(reader).ToString());
+
+                    outData = new MagneticModelCollection();
+
+                    outData.AddRange(deserializeList);
                 }
             }
             catch (Exception ex)
@@ -637,6 +856,54 @@ namespace GeoMagSharp
 
         #endregion
 
+        #region getters & setters
+
+        public DataTable GetDataTable
+        {
+            get
+            {
+                var DtModels = new DataTable();
+
+                DtModels.Columns.Add(new DataColumn("ID", typeof(Guid)));
+
+                DtModels.Columns.Add(new DataColumn("ModelName", typeof(string)));
+
+                DtModels.Columns.Add(new DataColumn("FileNames", typeof(string)));
+
+                DtModels.Columns.Add(new DataColumn("DateMin", typeof(DateTime)));
+
+                DtModels.Columns.Add(new DataColumn("DateMax", typeof(DateTime)));
+
+                DtModels.Columns.Add(new DataColumn("NumberOfModels", typeof(Int32)));
+
+                DtModels.Columns.Add(new DataColumn("Type", typeof(string)));
+
+                foreach (var model in TList)
+                {
+                    var fRow = DtModels.NewRow();
+
+                    fRow["ID"] = model.ID;
+
+                    fRow["ModelName"] = model.Name;
+
+                    fRow["FileNames"] = string.Join(",", model.FileNames);
+
+                    fRow["DateMin"] = model.MinDate.ToDateTime();
+
+                    fRow["DateMax"] = model.MaxDate.ToDateTime();
+
+                    fRow["NumberOfModels"] = model.NumberOfModels;
+
+                    fRow["Type"] = model.Type;
+
+                    DtModels.Rows.Add(fRow);
+                }
+
+                return DtModels.Copy();
+            }
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -648,17 +915,20 @@ namespace GeoMagSharp
 
         public MagneticModelSet()
         {
-
+       
             Models = new List<MagneticModel>();
         }
 
         public MagneticModelSet(MagneticModelSet other)
         {
-            FileName = other.FileName;
+            ID = other.ID;
             Type = other.Type;
             MinDate = other.MinDate;
             MaxDate = other.MaxDate;
             EarthRadius = other.EarthRadius;
+
+            FileNames = new List<string>();
+            if (other.FileNames.Any()) FileNames.AddRange(other.FileNames);
 
             Models = new List<MagneticModel>();
             if (other.Models.Any()) Models.AddRange(other.Models);
@@ -920,8 +1190,9 @@ namespace GeoMagSharp
 
         #endregion
 
+        private Guid _ID = Guid.NewGuid();
         private string _Name = string.Empty;
-        private string _FileName = string.Empty;
+        private List<string> _FileNames = new List<string>();
         private knownModels _Type = knownModels.NONE;
         private double? _MinDate = null;
         private double? _MaxDate = null;
@@ -931,6 +1202,20 @@ namespace GeoMagSharp
         private List<MagneticModel> Models { get; set; }
 
         #region getters & setters
+
+        public Guid ID
+        {
+            get
+            {
+                if (Models == null) return Guid.Empty;
+
+                return _ID;
+            }
+            set
+            {
+                _ID = value;
+            }
+        }
 
         public string Name
         {
@@ -946,17 +1231,17 @@ namespace GeoMagSharp
             }
         }
 
-        public string FileName
+        public List<string> FileNames
         {
             get
             {
-                if (Models == null) return string.Empty;
+                if (Models == null) return null;
 
-                return _FileName;
+                return _FileNames;
             }
             set
             {
-                _FileName = value;
+                _FileNames = value;
             }
         }
 

@@ -40,7 +40,7 @@ namespace GeoMagGUI
 
             if(_Model != null)
             {
-                _Model.Name = Path.GetFileNameWithoutExtension(Model.FileName);
+                _Model.Name = Path.GetFileNameWithoutExtension(Model.FileNames.First());
 
                 textBoxModelName.Text = _Model.Name;
 

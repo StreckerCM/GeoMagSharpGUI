@@ -142,4 +142,19 @@
   <data name="WMM2015" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\coefficient\wmm2015.cof;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="File_Name_Application_Preferences_JSON" xml:space="preserve">
+    <value>ApplicationPreferences.json</value>
+  </data>
+  <data name="File_Name_Magnetic_Model_JSON" xml:space="preserve">
+    <value>MagneticModels.json</value>
+  </data>
+  <data name="Folder_Assets" xml:space="preserve">
+    <value>assets</value>
+  </data>
+  <data name="Folder_Coeffient" xml:space="preserve">
+    <value>coefficient</value>
+  </data>
+  <data name="Folder_Documentation" xml:space="preserve">
+    <value>documentation</value>
+  </data>
 </root>

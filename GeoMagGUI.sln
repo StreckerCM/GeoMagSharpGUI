@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoMagGUI", "GeoMagGUI\GeoM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoMagSharp", "GeoMagSharp\GeoMagSharp.csproj", "{AE04340D-E45E-4BDC-942A-58BD0424CEFC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{63EFDF46-1284-4180-8E56-6580CC47E280}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoMagSharp-UnitTests", "GeoMagSharp-UnitTests\GeoMagSharp-UnitTests.csproj", "{EA296E5F-B205-461B-8CB9-659F31869DD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Any CPU = CD_ROM|Any CPU
@@ -76,8 +80,41 @@ Global
 		{AE04340D-E45E-4BDC-942A-58BD0424CEFC}.SingleImage|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{AE04340D-E45E-4BDC-942A-58BD0424CEFC}.SingleImage|Mixed Platforms.Build.0 = Release|Any CPU
 		{AE04340D-E45E-4BDC-942A-58BD0424CEFC}.SingleImage|x86.ActiveCfg = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.CD_ROM|Any CPU.ActiveCfg = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.CD_ROM|Any CPU.Build.0 = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.CD_ROM|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.CD_ROM|Mixed Platforms.Build.0 = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.CD_ROM|x86.ActiveCfg = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.CD_ROM|x86.Build.0 = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.Debug|x86.Build.0 = Debug|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.DVD-5|Any CPU.Build.0 = Debug|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.DVD-5|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.DVD-5|Mixed Platforms.Build.0 = Debug|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.DVD-5|x86.ActiveCfg = Debug|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.DVD-5|x86.Build.0 = Debug|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.Release|x86.ActiveCfg = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.Release|x86.Build.0 = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.SingleImage|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.SingleImage|Mixed Platforms.Build.0 = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.SingleImage|x86.ActiveCfg = Release|Any CPU
+		{EA296E5F-B205-461B-8CB9-659F31869DD6}.SingleImage|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EA296E5F-B205-461B-8CB9-659F31869DD6} = {63EFDF46-1284-4180-8E56-6580CC47E280}
 	EndGlobalSection
 EndGlobal

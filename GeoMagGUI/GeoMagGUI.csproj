@@ -106,7 +106,7 @@
     <Content Include="coefficient\WMM2015.COF">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="coefficient\Models.JSON">
+    <Content Include="coefficient\MagneticModels.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />

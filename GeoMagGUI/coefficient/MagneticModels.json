@@ -6746,8 +6746,11 @@
         "Max_Degree": 13
       }
     ],
+    "ID": "d41f3463-9b2c-4c1d-a303-e7db20c6e929",
     "Name": "IGRF12",
-    "FileName": "IGRF12.COF",
+    "FileNames": [
+      "IGRF12.COF"
+    ],
     "Type": 3,
     "MinDate": 1900.0,
     "MaxDate": 2020.0,
@@ -7108,8 +7111,11 @@
         "Max_Degree": 12
       }
     ],
+    "ID": "bbbd1c80-631d-4c19-be9d-83e16447b0af",
     "Name": "WMM2015",
-    "FileName": "WMM2015.COF",
+    "FileNames": [
+      "WMM2015.COF"
+    ],
     "Type": 4,
     "MinDate": 2015.0,
     "MaxDate": 2020.0,

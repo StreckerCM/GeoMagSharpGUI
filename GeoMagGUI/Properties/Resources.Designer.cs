@@ -61,6 +61,24 @@ namespace GeoMagGUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ApplicationPreferences.json.
+        /// </summary>
+        internal static string File_Name_Application_Preferences_JSON {
+            get {
+                return ResourceManager.GetString("File_Name_Application_Preferences_JSON", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MagneticModels.json.
+        /// </summary>
+        internal static string File_Name_Magnetic_Model_JSON {
+            get {
+                return ResourceManager.GetString("File_Name_Magnetic_Model_JSON", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All Supported Coefficient Files (*.cof;*.dat)|*.cof;*.dat.
         /// </summary>
         internal static string File_Type_All_Coeff_Files {
@@ -75,6 +93,33 @@ namespace GeoMagGUI.Properties {
         internal static string File_Type_Text_Tab {
             get {
                 return ResourceManager.GetString("File_Type_Text_Tab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to assets.
+        /// </summary>
+        internal static string Folder_Assets {
+            get {
+                return ResourceManager.GetString("Folder_Assets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to coefficient.
+        /// </summary>
+        internal static string Folder_Coeffient {
+            get {
+                return ResourceManager.GetString("Folder_Coeffient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to documentation.
+        /// </summary>
+        internal static string Folder_Documentation {
+            get {
+                return ResourceManager.GetString("Folder_Documentation", resourceCulture);
             }
         }
         

@@ -27,6 +27,22 @@ namespace GeoMagGUI
             }
         }
 
+        public string FieldUnit
+        {
+            get
+            {
+
+                switch (comboBoxMagFieldUnit.SelectedItem.ToString())
+                {
+                    case "Gauss (Gs)":
+                        return @"Gauss";
+
+                    default:
+                        return @"nT";
+                }
+            }
+        }
+
         public frmPreferences(FrmMain fmain)
         {
             InitializeComponent();
@@ -40,13 +56,17 @@ namespace GeoMagGUI
         {
             var fmain = (FrmMain)Owner;
 
-            comboBoxCoordianteFormat.SelectedItem = fmain._useDecimalDegrees
-                                    ? comboBoxCoordianteFormat.Items[0]
-                                    : comboBoxCoordianteFormat.Items[1];
+            comboBoxCoordianteFormat.SelectedItem = fmain.ApplicationPreferences.UseDecimalDegrees
+                        ? comboBoxCoordianteFormat.Items[0]
+                        : comboBoxCoordianteFormat.Items[1];
 
-            comboBoxElevationReference.SelectedItem = fmain._useAltitude
+            comboBoxElevationReference.SelectedItem = fmain.ApplicationPreferences.UseAltitude
                         ? comboBoxElevationReference.Items[0]
                         : comboBoxElevationReference.Items[1];
+
+            comboBoxMagFieldUnit.SelectedItem = fmain.ApplicationPreferences.FieldUnit.Equals(@"nT")
+                        ? comboBoxMagFieldUnit.Items[0]
+                        : comboBoxMagFieldUnit.Items[1];
         }
 
         private void buttonOK_Click(object sender, EventArgs e)

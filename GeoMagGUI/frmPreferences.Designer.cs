@@ -35,7 +35,7 @@
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comboBoxMagFieldUnit = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -48,10 +48,10 @@
             this.comboBoxCoordianteFormat.Items.AddRange(new object[] {
             "Decimal Degrees",
             "Degrees, Minutes, and Seconds"});
-            this.comboBoxCoordianteFormat.Location = new System.Drawing.Point(148, 4);
-            this.comboBoxCoordianteFormat.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxCoordianteFormat.Location = new System.Drawing.Point(147, 4);
+            this.comboBoxCoordianteFormat.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxCoordianteFormat.Name = "comboBoxCoordianteFormat";
-            this.comboBoxCoordianteFormat.Size = new System.Drawing.Size(195, 21);
+            this.comboBoxCoordianteFormat.Size = new System.Drawing.Size(196, 21);
             this.comboBoxCoordianteFormat.TabIndex = 0;
             // 
             // label1
@@ -61,7 +61,7 @@
             this.label1.Location = new System.Drawing.Point(2, 8);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(142, 13);
+            this.label1.Size = new System.Drawing.Size(141, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Coordinate Format:";
             // 
@@ -72,7 +72,7 @@
             this.label2.Location = new System.Drawing.Point(2, 48);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(142, 13);
+            this.label2.Size = new System.Drawing.Size(141, 13);
             this.label2.TabIndex = 3;
             this.label2.Text = "Elevation Reference:";
             // 
@@ -84,18 +84,18 @@
             this.comboBoxElevationReference.Items.AddRange(new object[] {
             "Altitude Above MSL",
             "Depth Below MSL"});
-            this.comboBoxElevationReference.Location = new System.Drawing.Point(148, 44);
-            this.comboBoxElevationReference.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxElevationReference.Location = new System.Drawing.Point(147, 44);
+            this.comboBoxElevationReference.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxElevationReference.Name = "comboBoxElevationReference";
-            this.comboBoxElevationReference.Size = new System.Drawing.Size(195, 21);
+            this.comboBoxElevationReference.Size = new System.Drawing.Size(196, 21);
             this.comboBoxElevationReference.TabIndex = 1;
             // 
             // buttonOK
             // 
             this.buttonOK.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(279, 132);
-            this.buttonOK.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonOK.Location = new System.Drawing.Point(278, 132);
+            this.buttonOK.Margin = new System.Windows.Forms.Padding(2);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(56, 25);
             this.buttonOK.TabIndex = 3;
@@ -107,8 +107,8 @@
             // 
             this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(203, 132);
-            this.buttonCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonCancel.Location = new System.Drawing.Point(202, 132);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(2);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(56, 25);
             this.buttonCancel.TabIndex = 2;
@@ -123,23 +123,23 @@
             this.label3.Location = new System.Drawing.Point(2, 88);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(142, 13);
+            this.label3.Size = new System.Drawing.Size(141, 13);
             this.label3.TabIndex = 5;
             this.label3.Text = "Magnetic Field Unit:";
             // 
-            // comboBox1
+            // comboBoxMagFieldUnit
             // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.comboBox1, 3);
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Nanotesla (nT)",
-            "Gauss (g)"});
-            this.comboBox1.Location = new System.Drawing.Point(148, 84);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(195, 21);
-            this.comboBox1.TabIndex = 4;
+            this.comboBoxMagFieldUnit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.comboBoxMagFieldUnit, 3);
+            this.comboBoxMagFieldUnit.FormattingEnabled = true;
+            this.comboBoxMagFieldUnit.Items.AddRange(new object[] {
+            "NanoTesla (nT)",
+            "Gauss (Gs)"});
+            this.comboBoxMagFieldUnit.Location = new System.Drawing.Point(147, 84);
+            this.comboBoxMagFieldUnit.Margin = new System.Windows.Forms.Padding(2);
+            this.comboBoxMagFieldUnit.Name = "comboBoxMagFieldUnit";
+            this.comboBoxMagFieldUnit.Size = new System.Drawing.Size(196, 21);
+            this.comboBoxMagFieldUnit.TabIndex = 4;
             // 
             // tableLayoutPanel1
             // 
@@ -150,9 +150,9 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 75F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 75F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 76F));
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.comboBox1, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.comboBoxMagFieldUnit, 1, 4);
             this.tableLayoutPanel1.Controls.Add(this.label3, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.comboBoxCoordianteFormat, 1, 0);
@@ -181,7 +181,7 @@
             this.ClientSize = new System.Drawing.Size(354, 168);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmPreferences";
@@ -204,7 +204,7 @@
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBoxMagFieldUnit;
         private System.Windows.Forms.Label label3;
     }
 }

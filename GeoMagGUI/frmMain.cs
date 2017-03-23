@@ -12,21 +12,43 @@ namespace GeoMagGUI
 {
     public partial class FrmMain : Form
     {
-        public readonly string ModelFolder;
-
         private GeoCoordinateWatcher Watcher = null;
 
         private MagneticModelCollection Models;
 
-        public DataTable DtModels;
-
         public bool _processingEvents;
 
-        public bool _useDecimalDegrees;
-
-        public bool _useAltitude;
+        public Preferences ApplicationPreferences;
 
         private GeoMag _MagCalculator;
+
+        #region Getters & Setters
+
+        public string ModelFolder
+        {
+            get
+            {
+                return Path.Combine(Application.StartupPath, Resources.Folder_Coeffient);
+            }
+        }
+
+        public string ModelJson
+        {
+            get
+            {
+                return Path.Combine(Application.StartupPath, Resources.Folder_Coeffient, Resources.File_Name_Magnetic_Model_JSON);
+            }
+        }
+
+        public string PreferencesJson
+        {
+            get
+            {
+                return Path.Combine(Application.StartupPath, Resources.File_Name_Application_Preferences_JSON);
+            }
+        }
+
+        #endregion
 
         public FrmMain()
         {
@@ -34,34 +56,23 @@ namespace GeoMagGUI
 
             InitializeComponent();
 
-            _useDecimalDegrees = true;
-
-            _useAltitude = true;
+            ApplicationPreferences = Preferences.Load(PreferencesJson);
 
             // Create the watcher.
             Watcher = new GeoCoordinateWatcher();
             // Catch the StatusChanged event.
+
             Watcher.StatusChanged += Watcher_StatusChanged;
 
-            ModelFolder = string.Format("{0}\\coefficient\\", Application.StartupPath);
+            comboBoxAltitudeUnits.SelectedItem = ApplicationPreferences.AltitudeUnits;
 
-            comboBoxAltitudeUnits.SelectedItem = @"ft";
+            ComboBoxLatDir.SelectedItem = ApplicationPreferences.LatitudeHemisphere;
 
-            ComboBoxLatDir.SelectedItem = @"N";
+            ComboBoxLongDir.SelectedItem = ApplicationPreferences.LongitudeHemisphere;
 
-            ComboBoxLongDir.SelectedItem = @"W";
-
-            Models = MagneticModelCollection.Load(Path.Combine(ModelFolder, "Models.JSON"));
+            Models = MagneticModelCollection.Load(ModelJson);
 
             if (Models == null) Models = new MagneticModelCollection();
-
-            DtModels = new DataTable();
-
-            DtModels.Columns.Add(new DataColumn("ID", typeof(Int32)));
-
-            DtModels.Columns.Add(new DataColumn("ModelName", typeof(string)));
-
-            DtModels.Columns.Add(new DataColumn("FileName", typeof(string)));
 
             LoadModels();
 
@@ -119,23 +130,23 @@ namespace GeoMagGUI
                 return;
             }
 
-            var dRow = DtModels.Select(string.Format("ID = {0}", comboBoxModels.SelectedValue));
+            var selectedModel = Models.TList.Find(model => model.ID.Equals(comboBoxModels.SelectedValue));
 
-            if (dRow != null && dRow.Any())
+            if (selectedModel != null)
             {
-                if (DBNull.Value.Equals(dRow.First()["FileName"]))
-                {
-                    this.errorProviderCheck.SetError(comboBoxModels, @"No file name was found for the model you selected");
-                    return;
-                }
+                //if (DBNull.Value.Equals(dRow.First()["FileName"]))
+                //{
+                //    this.errorProviderCheck.SetError(comboBoxModels, @"No file name was found for the model you selected");
+                //    return;
+                //}
 
-                string modelFile = dRow.First()["FileName"].ToString();
+                //string modelFile = dRow.First()["FileName"].ToString();
 
-                if (!File.Exists(modelFile))
-                {
-                    this.errorProviderCheck.SetError(comboBoxModels, string.Format("The model file {0} could not be found", Path.GetFileName(modelFile)));
-                    return;
-                }
+                //if (!File.Exists(modelFile))
+                //{
+                //    this.errorProviderCheck.SetError(comboBoxModels, string.Format("The model file {0} could not be found", Path.GetFileName(modelFile)));
+                //    return;
+                //}
 
                 if (comboBoxAltitudeUnits.SelectedItem == null)
                 {
@@ -175,7 +186,7 @@ namespace GeoMagGUI
                         StepInterval = Convert.ToDouble(numericUpDownStepSize.Value),
                     };
 
-                calcOptions.SetElevation(altitude, altUnit, _useAltitude);
+                calcOptions.SetElevation(altitude, altUnit, ApplicationPreferences.UseAltitude);
 
                 dataGridViewResults.Rows.Clear();
 
@@ -184,7 +195,7 @@ namespace GeoMagGUI
 
                     _MagCalculator = new GeoMag();
 
-                    _MagCalculator.LoadModel(modelFile);
+                    _MagCalculator.LoadModel(selectedModel);
 
                     if (toolStripMenuItemUseRangeOfDates.Checked) calcOptions.EndDate = dateTimePicker2.Value;
 
@@ -268,44 +279,17 @@ namespace GeoMagGUI
 
         private void LoadModels(string selected = null)
         {
-            DtModels.Rows.Clear();
+            Guid selectedIdx;
 
-            Int32 fileIdx = 1;
+            Guid.TryParse(selected, out selectedIdx);
 
-            Int32 selectedIdx = -1;
-
-            foreach (var lfile in Directory.GetFiles(ModelFolder))
-            {
-                var extension = Path.GetExtension(lfile);
-
-                if (extension == null) continue;
-
-                if (!extension.Equals(".cof", StringComparison.OrdinalIgnoreCase) &&
-                    !extension.Equals(".dat", StringComparison.OrdinalIgnoreCase)) continue;
-
-                var fRow = DtModels.NewRow();
-
-                fRow["ID"] = fileIdx;
-
-                fRow["ModelName"] = Path.GetFileNameWithoutExtension(lfile);
-
-                fRow["FileName"] = lfile;
-
-                DtModels.Rows.Add(fRow);
-
-                if (!string.IsNullOrEmpty(selected) && lfile.Equals(selected, StringComparison.OrdinalIgnoreCase))
-                    selectedIdx = fileIdx;
-
-                fileIdx++;
-            }
-
-            comboBoxModels.DataSource = DtModels.Copy().DefaultView;
+            comboBoxModels.DataSource = Models.GetDataTable.DefaultView;
 
             comboBoxModels.DisplayMember = "ModelName";
 
             comboBoxModels.ValueMember = "ID";
 
-            comboBoxModels.SelectedValue = selectedIdx;
+            if(selectedIdx != Guid.Empty) comboBoxModels.SelectedValue = selectedIdx;
         }
 
         private void addModelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -318,15 +302,11 @@ namespace GeoMagGUI
 
                 Models.Add(fAddModel.Model);
 
-                Models.Save(Path.Combine(ModelFolder, "Models.JSON"));
+                Models.Save(Path.Combine(ModelFolder, Resources.File_Name_Magnetic_Model_JSON));
+
+                LoadModels();
 
                 this.Cursor = Cursors.Default;
-
-                //var copyToLocation = string.Format("{0}{1}", ModelFolder, Path.GetFileName(fDlg.FileName));
-
-                //File.Copy(fDlg.FileName, copyToLocation);
-
-                //LoadModels(copyToLocation);
             }
 
         }
@@ -474,6 +454,10 @@ namespace GeoMagGUI
             var longitude = new Longitude(Convert.ToDouble(TextBoxLongDeg.Text), Convert.ToDouble(TextBoxLongMin.Text), Convert.ToDouble(TextBoxLongSec.Text), ComboBoxLongDir.SelectedItem.ToString());
 
             textBoxLongitudeDecimal.Text = longitude.Decimal.ToString("F8");
+
+            ApplicationPreferences.LongitudeHemisphere = ComboBoxLongDir.SelectedItem.ToString();
+
+            ApplicationPreferences.Save(PreferencesJson);
         }
 
         private void TextBoxLongitude_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -522,6 +506,10 @@ namespace GeoMagGUI
             var latitude = new Longitude(Convert.ToDouble(TextBoxLatDeg.Text), Convert.ToDouble(TextBoxLatMin.Text), Convert.ToDouble(TextBoxLatSec.Text), ComboBoxLatDir.SelectedItem.ToString());
 
             textBoxLatitudeDecimal.Text = latitude.Decimal.ToString("F8");
+
+            ApplicationPreferences.LatitudeHemisphere = ComboBoxLatDir.SelectedItem.ToString();
+
+            ApplicationPreferences.Save(PreferencesJson);
         }
 
         private void TextBoxLatitude_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -581,24 +569,24 @@ namespace GeoMagGUI
 
         private void SetCoordinateDisplay()
         {
-            textBoxLongitudeDecimal.Enabled = _useDecimalDegrees;
+            textBoxLongitudeDecimal.Enabled = ApplicationPreferences.UseDecimalDegrees;
 
-            TextBoxLongDeg.Enabled = !_useDecimalDegrees;
-            TextBoxLongMin.Enabled = !_useDecimalDegrees;
-            TextBoxLongSec.Enabled = !_useDecimalDegrees;
-            ComboBoxLongDir.Enabled = !_useDecimalDegrees;
+            TextBoxLongDeg.Enabled = !ApplicationPreferences.UseDecimalDegrees;
+            TextBoxLongMin.Enabled = !ApplicationPreferences.UseDecimalDegrees;
+            TextBoxLongSec.Enabled = !ApplicationPreferences.UseDecimalDegrees;
+            ComboBoxLongDir.Enabled = !ApplicationPreferences.UseDecimalDegrees;
 
-            textBoxLatitudeDecimal.Enabled = _useDecimalDegrees;
+            textBoxLatitudeDecimal.Enabled = ApplicationPreferences.UseDecimalDegrees;
 
-            TextBoxLatDeg.Enabled = !_useDecimalDegrees;
-            TextBoxLatMin.Enabled = !_useDecimalDegrees;
-            TextBoxLatSec.Enabled = !_useDecimalDegrees;
-            ComboBoxLatDir.Enabled = !_useDecimalDegrees;
+            TextBoxLatDeg.Enabled = !ApplicationPreferences.UseDecimalDegrees;
+            TextBoxLatMin.Enabled = !ApplicationPreferences.UseDecimalDegrees;
+            TextBoxLatSec.Enabled = !ApplicationPreferences.UseDecimalDegrees;
+            ComboBoxLatDir.Enabled = !ApplicationPreferences.UseDecimalDegrees;
         }
 
         private void SetElevationDisplay()
         {
-            label_Elevation.Text = _useAltitude
+            label_Elevation.Text = ApplicationPreferences.UseAltitude
                                     ? @"Altitude:"
                                     : @"Depth:";
         }
@@ -652,9 +640,13 @@ namespace GeoMagGUI
 
             if (!res.Equals(DialogResult.Cancel))
             {
-                _useAltitude = fPref.UseAltitude;
+                ApplicationPreferences.UseAltitude = fPref.UseAltitude;
 
-                _useDecimalDegrees = fPref.UseDecimalDegrees;
+                ApplicationPreferences.UseDecimalDegrees = fPref.UseDecimalDegrees;
+
+                ApplicationPreferences.FieldUnit = fPref.FieldUnit;
+
+                ApplicationPreferences.Save(PreferencesJson);
             }
 
             fPref.Close();
@@ -687,6 +679,11 @@ namespace GeoMagGUI
             }
         }
 
+        private void comboBoxAltitudeUnits_Validated(object sender, EventArgs e)
+        {
+            ApplicationPreferences.AltitudeUnits = comboBoxAltitudeUnits.SelectedItem.ToString();
 
+            ApplicationPreferences.Save(PreferencesJson);
+        }
     }
 }

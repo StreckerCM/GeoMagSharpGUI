@@ -63,10 +63,9 @@ namespace GeoMagSharp
 
         private static MagneticModelSet COFreader(string modelFile)
         {
-            var outModels = new MagneticModelSet
-            {
-                FileName = Path.GetFileName(modelFile)
-            };
+            var outModels = new MagneticModelSet();
+
+            outModels.FileNames.Add(Path.GetFileName(modelFile));
 
             double tempDbl = 0;
 
@@ -260,10 +259,9 @@ namespace GeoMagSharp
 
         private static MagneticModelSet DATreader(string modelFile)
         {
-            var outModels = new MagneticModelSet
-                {
-                    FileName = Path.GetFileName(modelFile)
-                };
+            var outModels = new MagneticModelSet();
+
+            outModels.FileNames.Add(Path.GetFileName(modelFile));
 
             double tempDbl = 0;
 
