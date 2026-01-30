@@ -1,0 +1,22 @@
+# Force GitHub to recognize this as a C# project
+*.cs linguist-language=C#
+
+# Treat InnoSetup files as vendored (exclude from language stats)
+*.iss linguist-vendored
+*.isl linguist-vendored
+
+# Common settings
+* text=auto
+*.cs text diff=csharp
+*.csproj text
+*.sln text eol=crlf
+*.config text
+*.json text
+*.md text
+*.xml text
+
+# Binary files
+*.dll binary
+*.exe binary
+*.ico binary
+*.png binary
