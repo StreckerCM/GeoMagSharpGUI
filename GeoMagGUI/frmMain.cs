@@ -503,7 +503,7 @@ namespace GeoMagGUI
         {
             this.errorProviderCheck.SetError(ComboBoxLatDir, string.Empty);
 
-            var latitude = new Longitude(Convert.ToDouble(TextBoxLatDeg.Text), Convert.ToDouble(TextBoxLatMin.Text), Convert.ToDouble(TextBoxLatSec.Text), ComboBoxLatDir.SelectedItem.ToString());
+            var latitude = new Latitude(Convert.ToDouble(TextBoxLatDeg.Text), Convert.ToDouble(TextBoxLatMin.Text), Convert.ToDouble(TextBoxLatSec.Text), ComboBoxLatDir.SelectedItem.ToString());
 
             textBoxLatitudeDecimal.Text = latitude.Decimal.ToString("F8");
 
