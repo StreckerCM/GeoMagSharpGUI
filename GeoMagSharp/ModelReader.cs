@@ -17,8 +17,24 @@ namespace GeoMagSharp
 {
     public static class ModelReader
     {
+        /// <summary>
+        /// Reads a magnetic model from a coefficient file.
+        /// </summary>
+        /// <param name="modelFile">Path to the coefficient file (.COF or .DAT)</param>
+        /// <returns>A MagneticModelSet containing the parsed model data</returns>
+        /// <exception cref="GeoMagExceptionFileNotFound">File does not exist</exception>
+        /// <exception cref="GeoMagExceptionOpenError">File is locked by another process</exception>
+        /// <exception cref="GeoMagExceptionModelNotLoaded">File type not supported or no models found</exception>
+        /// <exception cref="GeoMagExceptionBadCharacter">File contains invalid or malformed data</exception>
         public static MagneticModelSet Read(string modelFile)
         {
+            if (string.IsNullOrWhiteSpace(modelFile))
+                throw new ArgumentNullException(nameof(modelFile), "Model file path cannot be null or empty");
+
+            if (!File.Exists(modelFile))
+                throw new GeoMagExceptionFileNotFound(string.Format("Error: The file '{0}' was not found",
+                    modelFile));
+
             if (IsFileLocked(modelFile))
                 throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' is locked by another user or application",
                     Path.GetFileName(modelFile)));
@@ -37,15 +53,35 @@ namespace GeoMagSharp
                                     Path.GetExtension(modelFile).ToUpper())));
         }
 
+        /// <summary>
+        /// Reads a magnetic model from a coefficient file with a separate secular variation file.
+        /// </summary>
+        /// <param name="modelFile">Path to the main coefficient file (.COF or .DAT)</param>
+        /// <param name="svFile">Path to the secular variation file</param>
+        /// <returns>A MagneticModelSet containing the parsed model data</returns>
         public static MagneticModelSet Read(string modelFile, string svFile)
         {
+            if (string.IsNullOrWhiteSpace(modelFile))
+                throw new ArgumentNullException(nameof(modelFile), "Model file path cannot be null or empty");
+
+            if (!File.Exists(modelFile))
+                throw new GeoMagExceptionFileNotFound(string.Format("Error: The file '{0}' was not found",
+                    modelFile));
+
             if (IsFileLocked(modelFile))
                 throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' is locked by another user or application",
                     Path.GetFileName(modelFile)));
 
-            if (IsFileLocked(svFile))
-                throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' is locked by another user or application",
-                    Path.GetFileName(svFile)));
+            if (!string.IsNullOrWhiteSpace(svFile))
+            {
+                if (!File.Exists(svFile))
+                    throw new GeoMagExceptionFileNotFound(string.Format("Error: The secular variation file '{0}' was not found",
+                        svFile));
+
+                if (IsFileLocked(svFile))
+                    throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' is locked by another user or application",
+                        Path.GetFileName(svFile)));
+            }
 
             switch (Path.GetExtension(modelFile).ToUpper())
             {
@@ -93,14 +129,16 @@ namespace GeoMagSharp
 
                         if (!inbuff.CheckStringForModel().Equals(knownModels.NONE))
                         {
-                            /* New model */
+                            /* New model - validate we have enough columns for year parsing */
                             if (outModels.Type.Equals(knownModels.EMM))
                             {
-                                double.TryParse(lineParase[0], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                ValidateArrayLength(lineParase, 1, lineNumber);
+                                tempDbl = ParseDouble(lineParase[0], lineNumber, "model year");
                             }
                             else
                             {
-                                double.TryParse(lineParase[1], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                                ValidateArrayLength(lineParase, 2, lineNumber);
+                                tempDbl = ParseDouble(lineParase[1], lineNumber, "model year");
                             }
 
                             outModels.AddModel(new MagneticModel
@@ -118,127 +156,60 @@ namespace GeoMagSharp
                             });
 
                             eModelIdx = outModels.GetModels.Count() - 1;
-                                
 
                         }
                         else if (mModelIdx > -1)
                         {
                             if(outModels.Type.Equals(knownModels.EMM))
                             {
-                                #region Split File Line Reader
-                                Int32 lineDegree = -1;
+                                #region EMM File Line Reader
+                                // EMM format requires at least 6 columns: degree, order, g1, h1, g2, h2
+                                ValidateArrayLength(lineParase, 6, lineNumber);
 
-                                Int32 lineOrder = -1;
+                                Int32 lineDegree = ParseInt(lineParase[0], lineNumber, "degree");
+                                Int32 lineOrder = ParseInt(lineParase[1], lineNumber, "order");
 
-                                for (Int32 itemIdx = 0; itemIdx < lineParase.Count(); itemIdx++)
-                                {
-                                    switch (itemIdx)
-                                    {
-                                        //Degree(n) (int)
-                                        case 0:
-                                            Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out lineDegree);
-                                            break;
+                                // g1 coefficient
+                                tempDbl = ParseDouble(lineParase[2], lineNumber, "g1 coefficient");
+                                outModels.AddCoefficients(mModelIdx, tempDbl);
 
-                                        //Order(m) (int)
-                                        case 1:
-                                            Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out lineOrder);
-                                            break;
+                                // h1 coefficient (only if order > 0)
+                                tempDbl = ParseDouble(lineParase[3], lineNumber, "h1 coefficient");
+                                if (lineOrder > 0) outModels.AddCoefficients(mModelIdx, tempDbl);
 
-                                        //g1 (double)
-                                        case 2:
-                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                            outModels.AddCoefficients(mModelIdx, tempDbl);
-                                            break;
+                                // g2 coefficient
+                                tempDbl = ParseDouble(lineParase[4], lineNumber, "g2 coefficient");
+                                outModels.AddCoefficients(eModelIdx, tempDbl);
 
-                                        //h1 (double)
-                                        case 3:
-                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                            if (lineOrder > 0) outModels.AddCoefficients(mModelIdx, tempDbl);
-                                            break;
-
-                                        //g2 (double)
-                                        case 4:
-                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                            outModels.AddCoefficients(eModelIdx, tempDbl);
-                                            break;
-
-                                        //h2 (double)
-                                        case 5:
-                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                            if (lineOrder > 0) outModels.AddCoefficients(eModelIdx, tempDbl);
-                                            break;
-
-                                        //irat (string)
-                                        case 6:
-                                            //coeffLine.Model = lineParase[itemIdx];
-                                            break;
-
-                                        //LineNum (int)
-                                        case 7:
-                                            //Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
-                                            //coeffLine.LineNum = tempInt;
-                                            break;
-                                    }
-                                }
+                                // h2 coefficient (only if order > 0)
+                                tempDbl = ParseDouble(lineParase[5], lineNumber, "h2 coefficient");
+                                if (lineOrder > 0) outModels.AddCoefficients(eModelIdx, tempDbl);
                                 #endregion
                             }
                             else
                             {
-                                #region Single File Line Reader
-                                Int32 lineDegree = -1;
+                                #region Standard COF File Line Reader
+                                // Standard COF format requires at least 6 columns: degree, order, g1, h1, g2, h2
+                                ValidateArrayLength(lineParase, 6, lineNumber);
 
-                                Int32 lineOrder = -1;
+                                Int32 lineDegree = ParseInt(lineParase[0], lineNumber, "degree");
+                                Int32 lineOrder = ParseInt(lineParase[1], lineNumber, "order");
 
-                                for (Int32 itemIdx = 0; itemIdx < lineParase.Count(); itemIdx++)
-                                {
-                                    switch (itemIdx)
-                                    {
-                                        //Degree(n) (int)
-                                        case 0:
-                                            Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out lineDegree);
-                                            break;
+                                // g1 coefficient
+                                tempDbl = ParseDouble(lineParase[2], lineNumber, "g1 coefficient");
+                                outModels.AddCoefficients(mModelIdx, tempDbl);
 
-                                        //Order(m) (int)
-                                        case 1:
-                                            Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out lineOrder);
-                                            break;
+                                // h1 coefficient (only if order > 0)
+                                tempDbl = ParseDouble(lineParase[3], lineNumber, "h1 coefficient");
+                                if (lineOrder > 0) outModels.AddCoefficients(mModelIdx, tempDbl);
 
-                                        //g1 (double)
-                                        case 2:
-                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                            outModels.AddCoefficients(mModelIdx, tempDbl);
-                                            break;
+                                // g2 coefficient
+                                tempDbl = ParseDouble(lineParase[4], lineNumber, "g2 coefficient");
+                                outModels.AddCoefficients(eModelIdx, tempDbl);
 
-                                        //h1 (double)
-                                        case 3:
-                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                            if (lineOrder > 0) outModels.AddCoefficients(mModelIdx, tempDbl);
-                                            break;
-
-                                        //g2 (double)
-                                        case 4:
-                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                            outModels.AddCoefficients(eModelIdx, tempDbl);
-                                            break;
-
-                                        //h2 (double)
-                                        case 5:
-                                            double.TryParse(lineParase[itemIdx], NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-                                            if (lineOrder > 0) outModels.AddCoefficients(eModelIdx, tempDbl);
-                                            break;
-
-                                        //irat (string)
-                                        case 6:
-                                            //coeffLine.Model = lineParase[itemIdx];
-                                            break;
-
-                                        //LineNum (int)
-                                        case 7:
-                                            //Int32.TryParse(lineParase[itemIdx], NumberStyles.Integer, CultureInfo.InvariantCulture, out tempInt);
-                                            //coeffLine.LineNum = tempInt;
-                                            break;
-                                    }
-                                }
+                                // h2 coefficient (only if order > 0)
+                                tempDbl = ParseDouble(lineParase[5], lineNumber, "h2 coefficient");
+                                if (lineOrder > 0) outModels.AddCoefficients(eModelIdx, tempDbl);
                                 #endregion
                             }
                         }
@@ -287,16 +258,14 @@ namespace GeoMagSharp
 
                         if (lineNumber.Equals(1))
                         {
-                            //Min Year
-                            double.TryParse(inbuff, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-
+                            //Min Year - must be a valid year
+                            tempDbl = ParseDouble(inbuff, lineNumber, "minimum year");
                             outModels.MinDate = tempDbl;
                         }
                         else if (lineNumber.Equals(2))
                         {
-                            //Max Year
-                            double.TryParse(inbuff, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-
+                            //Max Year - must be a valid year
+                            tempDbl = ParseDouble(inbuff, lineNumber, "maximum year");
                             outModels.MaxDate = tempDbl;
                         }
                         else if (inbuff.IndexOf("N", StringComparison.OrdinalIgnoreCase).Equals(0))
@@ -306,11 +275,13 @@ namespace GeoMagSharp
                         }
                         else if (inbuff.IndexOf("M", StringComparison.OrdinalIgnoreCase).Equals(0) ||
                             inbuff.IndexOf("S", StringComparison.OrdinalIgnoreCase).Equals(0) ||
-                            inbuff.IndexOf("E", StringComparison.OrdinalIgnoreCase).Equals(0)) /* If 1st 3 chars are spaces */
+                            inbuff.IndexOf("E", StringComparison.OrdinalIgnoreCase).Equals(0)) /* Model type marker line */
                         {
                             modelI++;                                           /* New model */
 
-                            double.TryParse(lineParase.Last(), NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
+                            // Validate we have at least 2 elements (type and year)
+                            ValidateArrayLength(lineParase, 2, lineNumber);
+                            tempDbl = ParseDouble(lineParase.Last(), lineNumber, "model year");
 
                             outModels.AddModel(new MagneticModel
                                 {
@@ -321,14 +292,10 @@ namespace GeoMagSharp
                         }
                         else if (modelI > -1)
                         {
-                        
-                            /* read in more values for this era */
-
+                            /* read in coefficient values for this model */
                             foreach (var ptr in lineParase)
                             {
-                         
-                                double.TryParse(ptr, NumberStyles.Float, CultureInfo.InvariantCulture, out tempDbl);
-
+                                tempDbl = ParseDouble(ptr, lineNumber, "coefficient");
                                 outModels.AddCoefficients(modelI, tempDbl);
                             }
                         }
@@ -366,6 +333,65 @@ namespace GeoMagSharp
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Safely parses a double value with validation.
+        /// </summary>
+        /// <param name="value">String value to parse</param>
+        /// <param name="lineNumber">Line number for error reporting</param>
+        /// <param name="fieldName">Field name for error reporting</param>
+        /// <returns>Parsed double value</returns>
+        /// <exception cref="GeoMagExceptionBadCharacter">Value could not be parsed</exception>
+        private static double ParseDouble(string value, int lineNumber, string fieldName)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new GeoMagExceptionBadCharacter(string.Format(
+                    "Error: Empty or null value for {0} at line {1}", fieldName, lineNumber));
+
+            double result;
+            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out result))
+                throw new GeoMagExceptionBadCharacter(string.Format(
+                    "Error: Invalid numeric value '{0}' for {1} at line {2}", value, fieldName, lineNumber));
+
+            return result;
+        }
+
+        /// <summary>
+        /// Safely parses an integer value with validation.
+        /// </summary>
+        /// <param name="value">String value to parse</param>
+        /// <param name="lineNumber">Line number for error reporting</param>
+        /// <param name="fieldName">Field name for error reporting</param>
+        /// <returns>Parsed integer value</returns>
+        /// <exception cref="GeoMagExceptionBadCharacter">Value could not be parsed</exception>
+        private static int ParseInt(string value, int lineNumber, string fieldName)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new GeoMagExceptionBadCharacter(string.Format(
+                    "Error: Empty or null value for {0} at line {1}", fieldName, lineNumber));
+
+            int result;
+            if (!int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out result))
+                throw new GeoMagExceptionBadCharacter(string.Format(
+                    "Error: Invalid integer value '{0}' for {1} at line {2}", value, fieldName, lineNumber));
+
+            return result;
+        }
+
+        /// <summary>
+        /// Validates that an array has at least the required number of elements.
+        /// </summary>
+        /// <param name="array">Array to check</param>
+        /// <param name="requiredCount">Minimum required elements</param>
+        /// <param name="lineNumber">Line number for error reporting</param>
+        /// <exception cref="GeoMagExceptionBadCharacter">Array does not have enough elements</exception>
+        private static void ValidateArrayLength(string[] array, int requiredCount, int lineNumber)
+        {
+            if (array == null || array.Length < requiredCount)
+                throw new GeoMagExceptionBadCharacter(string.Format(
+                    "Error: Line {0} has insufficient data. Expected at least {1} values, found {2}",
+                    lineNumber, requiredCount, array?.Length ?? 0));
         }
     }
 }
