@@ -1,26 +1,186 @@
-#ignore thumbnails created by windows
-Thumbs.db
-#Ignore files build by Visual Studio
+# ===========================
+# C# / .NET / Visual Studio
+# ===========================
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/options directory
+.vs/
+
+# User-specific files
+*.rsuser
+*.suo
 *.user
-*.aps
-*.pch
-*.vspscc
+*.userosscache
+*.sln.docstates
+
+# Mono auto-generated files
+mono_crash.*
+
+# Build log
+*.log
+msbuild.binlog
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# Visual Studio Trace Files
+*.e2e
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# NCrunch
+_NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+# CodeMaid
+CodeMaid.config
+
+# Telerik
+*.rpt
+
+# NuGet Packages
+packages/
+*.nupkg
+*.snupkg
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# StyleCop
+StyleCopReport.xml
+
+# Files built by Visual Studio
 *_i.c
 *_p.c
-*.ncb
-*.suo
-*.bak
-*.cache
+*_h.h
 *.ilk
-*.log
-[Bb]in
-[Dd]ebug*/
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
 *.sbr
-obj/
-[Rr]elease*/
-_ReSharper*/
-#Ignore Setup Project
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.manifest
+*.spec
+
+# Compiled output
+*.dll
+*.exe
+!.gitkeep
+
+# Code coverage results
+*.coverage
+*.coveragexml
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+coverage*.json
+coverage*.xml
+coverage*.info
+
+# Caches
+*.aps
+*.ncb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+
+# Visual C++
+*.VC.VC.opendb
+*.VC.db
+
+# Visual Studio code coverage results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# ===========================
+# Windows
+# ===========================
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.stackdump
+
+# ===========================
+# macOS
+# ===========================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# ===========================
+# Project-specific
+# ===========================
+
+# Setup project output
 SetupGeoMagGUI/
-#User Defined Ignores
+
+# Test data files
 bggm2014.dat
+
+# Generated HTML reports
 *.htm
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# ===========================
+# Secrets (never commit)
+# ===========================
+*.pfx
+*.snk
+appsettings.local.json
+secrets.json
+.env
+.env.*
