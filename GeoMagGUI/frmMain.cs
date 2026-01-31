@@ -1,12 +1,10 @@
-﻿using System;
-using System.Data;
+﻿using GeoMagGUI.Properties;
+using GeoMagSharp;
+using System;
+using System.Device.Location;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Device.Location;
-
-using GeoMagGUI.Properties;
-using GeoMagSharp;
 
 namespace GeoMagGUI
 {
@@ -322,7 +320,7 @@ namespace GeoMagGUI
             {
                 var copyToLocation = string.Format("{0}{1}", ModelFolder, Path.GetFileName(fDlg.FileName));
 
-                File.Copy(fDlg.FileName, copyToLocation);
+                File.Copy(fDlg.FileName, copyToLocation, overwrite: true);
 
                 LoadModels(copyToLocation);
             }
