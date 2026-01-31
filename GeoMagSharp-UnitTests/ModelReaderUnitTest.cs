@@ -21,7 +21,7 @@ namespace GeoMagSharp_UnitTests
         private static string TestDataPath;
 
         [ClassInitialize]
-        public static void ClassInit(TestContext context)
+        public static void ClassInit(TestContext _)
         {
             // Find the TestData folder - try various relative paths
             var possiblePaths = new[]
