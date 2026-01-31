@@ -52,7 +52,22 @@
   <ItemGroup>
     <Compile Include="CalculatorUnitTest.cs" />
     <Compile Include="ExtensionMethodsUnitTest.cs" />
+    <Compile Include="ModelReaderUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestData\WMM2015.COF">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\WMM2020.COF">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\WMM2025.COF">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\WMMHR.COF">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GeoMagSharp\GeoMagSharp.csproj">

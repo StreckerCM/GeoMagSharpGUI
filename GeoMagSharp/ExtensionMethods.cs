@@ -212,24 +212,53 @@ namespace GeoMagSharp
             return Convert.ToDouble(numStr.Substring(0, numStr.IndexOf('.')));
         }
 
+        /// <summary>
+        /// Checks a string (typically a COF file header line) for known magnetic model identifiers.
+        /// Supports both old format (model name at start) and new format (year at start, model name later).
+        /// </summary>
+        /// <param name="value">The string to check for model identifiers</param>
+        /// <returns>The detected model type, or knownModels.NONE if not found</returns>
         public static knownModels CheckStringForModel(this string value)
         {
+            if (string.IsNullOrWhiteSpace(value))
+                return knownModels.NONE;
+
+            // Check for each known model type
             foreach (knownModels model in Enum.GetValues(typeof(knownModels)))
             {
-                Int32 idx = value.IndexOf(model.ToString(), StringComparison.OrdinalIgnoreCase);
+                if (model.Equals(knownModels.NONE))
+                    continue;
 
-                if (!idx.Equals(-1) && model.Equals(knownModels.EMM))
+                string modelName = model.ToString();
+                Int32 idx = value.IndexOf(modelName, StringComparison.OrdinalIgnoreCase);
+
+                if (idx == -1)
+                    continue;
+
+                // EMM can be found anywhere in the line
+                if (model.Equals(knownModels.EMM))
                 {
                     return model;
                 }
-                else if (idx.Equals(0) && !(model.Equals(knownModels.EMM) || model.Equals(knownModels.NONE)))
+
+                // For WMM, IGRF, DGRF: accept if found at position 0 (old format)
+                // OR if found later in line after a digit (new format where year comes first)
+                if (idx == 0)
                 {
+                    return model;
+                }
+
+                // New format detection: line starts with year (digit), model name appears later
+                // Example: "    2020.0            WMM-2020        12/10/2019"
+                string trimmed = value.TrimStart();
+                if (trimmed.Length > 0 && char.IsDigit(trimmed[0]))
+                {
+                    // This is the new format - model name found somewhere in the line
                     return model;
                 }
             }
 
             return knownModels.NONE;
-
         }
     
     }

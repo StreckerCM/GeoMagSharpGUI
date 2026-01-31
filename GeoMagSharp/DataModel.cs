@@ -56,7 +56,12 @@ namespace GeoMagSharp
 
         public const Int32 MaxModules = 30;  /** Max number of models in a file **/
 
-        public const Int32 MaxDeg = 13;
+        /// <summary>
+        /// Maximum spherical harmonic degree supported.
+        /// Standard WMM/IGRF use degree 12-13, WMMHR uses degree 18.
+        /// Set to 20 to provide headroom for future high-resolution models.
+        /// </summary>
+        public const Int32 MaxDeg = 20;
         public static Int32 MaxCoeff 
             {
                 get
