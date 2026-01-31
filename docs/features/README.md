@@ -21,7 +21,7 @@ Each feature folder should contain:
 
 | Priority | # | Feature | Description | Status |
 |:--------:|---|---------|-------------|--------|
-| - | - | - | *No features planned yet* | - |
+| 1 | [#1](https://github.com/StreckerCM/GeoMagSharpGUI/issues/1) | [WMM Format Support](01-wmm-format-support/) | Support WMM2020+ coefficient file format | Ready |
 
 ---
 
