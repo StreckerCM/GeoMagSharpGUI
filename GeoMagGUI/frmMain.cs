@@ -332,14 +332,18 @@ namespace GeoMagGUI
 
         private void textBoxLatitudeDecimal_Validated(object sender, EventArgs e)
         {
+            if (_processingEvents) return;
+
             this.errorProviderCheck.SetError(textBoxLatitudeDecimal, string.Empty);
 
             var latitude = new Latitude(Convert.ToDouble(textBoxLatitudeDecimal.Text));
 
+            _processingEvents = true;
             TextBoxLatDeg.Text = latitude.Degrees.ToString("F0");
             TextBoxLatMin.Text = latitude.Minutes.ToString("F0");
             TextBoxLatSec.Text = latitude.Seconds.ToString("F4");
             ComboBoxLatDir.SelectedItem = latitude.Hemisphere.ToString();
+            _processingEvents = false;
         }
 
         private void textBoxLatitudeDecimal_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -375,14 +379,18 @@ namespace GeoMagGUI
 
         private void textBoxLongitudeDecimal_Validated(object sender, EventArgs e)
         {
+            if (_processingEvents) return;
+
             this.errorProviderCheck.SetError(textBoxLongitudeDecimal, string.Empty);
 
             var longitude = new Longitude(Convert.ToDouble(textBoxLongitudeDecimal.Text));
 
+            _processingEvents = true;
             TextBoxLongDeg.Text = longitude.Degrees.ToString("F0");
             TextBoxLongMin.Text = longitude.Minutes.ToString("F0");
             TextBoxLongSec.Text = longitude.Seconds.ToString("F4");
             ComboBoxLongDir.SelectedItem = longitude.Hemisphere.ToString();
+            _processingEvents = false;
         }
 
         private void textBoxLongitudeDecimal_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -443,11 +451,15 @@ namespace GeoMagGUI
 
         private void TextBoxLongitude_Validated(object sender, EventArgs e)
         {
+            if (_processingEvents) return;
+
             this.errorProviderCheck.SetError(ComboBoxLongDir, string.Empty);
 
             var longitude = new Longitude(Convert.ToDouble(TextBoxLongDeg.Text), Convert.ToDouble(TextBoxLongMin.Text), Convert.ToDouble(TextBoxLongSec.Text), ComboBoxLongDir.SelectedItem.ToString());
 
+            _processingEvents = true;
             textBoxLongitudeDecimal.Text = longitude.Decimal.ToString("F8");
+            _processingEvents = false;
 
             ApplicationPreferences.LongitudeHemisphere = ComboBoxLongDir.SelectedItem.ToString();
 
@@ -495,11 +507,15 @@ namespace GeoMagGUI
 
         private void TextBoxLatitude_Validated(object sender, EventArgs e)
         {
+            if (_processingEvents) return;
+
             this.errorProviderCheck.SetError(ComboBoxLatDir, string.Empty);
 
             var latitude = new Latitude(Convert.ToDouble(TextBoxLatDeg.Text), Convert.ToDouble(TextBoxLatMin.Text), Convert.ToDouble(TextBoxLatSec.Text), ComboBoxLatDir.SelectedItem.ToString());
 
+            _processingEvents = true;
             textBoxLatitudeDecimal.Text = latitude.Decimal.ToString("F8");
+            _processingEvents = false;
 
             ApplicationPreferences.LatitudeHemisphere = ComboBoxLatDir.SelectedItem.ToString();
 
