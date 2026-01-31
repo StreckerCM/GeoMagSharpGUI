@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="CalculatorUnitTest.cs" />
     <Compile Include="ExtensionMethodsUnitTest.cs" />
+    <Compile Include="MagneticModelCollectionUnitTest.cs" />
     <Compile Include="ModelReaderUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -7,13 +7,12 @@
  * Current version: 
  *  ****************************************************************************/
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-
-using Newtonsoft.Json;
 using System.Data;
+using System.IO;
+using System.Linq;
 
 namespace GeoMagSharp
 {
@@ -771,6 +770,50 @@ namespace GeoMagSharp
         public List<MagneticModelSet> FindAll(Predicate<MagneticModelSet> match)
         {
             return TList.FindAll(match);
+        }
+
+        /// <summary>
+        /// Finds an existing model that contains the specified filename
+        /// </summary>
+        /// <param name="fileName">The filename to search for (case-insensitive)</param>
+        /// <returns>The matching MagneticModelSet, or null if not found</returns>
+        public MagneticModelSet FindByFileName(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) return null;
+
+            return TList.Find(m =>
+                m.FileNames != null &&
+                m.FileNames.Any(f =>
+                    string.Equals(f, fileName, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        /// <summary>
+        /// Adds a model to the collection, or replaces an existing model with the same filename
+        /// </summary>
+        /// <param name="item">The model to add or replace</param>
+        /// <returns>True if an existing model was replaced, false if a new model was added</returns>
+        public bool AddOrReplace(MagneticModelSet item)
+        {
+            if (item == null || item.FileNames == null || !item.FileNames.Any())
+            {
+                Add(item);
+                return false;
+            }
+
+            // Check if any of the item's filenames already exist in the collection
+            var existingModel = FindByFileName(item.FileNames.First());
+
+            if (existingModel != null)
+            {
+                // Replace the existing model
+                int index = TList.IndexOf(existingModel);
+                TList[index] = item;
+                return true;
+            }
+
+            // Add as new model
+            Add(item);
+            return false;
         }
 
         public IEnumerator<MagneticModelSet> GetEnumerator()

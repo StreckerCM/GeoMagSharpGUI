@@ -293,7 +293,7 @@ namespace GeoMagGUI
 
                     fAddModel.ShowDialog(this);
 
-                    Models.Add(fAddModel.Model);
+                    Models.AddOrReplace(fAddModel.Model);
 
                     Models.Save(Path.Combine(ModelFolder, Resources.File_Name_Magnetic_Model_JSON));
 
