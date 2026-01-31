@@ -121,6 +121,67 @@ public void ToDecimal_LeapYear_CalculatesCorrectly()
 
 ---
 
+## Development Workflow
+
+### Starting New Work
+
+**IMPORTANT:** All features and issues must follow this workflow:
+
+#### 1. Create a GitHub Issue
+Before starting any feature work, ensure a GitHub issue exists:
+- Features should have an issue in the repository
+- Link to feature spec in `docs/features/` if available
+- Use appropriate labels (enhancement, bug, documentation, etc.)
+
+#### 2. Create a Feature Branch
+Always branch from the current preview/feature branch (not master):
+
+```bash
+# Ensure you're on the preview branch
+git checkout feature/wmm-format-support  # or current preview branch
+
+# Create and switch to a new feature branch
+git checkout -b feature/your-feature-name
+
+# Push the new branch to origin
+git push -u origin feature/your-feature-name
+```
+
+**Branch Naming Convention:**
+- `feature/feature-name` - New features
+- `bugfix/issue-description` - Bug fixes
+- `refactor/area-name` - Refactoring work
+
+#### 3. Start a Ralph Wiggum Loop
+Use the rotating personas defined in `docs/prompts/PERSONAS.md`:
+
+```bash
+/ralph-loop "Feature: [name]
+ROTATING PERSONA (ITERATION MOD 6):
+[0] #5 IMPLEMENTER: Complete tasks
+[1] #9 REVIEWER: Review code
+[2] #7 TESTER: Verify functionality
+[3] #3 UI_UX_DESIGNER: Check UI/UX
+[4] #10 SECURITY_AUDITOR: Security review
+[5] #2 PROJECT_MANAGER: Check requirements
+
+OUTPUT <promise>FEATURE COMPLETE</promise> when done.
+" --completion-promise "FEATURE COMPLETE" --max-iterations 30
+```
+
+#### 4. Create Pull Request
+When work is complete:
+1. Push all commits to the feature branch
+2. Create PR targeting the preview branch (not master)
+3. Include manual testing checklist
+4. Link the GitHub issue
+
+#### 5. Merge to Preview, Then Master
+- Feature branches merge to preview branch first
+- Preview branch merges to master after full testing
+
+---
+
 ## Commit & Pull Request Guidelines
 
 **Commit Messages:**
@@ -200,19 +261,45 @@ For AI-assisted development:
 1. **Personas:** See `docs/prompts/PERSONAS.md` for 11 development personas
 2. **Templates:** See `docs/prompts/templates/` for Ralph Wiggum loop templates
 3. **Features:** Track planned work in `docs/features/`
+4. **Workflow:** Follow the Development Workflow section above
 
-**Recommended Workflow:**
+### Quick Start for New Features
+
 ```bash
-# Feature implementation with rotating personas
-/ralph-loop "Feature: [name]
-ROTATING PERSONA (ITERATION MOD 6):
-[0] #5 IMPLEMENTER: Complete tasks
-[1] #9 REVIEWER: Review code
-[2] #7 TESTER: Verify functionality
-[3] #3 UI_UX_DESIGNER: Check UI/UX
-[4] #10 SECURITY_AUDITOR: Security review
-[5] #2 PROJECT_MANAGER: Check requirements
+# 1. Create GitHub issue for the feature (if not exists)
 
-OUTPUT <promise>FEATURE COMPLETE</promise> when done.
+# 2. Create feature branch from preview branch
+git checkout feature/wmm-format-support  # current preview branch
+git checkout -b feature/new-feature-name
+git push -u origin feature/new-feature-name
+
+# 3. Start Ralph Wiggum loop with rotating personas
+/ralph-loop "Feature: [name] - [description]
+
+Reference: docs/features/NN-feature-name/tasks.md
+
+ROTATING PERSONA (see docs/prompts/PERSONAS.md):
+[0] #5 IMPLEMENTER: Complete implementation tasks
+[1] #9 REVIEWER: Review code quality and patterns
+[2] #7 TESTER: Write and run tests
+[3] #3 UI_UX_DESIGNER: Review UI changes
+[4] #10 SECURITY_AUDITOR: Security review
+[5] #2 PROJECT_MANAGER: Verify requirements met
+
+OUTPUT <promise>FEATURE COMPLETE</promise> when all tasks done.
 " --completion-promise "FEATURE COMPLETE" --max-iterations 30
+
+# 4. Create PR when complete
 ```
+
+### Feature Specification Workflow
+
+Before implementing significant features:
+
+1. Create feature folder: `docs/features/NN-feature-name/`
+2. Write `spec.md` - Requirements and acceptance criteria
+3. Write `plan.md` - Implementation phases and approach
+4. Write `tasks.md` - Detailed task checklist
+5. Update `docs/features/README.md` with feature entry
+6. Create corresponding GitHub issue
+7. Follow Development Workflow above

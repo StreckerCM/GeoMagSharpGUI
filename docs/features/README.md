@@ -21,7 +21,8 @@ Each feature folder should contain:
 
 | Priority | # | Feature | Description | Status |
 |:--------:|---|---------|-------------|--------|
-| 1 | [#1](https://github.com/StreckerCM/GeoMagSharpGUI/issues/1) | [WMM Format Support](01-wmm-format-support/) | Support WMM2020+ coefficient file format | Ready |
+| 1 | [#1](https://github.com/StreckerCM/GeoMagSharpGUI/issues/1) | [WMM Format Support](01-wmm-format-support/) | Support WMM2020+ coefficient file format | Testing |
+| 2 | - | [MVVM Architecture](02-mvvm-architecture/) | Refactor to Model-View-ViewModel pattern | Ready |
 
 ---
 
@@ -33,6 +34,7 @@ Ideas for future development:
 - **Unit Test Coverage** - Expand MSTest coverage for Calculator and ModelReader
 - **Model Auto-Update** - Check for new coefficient file versions online
 - **Export Formats** - CSV/Excel export in addition to text files
+- ~~**MVVM Architecture** - Refactor to proper Model-View-ViewModel pattern~~ (see #2 above)
 
 ### Medium Priority
 - **Batch Processing** - Calculate for multiple locations at once

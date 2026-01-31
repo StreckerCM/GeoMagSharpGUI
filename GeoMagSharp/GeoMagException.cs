@@ -7,7 +7,7 @@ namespace GeoMagSharp
     /// Base class for all exceptions.
     /// </summary>
     [Serializable]
-    class GeoMagException : Exception
+    public class GeoMagException : Exception
     {
         /// <summary>
         /// Creates a new instance of <seealso cref="GeoMagException"/>.
@@ -52,7 +52,7 @@ namespace GeoMagSharp
     /// Thrown when file is not found
     ///</summary>
     [Serializable]
-    class GeoMagExceptionModelNotLoaded : GeoMagException
+    public class GeoMagExceptionModelNotLoaded : GeoMagException
     {
         public GeoMagExceptionModelNotLoaded()
         {
@@ -79,7 +79,7 @@ namespace GeoMagSharp
     /// Thrown when file is not found
     ///</summary>
     [Serializable]
-    class GeoMagExceptionFileNotFound : GeoMagException
+    public class GeoMagExceptionFileNotFound : GeoMagException
     {
         public GeoMagExceptionFileNotFound()
         {
@@ -105,7 +105,7 @@ namespace GeoMagSharp
     /// Thrown when file has an invalid charater in a line
     ///</summary>
     [Serializable]
-    class GeoMagExceptionBadCharacter : GeoMagException
+    public class GeoMagExceptionBadCharacter : GeoMagException
     {
         public GeoMagExceptionBadCharacter()
         {
@@ -132,7 +132,7 @@ namespace GeoMagSharp
     /// Thrown when file has an invalid number of coefficients
     ///</summary>
     [Serializable]
-    class GeoMagExceptionBadNumberOfCoefficients : GeoMagException
+    public class GeoMagExceptionBadNumberOfCoefficients : GeoMagException
     {
         public GeoMagExceptionBadNumberOfCoefficients()
         {
@@ -158,7 +158,7 @@ namespace GeoMagSharp
     /// Thrown when file has an invalid number of coefficients
     ///</summary>
     [Serializable]
-    class GeoMagExceptionOpenError : GeoMagException
+    public class GeoMagExceptionOpenError : GeoMagException
     {
         public GeoMagExceptionOpenError()
         {
@@ -184,7 +184,7 @@ namespace GeoMagSharp
     /// Thrown when file has an invalid number of coefficients
     ///</summary>
     [Serializable]
-    class GeoMagExceptionOutOfRange : GeoMagException
+    public class GeoMagExceptionOutOfRange : GeoMagException
     {
         public GeoMagExceptionOutOfRange()
         {
@@ -210,7 +210,7 @@ namespace GeoMagSharp
     /// Thrown when file has an invalid number of coefficients
     ///</summary>
     [Serializable]
-    class GeoMagExceptionOutOfMemory : GeoMagException
+    public class GeoMagExceptionOutOfMemory : GeoMagException
     {
         public GeoMagExceptionOutOfMemory()
         {

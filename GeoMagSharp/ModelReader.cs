@@ -97,6 +97,73 @@ namespace GeoMagSharp
                                     Path.GetExtension(modelFile).ToUpper())));
         }
 
+        /// <summary>
+        /// Detects whether a COF file header uses the new format (year first) or old format (model name first).
+        /// New format (WMM2020+): "    2020.0            WMM-2020        12/10/2019"
+        /// Old format (WMM2015):  "   WMM-2015  2015.00 12 12  0 2014.75 2020.00..."
+        /// </summary>
+        /// <param name="headerLine">The first line of the COF file</param>
+        /// <returns>True if new format (year first), false if old format (model name first)</returns>
+        private static bool IsNewHeaderFormat(string headerLine)
+        {
+            if (string.IsNullOrWhiteSpace(headerLine))
+                return false;
+
+            string trimmed = headerLine.TrimStart();
+            return trimmed.Length > 0 && char.IsDigit(trimmed[0]);
+        }
+
+        /// <summary>
+        /// Checks if a line is the end-of-file marker (line of 9's) used in WMM2020+ files.
+        /// </summary>
+        /// <param name="line">The line to check</param>
+        /// <returns>True if this is an EOF marker line</returns>
+        private static bool IsEndOfFileMarker(string line)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                return false;
+
+            // WMM2020+ uses a line of 48 nines as terminator
+            // Check if line starts with many 9's (at least 10)
+            string trimmed = line.Trim();
+            return trimmed.Length >= 10 && trimmed.StartsWith("9999999999");
+        }
+
+        /// <summary>
+        /// Extracts the model year from a COF header line, handling both old and new formats.
+        /// </summary>
+        /// <param name="headerLine">The header line</param>
+        /// <param name="lineFields">The whitespace-split fields of the header line</param>
+        /// <param name="isNewFormat">Whether this is the new (WMM2020+) format</param>
+        /// <param name="modelType">The detected model type</param>
+        /// <param name="lineNumber">Line number for error reporting</param>
+        /// <returns>The model epoch year as a decimal</returns>
+        private static double ExtractModelYear(string headerLine, string[] lineFields, bool isNewFormat,
+            knownModels modelType, int lineNumber)
+        {
+            if (modelType.Equals(knownModels.EMM))
+            {
+                // EMM format: year is first field
+                ValidateArrayLength(lineFields, 1, lineNumber);
+                return ParseDouble(lineFields[0], lineNumber, "model year");
+            }
+
+            if (isNewFormat)
+            {
+                // New format (WMM2020+): year is first field
+                // Example: "    2020.0            WMM-2020        12/10/2019"
+                ValidateArrayLength(lineFields, 1, lineNumber);
+                return ParseDouble(lineFields[0], lineNumber, "model year");
+            }
+            else
+            {
+                // Old format (WMM2015/IGRF): year is second field after model name
+                // Example: "   WMM-2015  2015.00 12 12  0 2014.75 2020.00..."
+                ValidateArrayLength(lineFields, 2, lineNumber);
+                return ParseDouble(lineFields[1], lineNumber, "model year");
+            }
+        }
+
         private static MagneticModelSet COFreader(string modelFile)
         {
             var outModels = new MagneticModelSet();
@@ -104,6 +171,7 @@ namespace GeoMagSharp
             outModels.FileNames.Add(Path.GetFileName(modelFile));
 
             double tempDbl = 0;
+            bool isNewFormat = false;
 
             using (var stream = new StreamReader(modelFile))
             {
@@ -123,23 +191,24 @@ namespace GeoMagSharp
 
                     if (!string.IsNullOrEmpty(inbuff))
                     {
+                        // Check for end-of-file marker (WMM2020+ format uses 999...999)
+                        if (IsEndOfFileMarker(inbuff))
+                        {
+                            break; // End of coefficient data
+                        }
+
                         var lineParase = inbuff.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        if(lineNumber.Equals(1)) outModels.Type = inbuff.CheckStringForModel();
+                        if (lineNumber.Equals(1))
+                        {
+                            outModels.Type = inbuff.CheckStringForModel();
+                            isNewFormat = IsNewHeaderFormat(inbuff);
+                        }
 
                         if (!inbuff.CheckStringForModel().Equals(knownModels.NONE))
                         {
-                            /* New model - validate we have enough columns for year parsing */
-                            if (outModels.Type.Equals(knownModels.EMM))
-                            {
-                                ValidateArrayLength(lineParase, 1, lineNumber);
-                                tempDbl = ParseDouble(lineParase[0], lineNumber, "model year");
-                            }
-                            else
-                            {
-                                ValidateArrayLength(lineParase, 2, lineNumber);
-                                tempDbl = ParseDouble(lineParase[1], lineNumber, "model year");
-                            }
+                            /* New model - extract year using format-aware parsing */
+                            tempDbl = ExtractModelYear(inbuff, lineParase, isNewFormat, outModels.Type, lineNumber);
 
                             outModels.AddModel(new MagneticModel
                             {
