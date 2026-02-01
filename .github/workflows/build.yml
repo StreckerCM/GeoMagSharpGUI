@@ -116,16 +116,19 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: test-results
+        name: test-results${{ steps.version.outputs.artifact_suffix }}
         path: TestResults/*.trx
         if-no-files-found: ignore
 
+    # Installer steps only run on push events (not pull requests)
     - name: Install WiX Toolset
+      if: github.event_name == 'push'
       shell: pwsh
       run: |
         dotnet tool install --global wix --version 5.0.2
 
     - name: Generate WiX file components
+      if: github.event_name == 'push'
       shell: pwsh
       run: |
         $buildOutput = "GeoMagGUI\bin\Release"
@@ -135,6 +138,7 @@ jobs:
         & "Installer\Generate-FileComponents.ps1" -BuildOutputPath $buildOutput -Version $version
 
     - name: Build MSI installer
+      if: github.event_name == 'push'
       shell: pwsh
       run: |
         $version = "${{ steps.version.outputs.full_version }}"
@@ -152,12 +156,14 @@ jobs:
             FileComponents.wxs
 
     - name: Upload MSI artifact
+      if: github.event_name == 'push'
       uses: actions/upload-artifact@v4
       with:
         name: GeoMagGUI${{ steps.version.outputs.artifact_suffix }}-msi
         path: artifacts/*.msi
 
     - name: Upload build output
+      if: github.event_name == 'push'
       uses: actions/upload-artifact@v4
       with:
         name: GeoMagGUI${{ steps.version.outputs.artifact_suffix }}-bin
