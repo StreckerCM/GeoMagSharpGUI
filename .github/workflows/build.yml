@@ -224,7 +224,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: v${{ needs.build.outputs.full_version }}
-        name: GeoMag # v${{ needs.build.outputs.full_version }}
+        name: GeoMag # ${{ needs.build.outputs.full_version }}
         body_path: release_notes.md
         draft: false
         files: artifacts/*.msi
