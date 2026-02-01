@@ -15,6 +15,9 @@ env:
 jobs:
   build:
     runs-on: windows-latest
+    outputs:
+      full_version: ${{ steps.version.outputs.full_version }}
+      artifact_suffix: ${{ steps.version.outputs.artifact_suffix }}
 
     steps:
     - name: Checkout code
