@@ -3,7 +3,7 @@
   <PropertyGroup>
     <!-- Base version - increment these for new releases -->
     <MajorVersion>1</MajorVersion>
-    <MinorVersion>5</MinorVersion>
+    <MinorVersion>1</MinorVersion>
     <PatchVersion>0</PatchVersion>
 
     <!-- Full version is set by CI/CD workflow -->
