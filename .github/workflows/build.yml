@@ -192,21 +192,9 @@ jobs:
         path: artifacts
 
     - name: Generate release notes
-      id: release_notes
       shell: bash
       run: |
-        # Get the previous tag
-        PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-
-        # Generate release notes
-        if [ -n "$PREV_TAG" ]; then
-          COMMITS=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s" --no-merges | head -20)
-        else
-          COMMITS=$(git log --pretty=format:"- %s" --no-merges | head -20)
-        fi
-
-        # Create release body
-        cat << 'NOTES' > release_notes.md
+        cat > release_notes.md << EOF
         ## What's New in v${{ needs.build.outputs.full_version }}
 
         ### Features & Improvements
@@ -230,9 +218,7 @@ jobs:
 
         ---
         *Full changelog available in the [commit history](https://github.com/${{ github.repository }}/commits/master)*
-        NOTES
-
-        echo "notes_file=release_notes.md" >> $GITHUB_OUTPUT
+        EOF
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
