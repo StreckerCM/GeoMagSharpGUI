@@ -1,12 +1,10 @@
-﻿using System;
-using System.Data;
+﻿using GeoMagGUI.Properties;
+using GeoMagSharp;
+using System;
+using System.Device.Location;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Device.Location;
-
-using GeoMagGUI.Properties;
-using GeoMagSharp;
 
 namespace GeoMagGUI
 {
@@ -214,9 +212,9 @@ namespace GeoMagGUI
 
                         dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Value = mag.Date.ToShortDateString();
 
-                        dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Value = string.Format("{0}°", (mag.EastComp == null ? double.NaN.ToString() : mag.Declination.Value.ToString("F3")));
+                        dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Value = string.Format("{0}°", (mag.EastComp == null ? double.NaN.ToString() : mag.Declination.Value.ToString("F4")));
 
-                        dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnInclination"].Value = string.Format("{0}°", (mag.EastComp == null ? double.NaN.ToString() : mag.Inclination.Value.ToString("F3")));
+                        dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnInclination"].Value = string.Format("{0}°", (mag.EastComp == null ? double.NaN.ToString() : mag.Inclination.Value.ToString("F4")));
 
                         dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnHorizontalIntensity"].Value = string.Format("{0} nT", (mag.EastComp == null ? double.NaN.ToString() : mag.HorizontalIntensity.Value.ToString("F2")));
 
@@ -235,10 +233,10 @@ namespace GeoMagGUI
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Value = @"Change per year";
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Style.BackColor = System.Drawing.Color.LightBlue;
 
-                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Value = string.Format("{0}°", _MagCalculator.ResultsOfCalculation.Last().Declination.ChangePerYear.ToString("F3"));
+                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Value = string.Format("{0}°", _MagCalculator.ResultsOfCalculation.Last().Declination.ChangePerYear.ToString("F4"));
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Style.BackColor = System.Drawing.Color.LightBlue;
 
-                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnInclination"].Value = string.Format("{0}°", _MagCalculator.ResultsOfCalculation.Last().Inclination.ChangePerYear.ToString("F3"));
+                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnInclination"].Value = string.Format("{0}°", _MagCalculator.ResultsOfCalculation.Last().Inclination.ChangePerYear.ToString("F4"));
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnInclination"].Style.BackColor = System.Drawing.Color.LightBlue;
 
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnHorizontalIntensity"].Value = string.Format("{0} nT", _MagCalculator.ResultsOfCalculation.Last().HorizontalIntensity.ChangePerYear.ToString("F2"));
@@ -295,7 +293,7 @@ namespace GeoMagGUI
 
                     fAddModel.ShowDialog(this);
 
-                    Models.Add(fAddModel.Model);
+                    Models.AddOrReplace(fAddModel.Model);
 
                     Models.Save(Path.Combine(ModelFolder, Resources.File_Name_Magnetic_Model_JSON));
 
@@ -314,7 +312,6 @@ namespace GeoMagGUI
             {
                 Title = @"Select a Model Data File",
                 Filter = Properties.Resources.File_Type_All_Coeff_Files,
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 Multiselect = false
             };
 
@@ -322,7 +319,7 @@ namespace GeoMagGUI
             {
                 var copyToLocation = string.Format("{0}{1}", ModelFolder, Path.GetFileName(fDlg.FileName));
 
-                File.Copy(fDlg.FileName, copyToLocation);
+                File.Copy(fDlg.FileName, copyToLocation, overwrite: true);
 
                 LoadModels(copyToLocation);
             }
@@ -335,14 +332,18 @@ namespace GeoMagGUI
 
         private void textBoxLatitudeDecimal_Validated(object sender, EventArgs e)
         {
+            if (_processingEvents) return;
+
             this.errorProviderCheck.SetError(textBoxLatitudeDecimal, string.Empty);
 
             var latitude = new Latitude(Convert.ToDouble(textBoxLatitudeDecimal.Text));
 
+            _processingEvents = true;
             TextBoxLatDeg.Text = latitude.Degrees.ToString("F0");
             TextBoxLatMin.Text = latitude.Minutes.ToString("F0");
             TextBoxLatSec.Text = latitude.Seconds.ToString("F4");
             ComboBoxLatDir.SelectedItem = latitude.Hemisphere.ToString();
+            _processingEvents = false;
         }
 
         private void textBoxLatitudeDecimal_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -378,14 +379,18 @@ namespace GeoMagGUI
 
         private void textBoxLongitudeDecimal_Validated(object sender, EventArgs e)
         {
+            if (_processingEvents) return;
+
             this.errorProviderCheck.SetError(textBoxLongitudeDecimal, string.Empty);
 
             var longitude = new Longitude(Convert.ToDouble(textBoxLongitudeDecimal.Text));
 
+            _processingEvents = true;
             TextBoxLongDeg.Text = longitude.Degrees.ToString("F0");
             TextBoxLongMin.Text = longitude.Minutes.ToString("F0");
             TextBoxLongSec.Text = longitude.Seconds.ToString("F4");
             ComboBoxLongDir.SelectedItem = longitude.Hemisphere.ToString();
+            _processingEvents = false;
         }
 
         private void textBoxLongitudeDecimal_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -446,11 +451,15 @@ namespace GeoMagGUI
 
         private void TextBoxLongitude_Validated(object sender, EventArgs e)
         {
+            if (_processingEvents) return;
+
             this.errorProviderCheck.SetError(ComboBoxLongDir, string.Empty);
 
             var longitude = new Longitude(Convert.ToDouble(TextBoxLongDeg.Text), Convert.ToDouble(TextBoxLongMin.Text), Convert.ToDouble(TextBoxLongSec.Text), ComboBoxLongDir.SelectedItem.ToString());
 
+            _processingEvents = true;
             textBoxLongitudeDecimal.Text = longitude.Decimal.ToString("F8");
+            _processingEvents = false;
 
             ApplicationPreferences.LongitudeHemisphere = ComboBoxLongDir.SelectedItem.ToString();
 
@@ -498,11 +507,15 @@ namespace GeoMagGUI
 
         private void TextBoxLatitude_Validated(object sender, EventArgs e)
         {
+            if (_processingEvents) return;
+
             this.errorProviderCheck.SetError(ComboBoxLatDir, string.Empty);
 
             var latitude = new Latitude(Convert.ToDouble(TextBoxLatDeg.Text), Convert.ToDouble(TextBoxLatMin.Text), Convert.ToDouble(TextBoxLatSec.Text), ComboBoxLatDir.SelectedItem.ToString());
 
+            _processingEvents = true;
             textBoxLatitudeDecimal.Text = latitude.Decimal.ToString("F8");
+            _processingEvents = false;
 
             ApplicationPreferences.LatitudeHemisphere = ComboBoxLatDir.SelectedItem.ToString();
 
@@ -660,7 +673,6 @@ namespace GeoMagGUI
             var fldlg = new SaveFileDialog
             {
                 Filter = Resources.File_Type_Text_Tab,
-                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                 Title = "Save Results",
                 FileName = fileName
 
