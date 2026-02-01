@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <!-- Base version - increment these for new releases -->
+    <MajorVersion>1</MajorVersion>
+    <MinorVersion>5</MinorVersion>
+    <PatchVersion>0</PatchVersion>
+
+    <!-- Full version is set by CI/CD workflow -->
+    <FullVersion Condition="'$(FullVersion)' == ''">$(MajorVersion).$(MinorVersion).$(PatchVersion).0</FullVersion>
+
+    <!-- Product information -->
+    <ProductName>GeoMag #</ProductName>
+    <Company>Christopher Strecker</Company>
+    <Copyright>Copyright (c) 2014-2025</Copyright>
+    <Description>GeoMag # is a C# port of the C++ application GeoMag 7.0 distributed by NOAA</Description>
+  </PropertyGroup>
+</Project>

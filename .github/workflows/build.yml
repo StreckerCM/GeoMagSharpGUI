@@ -1,0 +1,187 @@
+name: Build and Package
+
+on:
+  push:
+    branches: [ master, preview ]
+  pull_request:
+    branches: [ master, preview ]
+  workflow_dispatch:
+
+env:
+  SOLUTION_FILE: GeoMagGUI.sln
+  MAIN_PROJECT: GeoMagGUI
+  CONFIGURATION: Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Calculate version
+      id: version
+      shell: pwsh
+      run: |
+        # Read base version from Version.props
+        [xml]$versionProps = Get-Content "Version.props"
+        $major = $versionProps.Project.PropertyGroup.MajorVersion
+        $minor = $versionProps.Project.PropertyGroup.MinorVersion
+        $patch = $versionProps.Project.PropertyGroup.PatchVersion
+
+        $baseVersion = "$major.$minor.$patch"
+
+        # Determine channel and build number based on branch
+        $branch = "${{ github.ref_name }}"
+        $runNumber = "${{ github.run_number }}"
+
+        if ($branch -eq "master") {
+            $channel = "release"
+            $fullVersion = "$baseVersion.0"
+            $artifactSuffix = ""
+        } elseif ($branch -eq "preview") {
+            $channel = "preview"
+            $fullVersion = "$baseVersion.$runNumber"
+            $artifactSuffix = "-preview.$runNumber"
+        } else {
+            $channel = "dev"
+            $fullVersion = "$baseVersion.$runNumber"
+            $artifactSuffix = "-dev.$runNumber"
+        }
+
+        Write-Host "Branch: $branch"
+        Write-Host "Channel: $channel"
+        Write-Host "Full Version: $fullVersion"
+        Write-Host "Artifact Suffix: $artifactSuffix"
+
+        echo "base_version=$baseVersion" >> $env:GITHUB_OUTPUT
+        echo "full_version=$fullVersion" >> $env:GITHUB_OUTPUT
+        echo "channel=$channel" >> $env:GITHUB_OUTPUT
+        echo "artifact_suffix=$artifactSuffix" >> $env:GITHUB_OUTPUT
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+
+    - name: Restore NuGet packages
+      run: nuget restore ${{ env.SOLUTION_FILE }}
+
+    - name: Update AssemblyInfo versions
+      shell: pwsh
+      run: |
+        $version = "${{ steps.version.outputs.full_version }}"
+
+        # Update GeoMagGUI AssemblyInfo
+        $guiAssemblyInfo = "GeoMagGUI\Properties\AssemblyInfo.cs"
+        $content = Get-Content $guiAssemblyInfo -Raw
+        $content = $content -replace 'AssemblyVersion\("[^"]+"\)', "AssemblyVersion(`"$version`")"
+        $content = $content -replace 'AssemblyFileVersion\("[^"]+"\)', "AssemblyFileVersion(`"$version`")"
+        Set-Content $guiAssemblyInfo $content -NoNewline
+
+        # Update GeoMagSharp AssemblyInfo
+        $sharpAssemblyInfo = "GeoMagSharp\Properties\AssemblyInfo.cs"
+        $content = Get-Content $sharpAssemblyInfo -Raw
+        $content = $content -replace 'AssemblyVersion\("[^"]+"\)', "AssemblyVersion(`"$version`")"
+        $content = $content -replace 'AssemblyFileVersion\("[^"]+"\)', "AssemblyFileVersion(`"$version`")"
+        Set-Content $sharpAssemblyInfo $content -NoNewline
+
+        Write-Host "Updated assembly versions to $version"
+
+    - name: Build solution
+      run: msbuild ${{ env.SOLUTION_FILE }} /p:Configuration=${{ env.CONFIGURATION }} /p:Platform="x86" /m
+
+    - name: Run tests
+      shell: pwsh
+      run: |
+        # Find VSTest console
+        $vsTestPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Workload.ManagedDesktop -find Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe
+        if (-not $vsTestPath) {
+            # Fallback to common paths
+            $vsTestPath = Get-ChildItem -Path "${env:ProgramFiles}\Microsoft Visual Studio" -Recurse -Filter "vstest.console.exe" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+        }
+
+        if ($vsTestPath) {
+            & $vsTestPath "GeoMagSharp-UnitTests\bin\Release\GeoMagSharp-UnitTests.dll" --logger:trx --ResultsDirectory:TestResults
+        } else {
+            Write-Host "VSTest not found, skipping tests"
+        }
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: TestResults/*.trx
+        if-no-files-found: ignore
+
+    - name: Install WiX Toolset
+      shell: pwsh
+      run: |
+        dotnet tool install --global wix --version 5.0.2
+
+    - name: Generate WiX file components
+      shell: pwsh
+      run: |
+        $buildOutput = "GeoMagGUI\bin\Release"
+        $version = "${{ steps.version.outputs.full_version }}"
+
+        # Run the component generation script
+        & "Installer\Generate-FileComponents.ps1" -BuildOutputPath $buildOutput -Version $version
+
+    - name: Build MSI installer
+      shell: pwsh
+      run: |
+        $version = "${{ steps.version.outputs.full_version }}"
+        $channel = "${{ steps.version.outputs.channel }}"
+
+        cd Installer
+
+        # Build the MSI
+        wix build -arch x86 `
+            -d Version=$version `
+            -d Channel=$channel `
+            -d BuildOutput=..\GeoMagGUI\bin\Release `
+            -out ..\artifacts\GeoMagGUI${{ steps.version.outputs.artifact_suffix }}.msi `
+            Product.wxs `
+            FileComponents.wxs
+
+    - name: Upload MSI artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: GeoMagGUI${{ steps.version.outputs.artifact_suffix }}-msi
+        path: artifacts/*.msi
+
+    - name: Upload build output
+      uses: actions/upload-artifact@v4
+      with:
+        name: GeoMagGUI${{ steps.version.outputs.artifact_suffix }}-bin
+        path: |
+          GeoMagGUI/bin/Release/
+          !GeoMagGUI/bin/Release/**/*.pdb
+
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+
+    steps:
+    - name: Download MSI artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: GeoMagGUI-msi
+        path: artifacts
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ needs.build.outputs.full_version }}
+        name: GeoMag # v${{ needs.build.outputs.full_version }}
+        draft: true
+        files: artifacts/*.msi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="GeoMag #"
+           Manufacturer="Christopher Strecker"
+           Version="$(var.Version)"
+           UpgradeCode="6B8C3F1A-9E7D-4A5B-8C2F-1D4E6F8A9B0C"
+           Compressed="yes"
+           InstallerVersion="500">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="GeoMag #" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="CoefficientFiles" />
+      <ComponentGroupRef Id="DocumentationFiles" />
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="DesktopShortcut" />
+    </Feature>
+
+    <!-- Standard directories -->
+    <StandardDirectory Id="ProgramFilesFolder">
+      <Directory Id="INSTALLFOLDER" Name="GeoMag #">
+        <Directory Id="CoefficientFolder" Name="coefficient" />
+        <Directory Id="DocumentationFolder" Name="documentation" />
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="GeoMag #" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder" />
+
+    <!-- Start Menu Shortcut -->
+    <Component Id="ApplicationShortcut" Directory="ApplicationProgramsFolder" Guid="7C4E5D6F-8A9B-4C0D-1E2F-3A4B5C6D7E8F">
+      <Shortcut Id="ApplicationStartMenuShortcut"
+                Name="GeoMag #"
+                Description="GeoMag # - Geomagnetic Field Calculator"
+                Target="[INSTALLFOLDER]GeoMagGUI.exe"
+                WorkingDirectory="INSTALLFOLDER" />
+      <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\GeoMagSharp" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <!-- Desktop Shortcut -->
+    <Component Id="DesktopShortcut" Directory="DesktopFolder" Guid="8D5F6E7A-9B0C-4D1E-2F3A-4B5C6D7E8F9A">
+      <Shortcut Id="DesktopShortcutItem"
+                Name="GeoMag #"
+                Description="GeoMag # - Geomagnetic Field Calculator"
+                Target="[INSTALLFOLDER]GeoMagGUI.exe"
+                WorkingDirectory="INSTALLFOLDER" />
+      <RegistryValue Root="HKCU" Key="Software\GeoMagSharp" Name="desktopShortcut" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <!-- Coefficient files -->
+    <ComponentGroup Id="CoefficientFiles" Directory="CoefficientFolder">
+      <Component Id="CoefficientFile_IGRF12" Guid="1A2B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D">
+        <File Source="$(var.BuildOutput)\coefficient\IGRF12.COF" KeyPath="yes" />
+      </Component>
+      <Component Id="CoefficientFile_WMM2015" Guid="2B3C4D5E-6F7A-8B9C-0D1E-2F3A4B5C6D7E">
+        <File Source="$(var.BuildOutput)\coefficient\WMM2015.COF" KeyPath="yes" />
+      </Component>
+      <Component Id="CoefficientFile_Models" Guid="3C4D5E6F-7A8B-9C0D-1E2F-3A4B5C6D7E8F">
+        <File Source="$(var.BuildOutput)\coefficient\MagneticModels.json" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Documentation files -->
+    <ComponentGroup Id="DocumentationFiles" Directory="DocumentationFolder">
+      <Component Id="DocFile_LICENSE" Guid="4D5E6F7A-8B9C-0D1E-2F3A-4B5C6D7E8F9A">
+        <File Source="$(var.BuildOutput)\documentation\LICENSE" KeyPath="yes" />
+      </Component>
+      <Component Id="DocFile_README" Guid="5E6F7A8B-9C0D-1E2F-3A4B-5C6D7E8F9A0B">
+        <File Source="$(var.BuildOutput)\documentation\README.md" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+  </Package>
+</Wix>
