@@ -360,8 +360,10 @@ namespace GeoMagSharp_UnitTests
             // Try to find the WMM coefficient file in various locations
             var possiblePaths = new[]
             {
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestData", "WMM2015.COF"),
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "coefficient", "WMM2015.COF"),
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "GeoMagGUI", "coefficient", "WMM2015.COF"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "TestData", "WMM2015.COF"),
                 @"C:\GitHub\GeoMagSharpGUI\GeoMagGUI\coefficient\WMM2015.COF"
             };
 

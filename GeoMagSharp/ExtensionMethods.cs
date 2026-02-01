@@ -111,57 +111,57 @@ namespace GeoMagSharp
             else if((day - 0.5) < 59)
             {
                 monthInt = 2;
-                dayInt = Convert.ToInt32(31 - day + 1);
+                dayInt = Convert.ToInt32(day - 31 + 1);
             }
             else if ((day - 0.5) < 90)
             {
                 monthInt = 3;
-                dayInt = Convert.ToInt32(59 - day + 1);
+                dayInt = Convert.ToInt32(day - 59 + 1);
             }
             else if ((day - 0.5) < 120)
             {
                 monthInt = 4;
-                dayInt = Convert.ToInt32(90 - day + 1);
+                dayInt = Convert.ToInt32(day - 90 + 1);
             }
             else if ((day - 0.5) < 151)
             {
                 monthInt = 5;
-                dayInt = Convert.ToInt32(120 - day + 1);
+                dayInt = Convert.ToInt32(day - 120 + 1);
             }
             else if ((day - 0.5) < 181)
             {
                 monthInt = 6;
-                dayInt = Convert.ToInt32(151 - day + 1);
+                dayInt = Convert.ToInt32(day - 151 + 1);
             }
             else if ((day - 0.5) < 212)
             {
                 monthInt = 7;
-                dayInt = Convert.ToInt32(181 - day + 1);
+                dayInt = Convert.ToInt32(day - 181 + 1);
             }
             else if ((day - 0.5) < 243)
             {
                 monthInt = 8;
-                dayInt = Convert.ToInt32(212 - day + 1);
+                dayInt = Convert.ToInt32(day - 212 + 1);
             }
             else if ((day - 0.5) < 273)
             {
                 monthInt = 9;
-                dayInt = Convert.ToInt32(243 - day + 1);
+                dayInt = Convert.ToInt32(day - 243 + 1);
             }
             else if ((day - 0.5) < 304)
             {
                 monthInt = 10;
-                dayInt = Convert.ToInt32(273 - day + 1);
+                dayInt = Convert.ToInt32(day - 273 + 1);
             }
             else if ((day - 0.5) < 334)
             {
                 monthInt = 11;
-                dayInt = Convert.ToInt32(304 - day + 1);
+                dayInt = Convert.ToInt32(day - 304 + 1);
             }
             else
             {
                 monthInt = 12;
-                dayInt = Convert.ToInt32(334 - day + 1);
+                dayInt = Convert.ToInt32(day - 334 + 1);
             }
 
             return new DateTime(yearInt, monthInt, dayInt);
@@ -223,6 +223,8 @@ namespace GeoMagSharp
             if (string.IsNullOrWhiteSpace(value))
                 return knownModels.NONE;
 
+            string trimmed = value.TrimStart();
+
             // Check for each known model type
             foreach (knownModels model in Enum.GetValues(typeof(knownModels)))
             {
@@ -230,7 +232,7 @@ namespace GeoMagSharp
                     continue;
 
                 string modelName = model.ToString();
-                Int32 idx = value.IndexOf(modelName, StringComparison.OrdinalIgnoreCase);
+                Int32 idx = trimmed.IndexOf(modelName, StringComparison.OrdinalIgnoreCase);
 
                 if (idx == -1)
                     continue;
@@ -241,20 +243,26 @@ namespace GeoMagSharp
                     return model;
                 }
 
-                // For WMM, IGRF, DGRF: accept if found at position 0 (old format)
-                // OR if found later in line after a digit (new format where year comes first)
+                // For WMM, IGRF, DGRF: accept if found at position 0 after trimming (old format)
+                // OR if found later in line after a year value (new format where year comes first)
                 if (idx == 0)
                 {
                     return model;
                 }
 
-                // New format detection: line starts with year (digit), model name appears later
+                // New format detection: line starts with year (4-digit number like 2020.0)
                 // Example: "    2020.0            WMM-2020        12/10/2019"
-                string trimmed = value.TrimStart();
-                if (trimmed.Length > 0 && char.IsDigit(trimmed[0]))
+                // Data lines start with small degree numbers (1, 2, 12), not years
+                if (trimmed.Length >= 4 && char.IsDigit(trimmed[0]))
                 {
-                    // This is the new format - model name found somewhere in the line
-                    return model;
+                    // Check if it looks like a year (starts with 19xx or 20xx)
+                    string firstChars = trimmed.Substring(0, 4);
+                    if ((firstChars.StartsWith("19") || firstChars.StartsWith("20")) &&
+                        char.IsDigit(firstChars[2]) && char.IsDigit(firstChars[3]))
+                    {
+                        // This looks like a year - new format header
+                        return model;
+                    }
                 }
             }
 
