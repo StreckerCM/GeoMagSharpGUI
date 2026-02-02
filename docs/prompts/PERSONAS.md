@@ -193,7 +193,7 @@ As a [user type], I want [goal] so that [benefit].
 
 ### Visual States
 | State | Appearance | Trigger |
-|-------|------------|---------|
+|-------|------------|--------|
 | Default | [description] | Initial load |
 | Hover | [description] | Mouse over |
 | Disabled | [description] | [condition] |
@@ -499,6 +499,130 @@ As a [user type], I want [goal] so that [benefit].
 │  #11 DOCUMENTER                                                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Rotating Persona Pattern
+
+The most effective way to use personas is **rotation** - cycling through different perspectives each iteration using `ITERATION MOD N`.
+
+### Standard 6-Persona Rotation
+
+```
+[0] #5 IMPLEMENTER   - Complete tasks, write code
+[1] #9 REVIEWER      - Review for bugs, issues
+[2] #7 TESTER        - Verify functionality, add tests
+[3] #3 UI_UX_DESIGNER - Review UI/UX (if applicable)
+[4] #10 SECURITY     - Security review
+[5] #2 PROJECT_MGR   - Check requirements, update tasks
+```
+
+### Example Rotating Loop
+
+```bash
+/ralph-loop "
+Feature: emm-model-support
+
+PHASE 1 - TASKS:
+- Read docs/features/emm-model-support/tasks.md
+- Complete unchecked tasks, mark done with [x]
+- Run: msbuild GeoMagGUI.sln /p:Configuration=Debug /p:Platform=\"x86\"
+
+PHASE 2 - ROTATING REVIEW (ITERATION MOD 6):
+
+[0] #5 IMPLEMENTER: Complete next task, follow patterns
+[1] #9 REVIEWER: Review code for bugs/issues, fix problems
+[2] #7 TESTER: Verify functionality, check edge cases
+[3] #3 UI_UX_DESIGNER: Review WinForms UI, check usability
+[4] #10 SECURITY: Check for vulnerabilities, validate inputs
+[5] #2 PROJECT_MANAGER: Verify requirements met, update tasks
+
+EACH ITERATION:
+1. Run current persona's checks (Iteration % 6)
+2. Make fixes/improvements
+3. Commit: '[PERSONA] description'
+4. Post PR comment with findings/changes (see PR Comment Format below)
+
+OUTPUT <promise>FEATURE COMPLETE</promise> when all tasks done and 2 clean cycles.
+" --completion-promise "FEATURE COMPLETE" --max-iterations 30
+```
+
+### PR Comment Format
+
+Each persona should post a comment to the PR summarizing their findings and changes. This creates an audit trail and helps human reviewers understand the AI's reasoning.
+
+```markdown
+## [PERSONA] Review - Iteration N
+
+### Summary
+[Brief description of what was reviewed/implemented]
+
+### Findings
+- [Finding 1 - issue found or observation]
+- [Finding 2]
+
+### Changes Made
+- [Change 1 - file:line - description]
+- [Change 2]
+
+### Status
+- [ ] Issues found requiring follow-up
+- [x] Clean pass - no issues found
+```
+
+**Example PR Comments:**
+
+```markdown
+## [IMPLEMENTER] Review - Iteration 0
+
+### Summary
+Implemented EMM coefficient file reader.
+
+### Changes Made
+- GeoMagSharp/ModelReader.cs:150-200 - Added EMM file parsing
+- GeoMagSharp/GeoMag.cs:50-75 - Updated model loading
+
+### Status
+- [x] Implementation complete, ready for review
+```
+
+```markdown
+## [REVIEWER] Review - Iteration 1
+
+### Summary
+Code review of EMM model implementation.
+
+### Findings
+- Missing bounds check in coefficient array access
+- Date validation doesn't handle EMM date ranges
+
+### Changes Made
+- GeoMagSharp/ModelReader.cs:175 - Added bounds check
+- GeoMagSharp/GeoMag.cs:62 - Fixed date range validation
+
+### Status
+- [x] Issues fixed, clean pass
+```
+
+```markdown
+## [SECURITY_AUDITOR] Review - Iteration 4
+
+### Summary
+Security review of EMM file parsing feature.
+
+### Findings
+- No path traversal vulnerabilities found
+- Coefficient parsing is safe from buffer overflow
+- No hardcoded paths or credentials
+
+### Changes Made
+- None required
+
+### Status
+- [x] Clean pass - no security issues found
+```
+
+See [templates/ROTATING_FEATURE.md](./templates/ROTATING_FEATURE.md) for full templates.
 
 ---
 

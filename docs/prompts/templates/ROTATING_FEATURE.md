@@ -72,7 +72,8 @@ EACH ITERATION:
 2. Perform that persona's review/work
 3. Make improvements or fixes as needed
 4. Commit changes with message: '[persona] description'
-5. If all tasks complete AND no issues found by ANY persona for 2 full cycles (12 iterations), output completion
+5. Post PR comment with findings/changes (see PR Comment Format below)
+6. If all tasks complete AND no issues found by ANY persona for 2 full cycles (12 iterations), output completion
 
 OUTPUT <promise>FEATURE COMPLETE</promise> when:
 - All tasks in tasks.md are checked [x]
@@ -137,7 +138,8 @@ EACH ITERATION:
 2. Perform that persona's review/work
 3. Make improvements or fixes as needed
 4. Commit changes with message: '[persona] description'
-5. If all tasks complete AND no issues found for 2 full cycles, output completion
+5. Post PR comment with findings/changes (see PR Comment Format below)
+6. If all tasks complete AND no issues found for 2 full cycles, output completion
 
 OUTPUT <promise>FEATURE COMPLETE</promise> when:
 - All tasks in tasks.md are checked [x]
@@ -167,6 +169,7 @@ EACH ITERATION:
 1. Run current persona's checks
 2. Make one fix/improvement
 3. Commit: '[persona] description'
+4. Post PR comment with findings/changes
 
 OUTPUT <promise>DONE</promise> when all tasks complete and 2 clean cycles.
 " --completion-promise "DONE" --max-iterations 20
@@ -185,4 +188,84 @@ Each commit should indicate which persona made the change:
 [UI_UX_DESIGNER] Update model dropdown styling
 [SECURITY_AUDITOR] Add input validation for model paths
 [PROJECT_MANAGER] Mark EMM support tasks complete
+```
+
+---
+
+## PR Comment Format
+
+Each persona should post a comment to the PR summarizing their findings and changes. This creates an audit trail and helps human reviewers understand the AI's reasoning.
+
+```markdown
+## [PERSONA] Review - Iteration N
+
+### Summary
+[Brief description of what was reviewed/implemented]
+
+### Findings
+- [Finding 1 - issue found or observation]
+- [Finding 2]
+
+### Changes Made
+- [Change 1 - file:line - description]
+- [Change 2]
+
+### Status
+- [ ] Issues found requiring follow-up
+- [x] Clean pass - no issues found
+```
+
+### Example PR Comments
+
+**IMPLEMENTER:**
+```markdown
+## [IMPLEMENTER] Review - Iteration 0
+
+### Summary
+Implemented EMM coefficient file reader.
+
+### Changes Made
+- GeoMagSharp/ModelReader.cs:150-200 - Added EMM file parsing
+- GeoMagSharp/GeoMag.cs:50-75 - Updated model loading
+
+### Status
+- [x] Implementation complete, ready for review
+```
+
+**REVIEWER:**
+```markdown
+## [REVIEWER] Review - Iteration 1
+
+### Summary
+Code review of EMM model implementation.
+
+### Findings
+- Missing bounds check in coefficient array access
+- Date validation doesn't handle EMM date ranges
+
+### Changes Made
+- GeoMagSharp/ModelReader.cs:175 - Added bounds check
+- GeoMagSharp/GeoMag.cs:62 - Fixed date range validation
+
+### Status
+- [x] Issues fixed, clean pass
+```
+
+**SECURITY_AUDITOR:**
+```markdown
+## [SECURITY_AUDITOR] Review - Iteration 4
+
+### Summary
+Security review of EMM file parsing feature.
+
+### Findings
+- No path traversal vulnerabilities found
+- Coefficient parsing is safe from buffer overflow
+- No hardcoded paths or credentials
+
+### Changes Made
+- None required
+
+### Status
+- [x] Clean pass - no security issues found
 ```
