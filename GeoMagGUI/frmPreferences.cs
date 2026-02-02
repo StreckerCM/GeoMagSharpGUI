@@ -71,12 +71,14 @@ namespace GeoMagGUI
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            Hide();
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
-            Hide();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
 
     }
