@@ -626,6 +626,17 @@ See [templates/ROTATING_FEATURE.md](./templates/ROTATING_FEATURE.md) for full te
 
 ---
 
+## Persona Combinations (Sequential)
+
+For simpler tasks, use personas in sequence:
+
+```bash
+# Implementation with self-review
+/ralph-loop "Using persona #5 (IMPLEMENTER), implement Feature X. Then switch to persona #9 (REVIEWER) and review your own code. Fix any issues found. Output <promise>COMPLETE</promise> when implementation is done and review passes." --completion-promise "COMPLETE"
+```
+
+---
+
 ## Custom Persona Template
 
 ```markdown

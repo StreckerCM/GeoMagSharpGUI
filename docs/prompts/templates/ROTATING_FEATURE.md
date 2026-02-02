@@ -177,6 +177,34 @@ OUTPUT <promise>DONE</promise> when all tasks complete and 2 clean cycles.
 
 ---
 
+## Full 11-Persona Rotation (Comprehensive)
+
+For critical features requiring maximum scrutiny:
+
+```bash
+/ralph-loop "
+Feature: [FEATURE_NUMBER]-[feature-name]
+
+ROTATING PERSONA (ITERATION MOD 11):
+
+[0] #1 BUSINESS_ANALYST: Verify requirements clarity, check acceptance criteria
+[1] #2 PROJECT_MANAGER: Check progress, identify blockers, update tasks
+[2] #3 UI_UX_DESIGNER: Review UI design, user flows, accessibility
+[3] #4 UI_IMPLEMENTER: Check WinForms quality, bindings, control layout
+[4] #5 IMPLEMENTER: Complete next task, follow patterns
+[5] #6 REFACTORER: Clean up code, improve organization
+[6] #7 TESTER: Run tests, add coverage, verify edge cases
+[7] #8 DEBUGGER: Look for potential bugs, add defensive code
+[8] #9 REVIEWER: Full code review, check quality
+[9] #10 SECURITY_AUDITOR: Security review, check for vulnerabilities
+[10] #11 DOCUMENTER: Update comments, check documentation
+
+OUTPUT <promise>FEATURE COMPLETE</promise> when all tasks done and clean cycle.
+" --completion-promise "FEATURE COMPLETE" --max-iterations 44
+```
+
+---
+
 ## Commit Message Format
 
 Each commit should indicate which persona made the change:
