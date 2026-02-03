@@ -43,12 +43,31 @@
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GeoMagException.cs" />
+    <Compile Include="GeoConstants.cs" />
     <Compile Include="ModelReader.cs" />
     <Compile Include="GeoMag.cs" />
     <Compile Include="Calculator.cs" />
     <Compile Include="DataModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Units.cs" />
+    <!-- Enums -->
+    <Compile Include="Enums\GeoMagEnums.cs" />
+    <!-- Models - Coordinates -->
+    <Compile Include="Models\Coordinates\Coordinate.cs" />
+    <Compile Include="Models\Coordinates\Latitude.cs" />
+    <Compile Include="Models\Coordinates\Longitude.cs" />
+    <!-- Models - Configuration -->
+    <Compile Include="Models\Configuration\Preferences.cs" />
+    <Compile Include="Models\Configuration\CalculationOptions.cs" />
+    <!-- Models - Magnetic -->
+    <Compile Include="Models\Magnetic\Coefficients.cs" />
+    <Compile Include="Models\Magnetic\MagneticModel.cs" />
+    <Compile Include="Models\Magnetic\MagneticModelSet.cs" />
+    <Compile Include="Models\Magnetic\MagneticModelCollection.cs" />
+    <!-- Models - Results -->
+    <Compile Include="Models\Results\MagneticValue.cs" />
+    <Compile Include="Models\Results\GeoMagVector.cs" />
+    <Compile Include="Models\Results\MagneticCalculations.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
