@@ -359,15 +359,17 @@
             this.fileToolStripMenuItem.Text = "File";
             // 
             // addModelToolStripMenuItem
-            // 
+            //
             this.addModelToolStripMenuItem.Name = "addModelToolStripMenuItem";
+            this.addModelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
             this.addModelToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.addModelToolStripMenuItem.Text = "Add Model";
             this.addModelToolStripMenuItem.Click += new System.EventHandler(this.addModelToolStripMenuItem_Click);
             // 
             // loadModelToolStripMenuItem
-            // 
+            //
             this.loadModelToolStripMenuItem.Name = "loadModelToolStripMenuItem";
+            this.loadModelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.loadModelToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.loadModelToolStripMenuItem.Text = "Load Model";
             this.loadModelToolStripMenuItem.Click += new System.EventHandler(this.loadModelToolStripMenuItem_Click);
@@ -378,16 +380,18 @@
             this.toolStripSeparator1.Size = new System.Drawing.Size(134, 6);
             // 
             // saveToolStripMenuItem
-            // 
+            //
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
-            // 
+            //
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
@@ -403,8 +407,9 @@
             this.settingsToolStripMenuItem.Text = "Settings";
             // 
             // preferencesToolStripMenuItem
-            // 
+            //
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
+            this.preferencesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
             this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.preferencesToolStripMenuItem.Text = "Preferences...";
             this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
@@ -431,8 +436,9 @@
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutGeoMagToolStripMenuItem
-            // 
+            //
             this.aboutGeoMagToolStripMenuItem.Name = "aboutGeoMagToolStripMenuItem";
+            this.aboutGeoMagToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
             this.aboutGeoMagToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.aboutGeoMagToolStripMenuItem.Text = "About...";
             this.aboutGeoMagToolStripMenuItem.Click += new System.EventHandler(this.aboutGeoMagToolStripMenuItem_Click);
@@ -685,10 +691,12 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(804, 328);
             this.Name = "FrmMain";
             this.Text = "GeoMag #";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmMain_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStepSize)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

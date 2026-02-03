@@ -299,8 +299,10 @@ namespace GeoMagSharp
 
             ct = Math.Cos(one.ToRadian());
             st = Math.Sin(one.ToRadian());
-            a2 = 40680631.6;
-            b2 = 40408296.0;
+            // WGS84 ellipsoid parameters (squared semi-axes in km^2)
+            // Values from NOAA GeomagnetismHeader.h: A2WGS84 and B2WGS84
+            a2 = 40680631.59;  // Semi-major axis squared (a^2)
+            b2 = 40408299.98;  // Semi-minor axis squared (b^2)
             one = a2 * st * st;
             two = b2 * ct * ct;
             three = two + one;

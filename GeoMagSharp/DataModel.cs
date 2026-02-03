@@ -529,11 +529,127 @@ namespace GeoMagSharp
         #endregion
     }
 
-    public class Latitude
+    /// <summary>
+    /// Abstract base class for geographic coordinates (Latitude/Longitude).
+    /// Provides common functionality for decimal degrees and DMS (Degrees/Minutes/Seconds) conversion.
+    /// </summary>
+    public abstract class Coordinate
     {
+        /// <summary>
+        /// The hemisphere identifier for positive values (N for Latitude, E for Longitude)
+        /// </summary>
+        protected abstract string PositiveHemisphere { get; }
+
+        /// <summary>
+        /// The hemisphere identifier for negative values (S for Latitude, W for Longitude)
+        /// </summary>
+        protected abstract string NegativeHemisphere { get; }
+
+        /// <summary>
+        /// The coordinate value in decimal degrees
+        /// </summary>
+        public double Decimal { get; set; }
+
+        /// <summary>
+        /// The whole degrees component of the DMS representation
+        /// </summary>
+        public double Degrees
+        {
+            get
+            {
+                double absDecimal = Math.Abs(Decimal);
+                return absDecimal.Truncate();
+            }
+        }
+
+        /// <summary>
+        /// The minutes component of the DMS representation
+        /// </summary>
+        public double Minutes
+        {
+            get
+            {
+                double absDecimal = Math.Abs(Decimal);
+                absDecimal -= absDecimal.Truncate();
+                return (absDecimal * 60).Truncate();
+            }
+        }
+
+        /// <summary>
+        /// The seconds component of the DMS representation
+        /// </summary>
+        public double Seconds
+        {
+            get
+            {
+                double absDecimal = Math.Abs(Decimal);
+                absDecimal -= absDecimal.Truncate();
+                absDecimal *= 60;
+                absDecimal -= absDecimal.Truncate();
+                return absDecimal * 60;
+            }
+        }
+
+        /// <summary>
+        /// The hemisphere indicator (N/S for Latitude, E/W for Longitude)
+        /// </summary>
+        public string Hemisphere
+        {
+            get
+            {
+                return Decimal >= 0 ? PositiveHemisphere : NegativeHemisphere;
+            }
+        }
+
+        /// <summary>
+        /// Formats the coordinate as a DMS string (e.g., "45° 30′ 15.0000″ N")
+        /// </summary>
+        public string ToStringDMS
+        {
+            get
+            {
+                return string.Format("{0}° {1}′ {2}″ {3}", Degrees, Minutes, Seconds.ToString("F4"), Hemisphere);
+            }
+        }
+
+        /// <summary>
+        /// Converts DMS components to decimal degrees
+        /// </summary>
+        /// <param name="degrees">Degrees component</param>
+        /// <param name="minutes">Minutes component</param>
+        /// <param name="seconds">Seconds component</param>
+        /// <param name="isPositiveHemisphere">True if positive hemisphere (N or E)</param>
+        /// <returns>Decimal degrees value</returns>
+        protected double DMSToDecimal(double degrees, double minutes, double seconds, bool isPositiveHemisphere)
+        {
+            double coordDec = (minutes * 60) + seconds;
+            coordDec = coordDec / 3600;  // Total number of seconds
+            coordDec = degrees + coordDec;
+
+            if (isPositiveHemisphere)
+            {
+                coordDec = Math.Abs(coordDec);
+            }
+            else
+            {
+                coordDec = -Math.Abs(coordDec);
+            }
+
+            return coordDec;
+        }
+    }
+
+    /// <summary>
+    /// Represents a geographic latitude coordinate (-90 to +90 degrees)
+    /// </summary>
+    public class Latitude : Coordinate
+    {
+        protected override string PositiveHemisphere => "N";
+        protected override string NegativeHemisphere => "S";
+
         #region Constructors
 
-        public Latitude ()
+        public Latitude()
         {
             Decimal = 0;
         }
@@ -550,92 +666,24 @@ namespace GeoMagSharp
 
         public Latitude(double inDegrees, double inMinutes, double inSeconds, string inDirection)
         {
-            double coordDec = (inMinutes * 60) + inSeconds;
-
-            coordDec = coordDec / 3600;  //Total number of seconds 
-
-            coordDec = inDegrees + coordDec;
-
-            if (inDirection.Equals("N", StringComparison.OrdinalIgnoreCase))
-            {
-                coordDec = Math.Abs(coordDec);
-            }
-            else if (inDirection.Equals("S", StringComparison.OrdinalIgnoreCase))
-            {
-                coordDec = -Math.Abs(coordDec);
-            }
-
-            Decimal = coordDec;
+            bool isPositive = inDirection.Equals("N", StringComparison.OrdinalIgnoreCase);
+            Decimal = DMSToDecimal(inDegrees, inMinutes, inSeconds, isPositive);
         }
-
-        #endregion
-
-        #region Getters & Setters
-
-        public double Degrees
-        {
-            get
-            {
-                double absDecimal = Math.Abs(Decimal);
-
-                return absDecimal.Truncate();
-            }
-        }
-
-        public double Minutes
-        {
-            get
-            {
-                double absDecimal = Math.Abs(Decimal);
-
-                absDecimal -= absDecimal.Truncate();
-
-                return (absDecimal * 60).Truncate();
-            }
-        }
-
-        public double Seconds
-        {
-            get
-            {
-                double absDecimal = Math.Abs(Decimal);
-
-                absDecimal -= absDecimal.Truncate();
-
-                absDecimal *= 60;
-                
-                absDecimal -= absDecimal.Truncate();
-
-                return absDecimal * 60;
-            }
-        }
-
-        public string Hemisphere 
-        { 
-            get
-            {
-                return Decimal >= 0 ? "N" : "S"; 
-            } 
-        }
-
-        public string ToStringDMS
-        {
-            get
-            {
-                return string.Format("{0}° {1}′ {2}″ {3}", Degrees, Minutes, Seconds.ToString("F4"), Hemisphere);
-            }
-        }
-
-        public double Decimal { get; set; }
 
         #endregion
     }
 
-    public class Longitude
+    /// <summary>
+    /// Represents a geographic longitude coordinate (-180 to +180 degrees)
+    /// </summary>
+    public class Longitude : Coordinate
     {
+        protected override string PositiveHemisphere => "E";
+        protected override string NegativeHemisphere => "W";
+
         #region Constructors
 
-        public Longitude ()
+        public Longitude()
         {
             Decimal = 0;
         }
@@ -652,83 +700,9 @@ namespace GeoMagSharp
 
         public Longitude(double inDegrees, double inMinutes, double inSeconds, string inDirection)
         {
-            double coordDec = (inMinutes * 60) + inSeconds;
-
-            coordDec = coordDec / 3600;  //Total number of seconds 
-
-            coordDec = inDegrees + coordDec;
-
-            if (inDirection.Equals("E", StringComparison.OrdinalIgnoreCase))
-            {
-                coordDec = Math.Abs(coordDec);
-            }
-            else if (inDirection.Equals("W", StringComparison.OrdinalIgnoreCase))
-            {
-                coordDec = -Math.Abs(coordDec);
-            }
-
-            Decimal = coordDec;
+            bool isPositive = inDirection.Equals("E", StringComparison.OrdinalIgnoreCase);
+            Decimal = DMSToDecimal(inDegrees, inMinutes, inSeconds, isPositive);
         }
-
-        #endregion
-
-        #region Getters & Setters
-
-        public double Degrees
-        {
-            get
-            {
-                double absDecimal = Math.Abs(Decimal);
-
-                return absDecimal.Truncate();
-            }
-        }
-
-        public double Minutes
-        {
-            get
-            {
-                double absDecimal = Math.Abs(Decimal);
-
-                absDecimal -= absDecimal.Truncate();
-
-                return (absDecimal * 60).Truncate();
-            }
-        }
-
-        public double Seconds
-        {
-            get
-            {
-                double absDecimal = Math.Abs(Decimal);
-
-                absDecimal -= absDecimal.Truncate();
-
-                absDecimal *= 60;
-
-                absDecimal -= absDecimal.Truncate();
-
-                return absDecimal * 60;
-            }
-        }
-
-        public string Hemisphere 
-        { 
-            get
-            {
-                return Decimal >= 0 ? "E" : "W"; 
-            } 
-        }
-
-        public string ToStringDMS
-        {
-            get
-            {
-                return string.Format("{0}° {1}′ {2}″ {3}", Degrees, Minutes, Seconds.ToString("F4"), Hemisphere);
-            }
-        }
-
-        public double Decimal { get; set; }
 
         #endregion
     }
