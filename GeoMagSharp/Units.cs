@@ -13,17 +13,33 @@ using System.Text;
 
 namespace GeoMagSharp
 {
+    /// <summary>
+    /// Provides distance and angle unit types with conversion between string and enum representations.
+    /// </summary>
     public static class Distance
     {
+        /// <summary>
+        /// Distance measurement units.
+        /// </summary>
         public enum Unit
         {
+            /// <summary>Unknown or unspecified unit.</summary>
             unknown = 0,
+            /// <summary>Meters.</summary>
             meter = 1,
+            /// <summary>Kilometers.</summary>
             kilometer = 2,
+            /// <summary>Feet.</summary>
             foot = 3,
+            /// <summary>Miles.</summary>
             mile = 4
         }
 
+        /// <summary>
+        /// Converts a <see cref="Unit"/> enum value to its abbreviation string.
+        /// </summary>
+        /// <param name="inUnit">The distance unit to convert.</param>
+        /// <returns>The unit abbreviation (e.g., "m", "ft", "mi"), or empty string for unknown.</returns>
         public static string ToString(Unit inUnit)
         {
             switch (inUnit)
@@ -45,6 +61,11 @@ namespace GeoMagSharp
             return string.Empty;
         }
 
+        /// <summary>
+        /// Parses a string to the corresponding <see cref="Unit"/> enum value.
+        /// </summary>
+        /// <param name="unitString">The unit string (e.g., "m", "km", "ft", "meter").</param>
+        /// <returns>The matching <see cref="Unit"/>, or <see cref="Unit.unknown"/> if not recognized.</returns>
         public static Unit FromString(string unitString)
         {
             switch (unitString.ToLower())
@@ -73,15 +94,29 @@ namespace GeoMagSharp
             return Distance.Unit.unknown;
         }
 
+        /// <summary>
+        /// Provides angle unit types with conversion between string and enum representations.
+        /// </summary>
         public static class Angle
         {
+            /// <summary>
+            /// Angle measurement units.
+            /// </summary>
             public enum Unit
             {
+                /// <summary>Unknown or unspecified unit.</summary>
                 unknown = 0,
+                /// <summary>Degrees.</summary>
                 Degree = 1,
+                /// <summary>Radians.</summary>
                 Radian = 2
             }
 
+            /// <summary>
+            /// Converts an <see cref="Unit"/> enum value to its symbol string.
+            /// </summary>
+            /// <param name="inUnit">The angle unit to convert.</param>
+            /// <returns>The unit symbol (e.g., "°", "g"), or empty string for unknown.</returns>
             public static string ToString(Unit inUnit)
             {
                 switch (inUnit)
@@ -97,6 +132,11 @@ namespace GeoMagSharp
                 return string.Empty;
             }
 
+            /// <summary>
+            /// Parses a string to the corresponding <see cref="Unit"/> enum value.
+            /// </summary>
+            /// <param name="unitString">The unit string (e.g., "degree", "deg", "°", "radian").</param>
+            /// <returns>The matching <see cref="Unit"/>, or <see cref="Unit.unknown"/> if not recognized.</returns>
             public static Unit FromString(string unitString)
             {
                 switch (unitString.ToLower())

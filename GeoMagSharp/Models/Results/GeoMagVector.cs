@@ -14,6 +14,9 @@ namespace GeoMagSharp
     {
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance with all components set to zero.
+        /// </summary>
         public GeoMagVector()
         {
             d = 0;
@@ -25,6 +28,10 @@ namespace GeoMagSharp
             f = 0;
         }
 
+        /// <summary>
+        /// Initializes a new instance by copying all components from another <see cref="GeoMagVector"/>.
+        /// </summary>
+        /// <param name="other">The source vector to copy.</param>
         public GeoMagVector(GeoMagVector other)
         {
             d = other.d;

@@ -15,6 +15,10 @@ using System;
 
 namespace GeoMagSharp
 {
+    /// <summary>
+    /// Static calculator for magnetic field values using spherical harmonic coefficients.
+    /// Ported from the C++ model code created by the British Geological Survey.
+    /// </summary>
     public static class Calculator
     {
 

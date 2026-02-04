@@ -16,19 +16,34 @@ using System.IO;
 
 namespace GeoMagSharp
 {
+    /// <summary>
+    /// Provides an interface to magnetic field calculation methods.
+    /// Handles model loading, magnetic field computation, and result export.
+    /// </summary>
     public class GeoMag
     {
+        /// <summary>
+        /// The results of the most recent magnetic field calculation.
+        /// </summary>
         public List<MagneticCalculations> ResultsOfCalculation;
 
         private MagneticModelSet _Models;
 
         private CalculationOptions _CalculationOptions;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GeoMag"/> class.
+        /// </summary>
         public GeoMag()
         {
             _Models = null;
         }
 
+        /// <summary>
+        /// Loads a magnetic model from a coefficient file.
+        /// </summary>
+        /// <param name="modelFile">Path to the coefficient file (.COF or .DAT format)</param>
+        /// <exception cref="GeoMagExceptionFileNotFound">Thrown when <paramref name="modelFile"/> is null or empty.</exception>
         public void LoadModel(string modelFile)
         {
             _Models = null;
@@ -40,6 +55,11 @@ namespace GeoMagSharp
 
         }
 
+        /// <summary>
+        /// Loads a magnetic model from a pre-built <see cref="MagneticModelSet"/>.
+        /// </summary>
+        /// <param name="modelSet">The magnetic model set to use for calculations.</param>
+        /// <exception cref="GeoMagExceptionFileNotFound">Thrown when <paramref name="modelSet"/> is null.</exception>
         public void LoadModel(MagneticModelSet modelSet)
         {
             _Models = null;
@@ -51,6 +71,12 @@ namespace GeoMagSharp
 
         }
 
+        /// <summary>
+        /// Loads a magnetic model from separate main field and secular variation coefficient files.
+        /// </summary>
+        /// <param name="modelFile">Path to the main field coefficient file.</param>
+        /// <param name="svFile">Path to the secular variation coefficient file.</param>
+        /// <exception cref="GeoMagExceptionFileNotFound">Thrown when <paramref name="modelFile"/> is null or empty.</exception>
         public void LoadModel(string modelFile, string svFile)
         {
             _Models = null;
@@ -62,6 +88,13 @@ namespace GeoMagSharp
 
         }
 
+        /// <summary>
+        /// Performs magnetic field calculations over the specified date range and location.
+        /// Results are stored in <see cref="ResultsOfCalculation"/>.
+        /// </summary>
+        /// <param name="inCalculationOptions">The calculation parameters including location, dates, and elevation.</param>
+        /// <exception cref="GeoMagExceptionModelNotLoaded">Thrown when no model has been loaded.</exception>
+        /// <exception cref="GeoMagExceptionOutOfRange">Thrown when the start or end date is outside the model's valid range.</exception>
         public void MagneticCalculations(CalculationOptions inCalculationOptions)
         {
             _CalculationOptions = null;
@@ -121,6 +154,13 @@ namespace GeoMagSharp
         }
 
 
+        /// <summary>
+        /// Saves the calculation results to a tab-separated text file.
+        /// </summary>
+        /// <param name="fileName">The output file path.</param>
+        /// <param name="loadAfterSave">Reserved for future use.</param>
+        /// <exception cref="GeoMagExceptionModelNotLoaded">Thrown when no calculation results are available.</exception>
+        /// <exception cref="GeoMagExceptionOpenError">Thrown when the file is locked or cannot be deleted.</exception>
         public void SaveResults(string fileName, bool loadAfterSave = false)
         {
             if (ResultsOfCalculation == null)
