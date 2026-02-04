@@ -1,15 +1,15 @@
 ﻿/****************************************************************************
- * File:            GeoMagBGGM.cs
- * Description:     routines to handle bggm coefficients file and calculate
- *                  field values
- * Akowlegements:   Ported from the C++ model code created by the British Geological Survey
- * Website:         http://www.geomag.bgs.ac.uk/data_service/directionaldrilling/bggm.html
- * Warnings:        This code can be used with the IGRF, WMM, or BGGM coeficent file.  The BGGM 
- *                  coeficient file is Commerically avalable from the British Geological Survey 
- *                  and is not distributed with this project.  Please contcact the BGS for more information.
- *                  
+ * File:            Calculator.cs
+ * Description:     Routines to calculate magnetic field values from
+ *                  spherical harmonic coefficient files
+ * Reference:       Based on the NOAA World Magnetic Model (WMM) algorithm
+ *                  https://www.ncei.noaa.gov/products/world-magnetic-model
+ * Compatibility:   This code can be used with IGRF, WMM, or other standard
+ *                  coefficient files in COF or DAT format.
  * Current version: 2.21
- *  ****************************************************************************/
+ * Author:          Christopher Strecker
+ * Website:         https://github.com/StreckerCM/GeoMagSharpGUI
+ ****************************************************************************/
 
 using System;
 
@@ -17,7 +17,7 @@ namespace GeoMagSharp
 {
     /// <summary>
     /// Static calculator for magnetic field values using spherical harmonic coefficients.
-    /// Ported from the C++ model code created by the British Geological Survey.
+    /// Based on the NOAA World Magnetic Model (WMM) algorithm.
     /// </summary>
     public static class Calculator
     {

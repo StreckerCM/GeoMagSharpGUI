@@ -18,7 +18,7 @@ namespace GeoMagSharp
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance with default values (origin point, current date, BGS algorithm).
+        /// Initializes a new instance with default values (origin point, current date, default algorithm).
         /// </summary>
         public CalculationOptions()
         {

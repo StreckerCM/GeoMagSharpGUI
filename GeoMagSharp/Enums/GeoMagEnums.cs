@@ -29,7 +29,7 @@ namespace GeoMagSharp
     public enum Algorithm
     {
         /// <summary>
-        /// British Geological Survey algorithm
+        /// Default spherical harmonic algorithm
         /// </summary>
         BGS = 1,
 
