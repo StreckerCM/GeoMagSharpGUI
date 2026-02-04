@@ -106,62 +106,62 @@ namespace GeoMagSharp
             if((day + 0.5) < 31)
             {
                 monthInt = 1;
-                dayInt = Convert.ToInt32(day + 1);
+                dayInt = (int)(day + 1);
             }
             else if((day - 0.5) < 59)
             {
                 monthInt = 2;
-                dayInt = Convert.ToInt32(day - 31 + 1);
+                dayInt = (int)(day - 31 + 1);
             }
             else if ((day - 0.5) < 90)
             {
                 monthInt = 3;
-                dayInt = Convert.ToInt32(day - 59 + 1);
+                dayInt = (int)(day - 59 + 1);
             }
             else if ((day - 0.5) < 120)
             {
                 monthInt = 4;
-                dayInt = Convert.ToInt32(day - 90 + 1);
+                dayInt = (int)(day - 90 + 1);
             }
             else if ((day - 0.5) < 151)
             {
                 monthInt = 5;
-                dayInt = Convert.ToInt32(day - 120 + 1);
+                dayInt = (int)(day - 120 + 1);
             }
             else if ((day - 0.5) < 181)
             {
                 monthInt = 6;
-                dayInt = Convert.ToInt32(day - 151 + 1);
+                dayInt = (int)(day - 151 + 1);
             }
             else if ((day - 0.5) < 212)
             {
                 monthInt = 7;
-                dayInt = Convert.ToInt32(day - 181 + 1);
+                dayInt = (int)(day - 181 + 1);
             }
             else if ((day - 0.5) < 243)
             {
                 monthInt = 8;
-                dayInt = Convert.ToInt32(day - 212 + 1);
+                dayInt = (int)(day - 212 + 1);
             }
             else if ((day - 0.5) < 273)
             {
                 monthInt = 9;
-                dayInt = Convert.ToInt32(day - 243 + 1);
+                dayInt = (int)(day - 243 + 1);
             }
             else if ((day - 0.5) < 304)
             {
                 monthInt = 10;
-                dayInt = Convert.ToInt32(day - 273 + 1);
+                dayInt = (int)(day - 273 + 1);
             }
             else if ((day - 0.5) < 334)
             {
                 monthInt = 11;
-                dayInt = Convert.ToInt32(day - 304 + 1);
+                dayInt = (int)(day - 304 + 1);
             }
             else
             {
                 monthInt = 12;
-                dayInt = Convert.ToInt32(day - 334 + 1);
+                dayInt = (int)(day - 334 + 1);
             }
 
             return new DateTime(yearInt, monthInt, dayInt);

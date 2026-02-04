@@ -15,6 +15,9 @@ env:
 jobs:
   build:
     runs-on: windows-latest
+    outputs:
+      full_version: ${{ steps.version.outputs.full_version }}
+      artifact_suffix: ${{ steps.version.outputs.artifact_suffix }}
 
     steps:
     - name: Checkout code
@@ -177,18 +180,53 @@ jobs:
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
     - name: Download MSI artifact
       uses: actions/download-artifact@v4
       with:
         name: GeoMagGUI-msi
         path: artifacts
 
+    - name: Generate release notes
+      shell: bash
+      run: |
+        cat > release_notes.md << EOF
+        ## What's New in v${{ needs.build.outputs.full_version }}
+
+        ### Features & Improvements
+        - Added support for WMM2020+ coefficient file format (Issue #1)
+        - Upgraded to .NET Framework 4.8
+        - Added CI/CD pipeline with automated MSI installer generation
+        - Added comprehensive unit tests for Calculator and ModelReader classes
+
+        ### Bug Fixes
+        - Fixed critical latitude/longitude type mismatch in DMS input (Issue #2)
+        - Fixed cursor management with try-finally blocks (Issue #4)
+        - Fixed decimal date to DateTime conversion rounding issue
+        - Added input validation to ModelReader with detailed error messages (Issue #5)
+
+        ### Issues Resolved
+        - #1 - NOAA WMM2020 coefficient file support
+        - #2 - Type mismatch: Longitude constructor used for Latitude
+        - #3 - Add unit tests for Calculator class
+        - #4 - Add try-finally for cursor management
+        - #5 - Add input validation to ModelReader
+
+        ---
+        *Full changelog available in the [commit history](https://github.com/${{ github.repository }}/commits/master)*
+        EOF
+
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: v${{ needs.build.outputs.full_version }}
-        name: GeoMag # v${{ needs.build.outputs.full_version }}
-        draft: true
+        name: GeoMag # ${{ needs.build.outputs.full_version }}
+        body_path: release_notes.md
+        draft: false
         files: artifacts/*.msi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

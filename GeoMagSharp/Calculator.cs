@@ -299,8 +299,9 @@ namespace GeoMagSharp
 
             ct = Math.Cos(one.ToRadian());
             st = Math.Sin(one.ToRadian());
-            a2 = 40680631.6;
-            b2 = 40408296.0;
+            // WGS84 ellipsoid parameters - using centralized constants
+            a2 = Constants.A2WGS84;  // Semi-major axis squared (a^2)
+            b2 = Constants.B2WGS84;  // Semi-minor axis squared (b^2)
             one = a2 * st * st;
             two = b2 * ct * ct;
             three = two + one;

@@ -109,7 +109,21 @@ namespace GeoMagGUI
             }
         }
 
-
+        private void FrmMain_KeyDown(object sender, KeyEventArgs e)
+        {
+            // F5 - Calculate
+            if (e.KeyCode == Keys.F5)
+            {
+                buttonCalculate_Click(sender, e);
+                e.Handled = true;
+            }
+            // Ctrl+L - My Location (GPS)
+            else if (e.Control && e.KeyCode == Keys.L)
+            {
+                buttonMyLocation_Click(sender, e);
+                e.Handled = true;
+            }
+        }
 
         private void buttonCalculate_Click(object sender, EventArgs e)
         {
