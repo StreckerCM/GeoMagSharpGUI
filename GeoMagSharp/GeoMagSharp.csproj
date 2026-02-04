@@ -47,7 +47,6 @@
     <Compile Include="ModelReader.cs" />
     <Compile Include="GeoMag.cs" />
     <Compile Include="Calculator.cs" />
-    <Compile Include="DataModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Units.cs" />
     <!-- Enums -->
