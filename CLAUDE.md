@@ -23,6 +23,15 @@ msbuild GeoMagGUI.sln /p:Configuration=Release /p:Platform="x86"
 vstest.console.exe GeoMagSharp-UnitTests\bin\Debug\GeoMagSharp-UnitTests.dll
 ```
 
+## Branching Strategy
+
+### Branch Protection Rules — NEVER VIOLATE
+
+- **NEVER commit directly to `master`.** All changes to `master` must come through reviewed and approved PRs.
+- **NEVER push directly to protected branches.** No force-pushes, no direct commits, no exceptions.
+- **NEVER create or merge a PR without explicit user confirmation.** Always ask the user before creating a PR and before merging one. Draft PRs are acceptable without confirmation, but converting to ready-for-review or merging requires approval.
+- **All development work happens on `feature/*` branches.** This is the only place where direct commits are allowed.
+
 ## Development Workflow
 
 ### MANDATORY: Ralph Loop for ALL Feature Work
