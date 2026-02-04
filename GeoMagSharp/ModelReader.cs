@@ -1,12 +1,10 @@
 ﻿/****************************************************************************
- * File:            FileReader.cs
- * Description:     Routines read a given model file into the model structure
- *                  to be used for calculation
- * Author:          Christopher Strecker   
- * Website:         https://github.com/StreckerCM/GeoMagSharpGUI  
- * Warnings:
- * Current version: 
- *  ****************************************************************************/
+ * File:            ModelReader.cs
+ * Description:     Routines to read magnetic model coefficient files into
+ *                  the model structure for calculation
+ * Author:          Christopher Strecker
+ * Website:         https://github.com/StreckerCM/GeoMagSharpGUI
+ ****************************************************************************/
 
 using System;
 using System.Globalization;
@@ -15,6 +13,9 @@ using System.IO;
 
 namespace GeoMagSharp
 {
+    /// <summary>
+    /// Reads and parses magnetic model coefficient files (COF/DAT) into model structures.
+    /// </summary>
     public static class ModelReader
     {
         /// <summary>
