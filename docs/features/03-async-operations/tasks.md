@@ -27,10 +27,21 @@ Branch: feature/issue-24-async-operations
 ### Testing
 - [x] Create `AsyncOperationsUnitTest.cs` with async unit tests
 - [x] Add test file to `GeoMagSharp-UnitTests.csproj`
-- [x] All 77 tests pass (75 passed, 2 skipped for missing DAT files)
+- [x] All 83 tests pass (81 passed, 2 skipped for missing DAT files)
+
+### Design Notes
+- `Calculator.SpotCalculationAsync()` from the spec was intentionally not created as a standalone method.
+  Each `SpotCalculation()` call is wrapped in `Task.Run` within `MagneticCalculationsAsync()`, avoiding
+  the "async-over-sync" anti-pattern while still achieving off-UI-thread execution with cancellation.
+
+### Ralph Loop Fixes Applied
+- [x] [REVIEWER] Re-entrancy guard, Dispose cleanup, ConfigureAwait(true) in UI, progress step fix
+- [x] [TESTER] SynchronousProgress helper, 6 additional tests for edge cases
+- [x] [UI_UX_DESIGNER] Escape key guard, grid clear on cancel/error, accessibility names, tooltip
+- [x] [SECURITY_AUDITOR] TOCTOU fix in SaveResultsAsync, WriteAllText, info disclosure fix
 
 ## Completion Criteria
-- [ ] All tasks checked
-- [ ] Build succeeds
-- [ ] Tests pass
+- [x] All tasks checked
+- [x] Build succeeds
+- [x] Tests pass (83 total: 81 passed, 2 skipped)
 - [ ] 2 clean Ralph Loop cycles (all 6 personas find no issues twice)
