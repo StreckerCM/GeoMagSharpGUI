@@ -53,7 +53,8 @@ namespace GeoMagGUI
             IProgress<CalculationProgressInfo> progress = null,
             CancellationToken cancellationToken = default)
         {
-            _Model = await ModelReader.ReadAsync(modelFile, progress, cancellationToken);
+            _Model = await ModelReader.ReadAsync(modelFile, progress, cancellationToken)
+                .ConfigureAwait(true);
 
             DisplayModelData();
         }
@@ -76,7 +77,8 @@ namespace GeoMagGUI
             }
             else
             {
-                MessageBox.Show(this, "", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "Failed to load model data from the selected file.",
+                    "Model Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
