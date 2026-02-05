@@ -18,6 +18,9 @@ namespace GeoMagSharp
     {
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance with default values.
+        /// </summary>
         public MagneticModel()
         {
             Type = string.Empty;
@@ -26,13 +29,17 @@ namespace GeoMagSharp
             SharmCoeff = new List<double>();
         }
 
+        /// <summary>
+        /// Initializes a new instance by copying values from another <see cref="MagneticModel"/>.
+        /// </summary>
+        /// <param name="other">The source model to copy.</param>
         public MagneticModel(MagneticModel other)
         {
             Type = other.Type;
             Year = other.Year;
 
             SharmCoeff = new List<double>();
-            if (other.SharmCoeff.Any()) SharmCoeff.AddRange(SharmCoeff);
+            if (other.SharmCoeff.Any()) SharmCoeff.AddRange(other.SharmCoeff);
         }
 
         #endregion

@@ -11,6 +11,9 @@ using System;
 
 namespace GeoMagSharp
 {
+    /// <summary>
+    /// Extension methods for date/time conversion, angle conversion, and model identification.
+    /// </summary>
     public static class ExtensionMethods
     {
         /// <summary>
@@ -167,11 +170,21 @@ namespace GeoMagSharp
             return new DateTime(yearInt, monthInt, dayInt);
         }
 
+        /// <summary>
+        /// Determines whether the year of the specified date falls within the valid range (1900 to DateTime.MaxValue.Year).
+        /// </summary>
+        /// <param name="date">The date to validate.</param>
+        /// <returns><c>true</c> if the year is within the valid range; otherwise, <c>false</c>.</returns>
         public static bool IsValidYear(this DateTime date)
         {
             return (1900 <= date.Year && date.Year <= DateTime.MaxValue.Year);
         }
 
+        /// <summary>
+        /// Determines whether the specified decimal year falls within the valid range (1900 to max DateTime as decimal).
+        /// </summary>
+        /// <param name="decDate">The decimal year to validate.</param>
+        /// <returns><c>true</c> if the decimal year is within the valid range; otherwise, <c>false</c>.</returns>
         public static bool IsValidYear(this double decDate)
         {
             return (1900D <= decDate && decDate <= DateTime.MaxValue.ToDecimal());

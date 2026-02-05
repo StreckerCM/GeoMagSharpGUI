@@ -48,9 +48,9 @@ namespace GeoMagSharp
         }
     }
 
-    ///<summary>
-    /// Thrown when file is not found
-    ///</summary>
+    /// <summary>
+    /// Thrown when a magnetic model has not been loaded before performing calculations.
+    /// </summary>
     [Serializable]
     public class GeoMagExceptionModelNotLoaded : GeoMagException
     {
@@ -75,9 +75,9 @@ namespace GeoMagSharp
     }
 
 
-    ///<summary>
-    /// Thrown when file is not found
-    ///</summary>
+    /// <summary>
+    /// Thrown when a coefficient file cannot be found at the specified path.
+    /// </summary>
     [Serializable]
     public class GeoMagExceptionFileNotFound : GeoMagException
     {
@@ -101,9 +101,9 @@ namespace GeoMagSharp
         }
     }
 
-    ///<summary>
-    /// Thrown when file has an invalid charater in a line
-    ///</summary>
+    /// <summary>
+    /// Thrown when a coefficient file contains an invalid character in a data line.
+    /// </summary>
     [Serializable]
     public class GeoMagExceptionBadCharacter : GeoMagException
     {
@@ -128,9 +128,9 @@ namespace GeoMagSharp
 
     }
 
-    ///<summary>
-    /// Thrown when file has an invalid number of coefficients
-    ///</summary>
+    /// <summary>
+    /// Thrown when a coefficient file contains an unexpected number of coefficients.
+    /// </summary>
     [Serializable]
     public class GeoMagExceptionBadNumberOfCoefficients : GeoMagException
     {
@@ -154,9 +154,9 @@ namespace GeoMagSharp
         }
     }
 
-    ///<summary>
-    /// Thrown when file has an invalid number of coefficients
-    ///</summary>
+    /// <summary>
+    /// Thrown when a coefficient file cannot be opened or read.
+    /// </summary>
     [Serializable]
     public class GeoMagExceptionOpenError : GeoMagException
     {
@@ -180,9 +180,9 @@ namespace GeoMagSharp
         }
     }
 
-    ///<summary>
-    /// Thrown when file has an invalid number of coefficients
-    ///</summary>
+    /// <summary>
+    /// Thrown when a calculation date or parameter is outside the valid range.
+    /// </summary>
     [Serializable]
     public class GeoMagExceptionOutOfRange : GeoMagException
     {
@@ -206,9 +206,9 @@ namespace GeoMagSharp
         }
     }
 
-    ///<summary>
-    /// Thrown when file has an invalid number of coefficients
-    ///</summary>
+    /// <summary>
+    /// Thrown when a calculation or model loading operation exceeds available memory.
+    /// </summary>
     [Serializable]
     public class GeoMagExceptionOutOfMemory : GeoMagException
     {

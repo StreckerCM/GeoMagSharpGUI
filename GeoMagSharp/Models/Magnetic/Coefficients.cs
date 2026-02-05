@@ -18,12 +18,19 @@ namespace GeoMagSharp
     {
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance with an empty coefficient list and zero max degree.
+        /// </summary>
         public Coefficients()
         {
             coeffs = new List<double>();
             MaxDegree = 0;
         }
 
+        /// <summary>
+        /// Initializes a new instance by copying coefficients from another <see cref="Coefficients"/>.
+        /// </summary>
+        /// <param name="other">The source coefficients to copy.</param>
         public Coefficients(Coefficients other)
         {
             coeffs = new List<double>();
@@ -34,7 +41,10 @@ namespace GeoMagSharp
 
         #endregion
 
+        /// <summary>The list of spherical harmonic coefficient values.</summary>
         public List<double> coeffs { get; set; }
+
+        /// <summary>The maximum spherical harmonic degree represented by these coefficients.</summary>
         public Int32 MaxDegree { get; set; }
     }
 }

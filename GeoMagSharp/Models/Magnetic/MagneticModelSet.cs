@@ -20,11 +20,18 @@ namespace GeoMagSharp
     {
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance with an empty model list.
+        /// </summary>
         public MagneticModelSet()
         {
             Models = new List<MagneticModel>();
         }
 
+        /// <summary>
+        /// Initializes a new instance by copying values from another <see cref="MagneticModelSet"/>.
+        /// </summary>
+        /// <param name="other">The source model set to copy.</param>
         public MagneticModelSet(MagneticModelSet other)
         {
             ID = other.ID;
@@ -44,6 +51,10 @@ namespace GeoMagSharp
 
         #region Public Methods
 
+        /// <summary>
+        /// Adds a magnetic model and updates the date range to include the model's epoch.
+        /// </summary>
+        /// <param name="newModel">The magnetic model to add.</param>
         public void AddModel(MagneticModel newModel)
         {
             if (newModel == null) return;
@@ -57,6 +68,11 @@ namespace GeoMagSharp
             MaxDate = newModel.Year;
         }
 
+        /// <summary>
+        /// Adds a spherical harmonic coefficient to the model at the specified index.
+        /// </summary>
+        /// <param name="modelIdx">The index of the model to add the coefficient to.</param>
+        /// <param name="coeff">The coefficient value.</param>
         public void AddCoefficients(Int32 modelIdx, double coeff)
         {
             if (modelIdx.Equals(-1)) return;
@@ -290,6 +306,7 @@ namespace GeoMagSharp
 
         #region getters & setters
 
+        /// <summary>Unique identifier for this model set.</summary>
         public Guid ID
         {
             get
@@ -304,6 +321,7 @@ namespace GeoMagSharp
             }
         }
 
+        /// <summary>Display name of the model (e.g., "WMM2025").</summary>
         public string Name
         {
             get
@@ -318,6 +336,7 @@ namespace GeoMagSharp
             }
         }
 
+        /// <summary>List of coefficient file paths used to build this model set.</summary>
         public List<string> FileNames
         {
             get
@@ -332,6 +351,7 @@ namespace GeoMagSharp
             }
         }
 
+        /// <summary>The known model type (WMM, IGRF, EMM, etc.).</summary>
         public knownModels Type
         {
             get
@@ -346,6 +366,7 @@ namespace GeoMagSharp
             }
         }
 
+        /// <summary>Minimum valid date (decimal year) for this model set. Only accepts values earlier than the current minimum.</summary>
         public double MinDate
         {
             get
@@ -362,6 +383,7 @@ namespace GeoMagSharp
             }
         }
 
+        /// <summary>Maximum valid date (decimal year) for this model set. Only accepts values later than the current maximum.</summary>
         public double MaxDate
         {
             get
@@ -378,6 +400,7 @@ namespace GeoMagSharp
             }
         }
 
+        /// <summary>Earth's radius in kilometers used by this model.</summary>
         public double EarthRadius
         {
             get
@@ -392,6 +415,7 @@ namespace GeoMagSharp
             }
         }
 
+        /// <summary>Gets a copy of the internal models list.</summary>
         [JsonIgnore]
         public List<MagneticModel> GetModels
         {
@@ -401,6 +425,7 @@ namespace GeoMagSharp
             }
         }
 
+        /// <summary>Gets the number of models in the set, or -1 if models are null.</summary>
         [JsonIgnore]
         public Int32 NumberOfModels
         {

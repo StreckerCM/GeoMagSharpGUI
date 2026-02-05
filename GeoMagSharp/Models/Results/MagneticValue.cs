@@ -14,12 +14,19 @@ namespace GeoMagSharp
     {
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance with zero value and zero change per year.
+        /// </summary>
         public MagneticValue()
         {
             Value = 0.0;
             ChangePerYear = 0.0;
         }
 
+        /// <summary>
+        /// Initializes a new instance by copying values from another <see cref="MagneticValue"/>.
+        /// </summary>
+        /// <param name="other">The source value to copy.</param>
         public MagneticValue(MagneticValue other)
         {
             Value = other.Value;
