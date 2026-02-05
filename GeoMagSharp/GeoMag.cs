@@ -383,23 +383,6 @@ namespace GeoMagSharp
             if (ResultsOfCalculation == null)
                 throw new GeoMagExceptionModelNotLoaded("Error: No calculation results to save");
 
-            if (ModelReader.IsFileLocked(fileName))
-                throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' is locked by another user or application",
-                    Path.GetFileName(fileName)));
-
-            if (File.Exists(fileName))
-            {
-                try
-                {
-                    File.Delete(fileName);
-                }
-                catch (Exception e)
-                {
-                    throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' could not be deleted: {1}",
-                    System.IO.Path.GetFileName(fileName), e.ToString()));
-                }
-            }
-
             // Build the output string on the current thread (fast), write to file on background thread
             Int32 lineCount = 0;
             var tabStrRight = new StringBuilder();
@@ -463,10 +446,25 @@ namespace GeoMagSharp
             await Task.Run(() =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                using (StreamWriter outFile = File.AppendText(fileName))
+
+                if (ModelReader.IsFileLocked(fileName))
+                    throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' is locked by another user or application",
+                        Path.GetFileName(fileName)));
+
+                if (File.Exists(fileName))
                 {
-                    outFile.Write(content);
+                    try
+                    {
+                        File.Delete(fileName);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' could not be deleted",
+                            Path.GetFileName(fileName)), e);
+                    }
                 }
+
+                File.WriteAllText(fileName, content);
             }, cancellationToken).ConfigureAwait(false);
         }
 
