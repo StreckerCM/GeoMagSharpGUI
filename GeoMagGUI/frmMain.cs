@@ -155,6 +155,9 @@ namespace GeoMagGUI
 
         private async void buttonCalculate_Click(object sender, EventArgs e)
         {
+            // Re-entrancy guard: ignore if already calculating
+            if (_calculationCts != null) return;
+
             _MagCalculator = null;
             saveToolStripMenuItem.Enabled = false;
 
@@ -728,7 +731,8 @@ namespace GeoMagGUI
             {
                 try
                 {
-                    SetUIBusy(true);
+                    buttonCalculate.Enabled = false;
+                    UseWaitCursor = true;
                     toolStripStatusLabel1.Text = "Saving results...";
                     await _MagCalculator.SaveResultsAsync(fldlg.FileName);
                     toolStripStatusLabel1.Text = "Results saved";
@@ -740,7 +744,8 @@ namespace GeoMagGUI
                 }
                 finally
                 {
-                    SetUIBusy(false);
+                    buttonCalculate.Enabled = true;
+                    UseWaitCursor = false;
                 }
             }
         }

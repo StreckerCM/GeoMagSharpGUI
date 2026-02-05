@@ -132,7 +132,7 @@ namespace GeoMagSharp
             progress?.Report(new CalculationProgressInfo
             {
                 CurrentStep = 1,
-                TotalSteps = 3,
+                TotalSteps = 2,
                 StatusMessage = "Reading coefficient file..."
             });
 
@@ -157,8 +157,8 @@ namespace GeoMagSharp
 
             progress?.Report(new CalculationProgressInfo
             {
-                CurrentStep = 3,
-                TotalSteps = 3,
+                CurrentStep = 2,
+                TotalSteps = 2,
                 StatusMessage = "Model loaded successfully"
             });
 
