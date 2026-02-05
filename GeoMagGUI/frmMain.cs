@@ -717,8 +717,12 @@ namespace GeoMagGUI
             SetElevationDisplay();
         }
 
+        private bool _isSaving;
+
         private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (_isSaving || _MagCalculator == null) return;
+
             var fileName = @"Results";
 
             var fldlg = new SaveFileDialog
@@ -731,9 +735,11 @@ namespace GeoMagGUI
 
             if (fldlg.ShowDialog() == DialogResult.OK)
             {
+                _isSaving = true;
                 try
                 {
                     buttonCalculate.Enabled = false;
+                    saveToolStripMenuItem.Enabled = false;
                     UseWaitCursor = true;
                     toolStripStatusLabel1.Text = "Saving results...";
                     await _MagCalculator.SaveResultsAsync(fldlg.FileName);
@@ -747,7 +753,9 @@ namespace GeoMagGUI
                 finally
                 {
                     buttonCalculate.Enabled = true;
+                    saveToolStripMenuItem.Enabled = true;
                     UseWaitCursor = false;
+                    _isSaving = false;
                 }
             }
         }

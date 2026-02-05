@@ -383,6 +383,9 @@ namespace GeoMagSharp
             if (ResultsOfCalculation == null)
                 throw new GeoMagExceptionModelNotLoaded("Error: No calculation results to save");
 
+            if (_Models == null || _CalculationOptions == null)
+                throw new GeoMagExceptionModelNotLoaded("Error: Model and calculation options must be set before saving results");
+
             // Build the output string on the current thread (fast), write to file on background thread
             Int32 lineCount = 0;
             var tabStrRight = new StringBuilder();
