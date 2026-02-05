@@ -39,6 +39,7 @@ Branch: feature/issue-24-async-operations
 - [x] [TESTER] SynchronousProgress helper, 6 additional tests for edge cases
 - [x] [UI_UX_DESIGNER] Escape key guard, grid clear on cancel/error, accessibility names, tooltip
 - [x] [SECURITY_AUDITOR] TOCTOU fix in SaveResultsAsync, WriteAllText, info disclosure fix
+- [x] [REVIEWER-2] Save re-entrancy guard (_isSaving), null check for _MagCalculator, _Models/_CalculationOptions null guard
 
 ## Completion Criteria
 - [x] All tasks checked
