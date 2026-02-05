@@ -127,10 +127,10 @@ namespace GeoMagGUI
                 buttonMyLocation_Click(sender, e);
                 e.Handled = true;
             }
-            // Escape - Cancel active operation
-            else if (e.KeyCode == Keys.Escape)
+            // Escape - Cancel active operation (only when a calculation is running)
+            else if (e.KeyCode == Keys.Escape && _calculationCts != null)
             {
-                _calculationCts?.Cancel();
+                _calculationCts.Cancel();
                 e.Handled = true;
             }
         }
@@ -299,13 +299,15 @@ namespace GeoMagGUI
                 }
                 catch (OperationCanceledException)
                 {
-                    toolStripStatusLabel1.Text = "Calculation cancelled";
+                    dataGridViewResults.Rows.Clear();
+                    toolStripStatusLabel1.Text = "Calculation cancelled - Ready";
                     _MagCalculator = null;
                 }
                 catch (Exception ex)
                 {
+                    dataGridViewResults.Rows.Clear();
                     MessageBox.Show(ex.Message, "Error: Calculating Magnetics", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    toolStripStatusLabel1.Text = "Error";
+                    toolStripStatusLabel1.Text = "Ready";
                     _MagCalculator = null;
                 }
                 finally

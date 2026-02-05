@@ -711,6 +711,7 @@
             //
             // toolStripStatusLabel1
             //
+            this.toolStripStatusLabel1.AccessibleName = "Status";
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(729, 17);
             this.toolStripStatusLabel1.Spring = true;
@@ -719,16 +720,19 @@
             //
             // toolStripProgressBar1
             //
+            this.toolStripProgressBar1.AccessibleName = "Calculation progress";
             this.toolStripProgressBar1.Name = "toolStripProgressBar1";
             this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
             this.toolStripProgressBar1.Visible = false;
             //
             // toolStripButtonCancel
             //
+            this.toolStripButtonCancel.AccessibleName = "Cancel calculation";
             this.toolStripButtonCancel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonCancel.Name = "toolStripButtonCancel";
             this.toolStripButtonCancel.Size = new System.Drawing.Size(47, 20);
             this.toolStripButtonCancel.Text = "Cancel";
+            this.toolStripButtonCancel.ToolTipText = "Cancel the current operation (Esc)";
             this.toolStripButtonCancel.Visible = false;
             this.toolStripButtonCancel.Click += new System.EventHandler(this.toolStripButtonCancel_Click);
             //
