@@ -26,14 +26,17 @@ namespace GeoMagGUI
             }
         }
 
+        /// <summary>
+        /// Gets the file path selected by the user in the open file dialog.
+        /// Empty string if user cancelled.
+        /// </summary>
+        public string SelectedFilePath { get; private set; }
+
         public frmAddModel()
         {
             InitializeComponent();
 
-            var modelFile = AddFile();
-
-            LoadModelData(modelFile);
-
+            SelectedFilePath = AddFile();
         }
 
         private void LoadModelData(string modelFile)
@@ -112,6 +115,7 @@ namespace GeoMagGUI
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
+            DialogResult = DialogResult.OK;
             Hide();
         }
 

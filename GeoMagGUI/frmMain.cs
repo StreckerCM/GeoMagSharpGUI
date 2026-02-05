@@ -138,6 +138,8 @@ namespace GeoMagGUI
         private void SetUIBusy(bool busy)
         {
             buttonCalculate.Enabled = !busy;
+            addModelToolStripMenuItem.Enabled = !busy;
+            loadModelToolStripMenuItem.Enabled = !busy;
             toolStripProgressBar1.Visible = busy;
             toolStripButtonCancel.Visible = busy;
             UseWaitCursor = busy;
@@ -334,31 +336,66 @@ namespace GeoMagGUI
             if(selectedIdx != Guid.Empty) comboBoxModels.SelectedValue = selectedIdx;
         }
 
-        private void addModelToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void addModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (_calculationCts != null) return;
+
             using (var fAddModel = new frmAddModel())
             {
+                if (string.IsNullOrEmpty(fAddModel.SelectedFilePath))
+                    return;
+
+                _calculationCts = new CancellationTokenSource();
                 try
                 {
-                    this.Cursor = Cursors.WaitCursor;
+                    SetUIBusy(true);
+                    toolStripStatusLabel1.Text = "Reading model file...";
 
-                    fAddModel.ShowDialog(this);
+                    var progress = new Progress<CalculationProgressInfo>(info =>
+                    {
+                        toolStripStatusLabel1.Text = info.StatusMessage;
+                        toolStripProgressBar1.Value = Math.Min((int)info.PercentComplete, 100);
+                    });
+
+                    await fAddModel.LoadModelDataAsync(fAddModel.SelectedFilePath, progress, _calculationCts.Token);
+
+                    SetUIBusy(false);
+                    toolStripStatusLabel1.Text = "Ready";
+
+                    if (fAddModel.ShowDialog(this) != DialogResult.OK)
+                        return;
+
+                    SetUIBusy(true);
+                    toolStripStatusLabel1.Text = "Saving model...";
 
                     Models.AddOrReplace(fAddModel.Model);
+                    await Models.SaveAsync(ModelJson, _calculationCts.Token);
 
-                    Models.Save(Path.Combine(ModelFolder, Resources.File_Name_Magnetic_Model_JSON));
-
-                    LoadModels();
+                    LoadModels(fAddModel.Model?.ID.ToString());
+                    toolStripStatusLabel1.Text = "Model added successfully";
+                }
+                catch (OperationCanceledException)
+                {
+                    toolStripStatusLabel1.Text = "Model loading cancelled - Ready";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error: Adding Model", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    toolStripStatusLabel1.Text = "Ready";
                 }
                 finally
                 {
-                    this.Cursor = Cursors.Default;
+                    SetUIBusy(false);
+                    _calculationCts?.Dispose();
+                    _calculationCts = null;
                 }
             }
         }
 
-        private void loadModelToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void loadModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (_calculationCts != null) return;
+
             var fDlg = new OpenFileDialog
             {
                 Title = @"Select a Model Data File",
@@ -366,13 +403,48 @@ namespace GeoMagGUI
                 Multiselect = false
             };
 
-            if (fDlg.ShowDialog() != DialogResult.Cancel)
+            if (fDlg.ShowDialog() == DialogResult.Cancel) return;
+
+            var copyToLocation = Path.Combine(ModelFolder, Path.GetFileName(fDlg.FileName));
+
+            _calculationCts = new CancellationTokenSource();
+            try
             {
-                var copyToLocation = string.Format("{0}{1}", ModelFolder, Path.GetFileName(fDlg.FileName));
+                SetUIBusy(true);
+                toolStripStatusLabel1.Text = "Copying model file...";
 
                 File.Copy(fDlg.FileName, copyToLocation, overwrite: true);
 
-                LoadModels(copyToLocation);
+                toolStripStatusLabel1.Text = "Reading model file...";
+                var progress = new Progress<CalculationProgressInfo>(info =>
+                {
+                    toolStripStatusLabel1.Text = info.StatusMessage;
+                    toolStripProgressBar1.Value = Math.Min((int)info.PercentComplete, 100);
+                });
+
+                var model = await ModelReader.ReadAsync(copyToLocation, progress, _calculationCts.Token);
+
+                toolStripStatusLabel1.Text = "Saving model collection...";
+                Models.AddOrReplace(model);
+                await Models.SaveAsync(ModelJson, _calculationCts.Token);
+
+                LoadModels(model.ID.ToString());
+                toolStripStatusLabel1.Text = "Model loaded successfully";
+            }
+            catch (OperationCanceledException)
+            {
+                toolStripStatusLabel1.Text = "Model loading cancelled - Ready";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error: Loading Model", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                toolStripStatusLabel1.Text = "Ready";
+            }
+            finally
+            {
+                SetUIBusy(false);
+                _calculationCts?.Dispose();
+                _calculationCts = null;
             }
         }
 
