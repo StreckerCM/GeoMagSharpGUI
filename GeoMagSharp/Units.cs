@@ -48,7 +48,7 @@ namespace GeoMagSharp
                     return @"m";
 
                 case Distance.Unit.kilometer:
-                    return @"mi";
+                    return @"km";
 
                 case Distance.Unit.foot:
                     return @"ft";

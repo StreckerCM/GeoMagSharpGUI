@@ -1,11 +1,9 @@
 ﻿/****************************************************************************
  * File:            GeoMag.cs
  * Description:     Routines to provide an interface to the calculation methods
- * Author:          Christopher Strecker   
- * Website:         https://github.com/StreckerCM/GeoMagSharpGUI  
- * Warnings:
- * Current version: 
- *  ****************************************************************************/
+ * Author:          Christopher Strecker
+ * Website:         https://github.com/StreckerCM/GeoMagSharpGUI
+ ****************************************************************************/
 
 using System;
 using System.Collections.Generic;

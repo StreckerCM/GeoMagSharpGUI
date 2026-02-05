@@ -37,10 +37,10 @@ namespace GeoMagSharp
         }
 
         /// <summary>
-        /// Initializes a new instance by copying the decimal value from a coordinate.
+        /// Initializes a new instance by copying another <see cref="Longitude"/>.
         /// </summary>
-        /// <param name="other">The source coordinate to copy.</param>
-        public Longitude(Latitude other)
+        /// <param name="other">The source longitude to copy.</param>
+        public Longitude(Longitude other)
         {
             Decimal = other.Decimal;
         }

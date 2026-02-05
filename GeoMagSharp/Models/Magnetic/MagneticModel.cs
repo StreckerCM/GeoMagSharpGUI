@@ -39,7 +39,7 @@ namespace GeoMagSharp
             Year = other.Year;
 
             SharmCoeff = new List<double>();
-            if (other.SharmCoeff.Any()) SharmCoeff.AddRange(SharmCoeff);
+            if (other.SharmCoeff.Any()) SharmCoeff.AddRange(other.SharmCoeff);
         }
 
         #endregion
