@@ -4,6 +4,8 @@ using System;
 using System.Device.Location;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GeoMagGUI
@@ -19,6 +21,8 @@ namespace GeoMagGUI
         public Preferences ApplicationPreferences;
 
         private GeoMag _MagCalculator;
+
+        private CancellationTokenSource _calculationCts;
 
         #region Getters & Setters
 
@@ -123,9 +127,33 @@ namespace GeoMagGUI
                 buttonMyLocation_Click(sender, e);
                 e.Handled = true;
             }
+            // Escape - Cancel active operation
+            else if (e.KeyCode == Keys.Escape)
+            {
+                _calculationCts?.Cancel();
+                e.Handled = true;
+            }
         }
 
-        private void buttonCalculate_Click(object sender, EventArgs e)
+        private void SetUIBusy(bool busy)
+        {
+            buttonCalculate.Enabled = !busy;
+            toolStripProgressBar1.Visible = busy;
+            toolStripButtonCancel.Visible = busy;
+            UseWaitCursor = busy;
+
+            if (!busy)
+            {
+                toolStripProgressBar1.Value = 0;
+            }
+        }
+
+        private void toolStripButtonCancel_Click(object sender, EventArgs e)
+        {
+            _calculationCts?.Cancel();
+        }
+
+        private async void buttonCalculate_Click(object sender, EventArgs e)
         {
             _MagCalculator = null;
             saveToolStripMenuItem.Enabled = false;
@@ -146,20 +174,6 @@ namespace GeoMagGUI
 
             if (selectedModel != null)
             {
-                //if (DBNull.Value.Equals(dRow.First()["FileName"]))
-                //{
-                //    this.errorProviderCheck.SetError(comboBoxModels, @"No file name was found for the model you selected");
-                //    return;
-                //}
-
-                //string modelFile = dRow.First()["FileName"].ToString();
-
-                //if (!File.Exists(modelFile))
-                //{
-                //    this.errorProviderCheck.SetError(comboBoxModels, string.Format("The model file {0} could not be found", Path.GetFileName(modelFile)));
-                //    return;
-                //}
-
                 if (comboBoxAltitudeUnits.SelectedItem == null)
                 {
                     this.errorProviderCheck.SetError(comboBoxAltitudeUnits, @"No Units have been selected");
@@ -188,9 +202,12 @@ namespace GeoMagGUI
                     return;
                 }
 
+                _calculationCts = new CancellationTokenSource();
+
                 try
                 {
-                    Cursor = Cursors.WaitCursor;
+                    SetUIBusy(true);
+                    toolStripStatusLabel1.Text = "Calculating...";
 
                     var calcOptions = new CalculationOptions
                         {
@@ -210,7 +227,13 @@ namespace GeoMagGUI
 
                     if (toolStripMenuItemUseRangeOfDates.Checked) calcOptions.EndDate = dateTimePicker2.Value;
 
-                    _MagCalculator.MagneticCalculations(calcOptions);
+                    var progress = new Progress<CalculationProgressInfo>(info =>
+                    {
+                        toolStripStatusLabel1.Text = info.StatusMessage;
+                        toolStripProgressBar1.Value = Math.Min((int)info.PercentComplete, 100);
+                    });
+
+                    await _MagCalculator.MagneticCalculationsAsync(calcOptions, progress, _calculationCts.Token);
 
                     if (_MagCalculator.ResultsOfCalculation == null || !_MagCalculator.ResultsOfCalculation.Any())
                     {
@@ -269,15 +292,24 @@ namespace GeoMagGUI
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnTotalField"].Style.BackColor = System.Drawing.Color.LightBlue;
 
                     saveToolStripMenuItem.Enabled = true;
+                    toolStripStatusLabel1.Text = "Calculation complete";
+                }
+                catch (OperationCanceledException)
+                {
+                    toolStripStatusLabel1.Text = "Calculation cancelled";
+                    _MagCalculator = null;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error: Calculating Magnetics", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    toolStripStatusLabel1.Text = "Error";
                     _MagCalculator = null;
                 }
                 finally
                 {
-                    Cursor = Cursors.Default;
+                    SetUIBusy(false);
+                    _calculationCts?.Dispose();
+                    _calculationCts = null;
                 }
             }
         }
@@ -680,7 +712,7 @@ namespace GeoMagGUI
             SetElevationDisplay();
         }
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var fileName = @"Results";
 
@@ -696,12 +728,19 @@ namespace GeoMagGUI
             {
                 try
                 {
-                    Cursor = Cursors.WaitCursor;
-                    _MagCalculator.SaveResults(fldlg.FileName);
+                    SetUIBusy(true);
+                    toolStripStatusLabel1.Text = "Saving results...";
+                    await _MagCalculator.SaveResultsAsync(fldlg.FileName);
+                    toolStripStatusLabel1.Text = "Results saved";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error: Saving Results", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    toolStripStatusLabel1.Text = "Error saving";
                 }
                 finally
                 {
-                    Cursor = Cursors.Default;
+                    SetUIBusy(false);
                 }
             }
         }

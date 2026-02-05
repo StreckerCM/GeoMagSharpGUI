@@ -63,6 +63,8 @@
     <Compile Include="Models\Magnetic\MagneticModel.cs" />
     <Compile Include="Models\Magnetic\MagneticModelSet.cs" />
     <Compile Include="Models\Magnetic\MagneticModelCollection.cs" />
+    <!-- Models - Progress -->
+    <Compile Include="Models\Progress\CalculationProgressInfo.cs" />
     <!-- Models - Results -->
     <Compile Include="Models\Results\MagneticValue.cs" />
     <Compile Include="Models\Results\GeoMagVector.cs" />
