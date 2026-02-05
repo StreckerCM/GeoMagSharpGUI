@@ -5,6 +5,8 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using GeoMagSharp;
@@ -38,6 +40,26 @@ namespace GeoMagGUI
         {
             _Model = ModelReader.Read(modelFile);
 
+            DisplayModelData();
+        }
+
+        /// <summary>
+        /// Asynchronously loads model data from a coefficient file.
+        /// </summary>
+        /// <param name="modelFile">Path to the coefficient file.</param>
+        /// <param name="progress">Optional progress reporter.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
+        public async Task LoadModelDataAsync(string modelFile,
+            IProgress<CalculationProgressInfo> progress = null,
+            CancellationToken cancellationToken = default)
+        {
+            _Model = await ModelReader.ReadAsync(modelFile, progress, cancellationToken);
+
+            DisplayModelData();
+        }
+
+        private void DisplayModelData()
+        {
             if(_Model != null)
             {
                 _Model.Name = Path.GetFileNameWithoutExtension(Model.FileNames.First());
@@ -56,7 +78,6 @@ namespace GeoMagGUI
             {
                 MessageBox.Show(this, "", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
 
         private string AddFile()

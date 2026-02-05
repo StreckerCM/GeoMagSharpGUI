@@ -80,6 +80,10 @@
             this.comboBoxAltitudeUnits = new System.Windows.Forms.ComboBox();
             this.ComboBoxLongDir = new System.Windows.Forms.ComboBox();
             this.ComboBoxLatDir = new System.Windows.Forms.ComboBox();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripButtonCancel = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStepSize)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderCheck)).BeginInit();
@@ -359,40 +363,40 @@
             this.fileToolStripMenuItem.Text = "File";
             // 
             // addModelToolStripMenuItem
-            //
+            // 
             this.addModelToolStripMenuItem.Name = "addModelToolStripMenuItem";
             this.addModelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
-            this.addModelToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.addModelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addModelToolStripMenuItem.Text = "Add Model";
             this.addModelToolStripMenuItem.Click += new System.EventHandler(this.addModelToolStripMenuItem_Click);
             // 
             // loadModelToolStripMenuItem
-            //
+            // 
             this.loadModelToolStripMenuItem.Name = "loadModelToolStripMenuItem";
             this.loadModelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.loadModelToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.loadModelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadModelToolStripMenuItem.Text = "Load Model";
             this.loadModelToolStripMenuItem.Click += new System.EventHandler(this.loadModelToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(134, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // saveToolStripMenuItem
-            //
+            // 
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
-            //
+            // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -407,7 +411,7 @@
             this.settingsToolStripMenuItem.Text = "Settings";
             // 
             // preferencesToolStripMenuItem
-            //
+            // 
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
             this.preferencesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
             this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
@@ -436,10 +440,10 @@
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutGeoMagToolStripMenuItem
-            //
+            // 
             this.aboutGeoMagToolStripMenuItem.Name = "aboutGeoMagToolStripMenuItem";
             this.aboutGeoMagToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.aboutGeoMagToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.aboutGeoMagToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.aboutGeoMagToolStripMenuItem.Text = "About...";
             this.aboutGeoMagToolStripMenuItem.Click += new System.EventHandler(this.aboutGeoMagToolStripMenuItem_Click);
             // 
@@ -682,13 +686,49 @@
             this.ComboBoxLatDir.TabIndex = 8;
             this.ComboBoxLatDir.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLatitude_Validating);
             this.ComboBoxLatDir.Validated += new System.EventHandler(this.TextBoxLatitude_Validated);
-            // 
+            //
+            // statusStrip1
+            //
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.toolStripProgressBar1,
+            this.toolStripButtonCancel});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 269);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(844, 22);
+            this.statusStrip1.TabIndex = 24;
+            this.statusStrip1.Text = "statusStrip1";
+            //
+            // toolStripStatusLabel1
+            //
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(729, 17);
+            this.toolStripStatusLabel1.Spring = true;
+            this.toolStripStatusLabel1.Text = "Ready";
+            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            //
+            // toolStripProgressBar1
+            //
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
+            this.toolStripProgressBar1.Visible = false;
+            //
+            // toolStripButtonCancel
+            //
+            this.toolStripButtonCancel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonCancel.Name = "toolStripButtonCancel";
+            this.toolStripButtonCancel.Size = new System.Drawing.Size(47, 20);
+            this.toolStripButtonCancel.Text = "Cancel";
+            this.toolStripButtonCancel.Visible = false;
+            this.toolStripButtonCancel.Click += new System.EventHandler(this.toolStripButtonCancel_Click);
+            //
             // FrmMain
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(844, 291);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
@@ -761,6 +801,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnEastComp;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnVerticalComp;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnTotalField;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
+        private System.Windows.Forms.ToolStripButton toolStripButtonCancel;
     }
 }
 
