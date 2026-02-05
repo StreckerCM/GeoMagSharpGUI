@@ -25,36 +25,42 @@ namespace GeoMagSharp
 
         #region Getters & Setters
 
+        /// <summary>Whether to display coordinates in decimal degrees (true) or degrees/minutes/seconds (false).</summary>
         public bool UseDecimalDegrees
         {
             get { return _UseDecimalDegrees; }
             set { _UseDecimalDegrees = value; }
         }
 
+        /// <summary>Whether to use altitude (true) or depth (false) for elevation input.</summary>
         public bool UseAltitude
         {
             get { return _UseAltitude; }
             set { _UseAltitude = value; }
         }
 
+        /// <summary>The unit for magnetic field intensity display (e.g., "nT").</summary>
         public string FieldUnit
         {
             get { return _FieldUnit; }
             set { _FieldUnit = value; }
         }
 
+        /// <summary>The unit for altitude/depth display (e.g., "ft", "m").</summary>
         public string AltitudeUnits
         {
             get { return _AltitudeUnits; }
             set { _AltitudeUnits = value; }
         }
 
+        /// <summary>Default latitude hemisphere ("N" or "S").</summary>
         public string LatitudeHemisphere
         {
             get { return _LatitudeHemisphere; }
             set { _LatitudeHemisphere = value; }
         }
 
+        /// <summary>Default longitude hemisphere ("E" or "W").</summary>
         public string LongitudeHemisphere
         {
             get { return _LongitudeHemisphere; }
@@ -65,10 +71,17 @@ namespace GeoMagSharp
 
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance with default preferences.
+        /// </summary>
         public Preferences()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance by copying values from another <see cref="Preferences"/>.
+        /// </summary>
+        /// <param name="other">The source preferences to copy from.</param>
         public Preferences(Preferences other)
         {
             UseDecimalDegrees = other.UseDecimalDegrees;
@@ -80,6 +93,11 @@ namespace GeoMagSharp
 
         #region Object Serializers
 
+        /// <summary>
+        /// Serializes the preferences to a JSON file.
+        /// </summary>
+        /// <param name="filename">The file path to save to.</param>
+        /// <returns><c>true</c> if the save was successful; otherwise, <c>false</c>.</returns>
         public bool Save(string filename)
         {
             if (string.IsNullOrEmpty(filename)) return false;
@@ -113,6 +131,11 @@ namespace GeoMagSharp
             return wasSucessful;
         }
 
+        /// <summary>
+        /// Deserializes preferences from a JSON file.
+        /// </summary>
+        /// <param name="filename">The file path to load from.</param>
+        /// <returns>The loaded <see cref="Preferences"/>, or a new default instance if the file is missing or invalid.</returns>
         public static Preferences Load(string filename)
         {
             if (string.IsNullOrEmpty(filename)) return new Preferences();

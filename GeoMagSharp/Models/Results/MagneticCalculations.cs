@@ -16,6 +16,9 @@ namespace GeoMagSharp
     {
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance with the current date and zero-valued components.
+        /// </summary>
         public MagneticCalculations()
         {
             Date = DateTime.Now;
@@ -28,6 +31,10 @@ namespace GeoMagSharp
             TotalField = new MagneticValue();
         }
 
+        /// <summary>
+        /// Initializes a new instance by copying values from another <see cref="MagneticCalculations"/>.
+        /// </summary>
+        /// <param name="other">The source calculation results to copy.</param>
         public MagneticCalculations(MagneticCalculations other)
         {
             Date = other.Date;
@@ -40,6 +47,12 @@ namespace GeoMagSharp
             TotalField = new MagneticValue(other.TotalField);
         }
 
+        /// <summary>
+        /// Initializes a new instance from field and secular variation vectors.
+        /// </summary>
+        /// <param name="inDate">The date of the calculation.</param>
+        /// <param name="fieldCalculations">The main magnetic field vector.</param>
+        /// <param name="SecVarCalculations">The secular variation vector, or null if not computed.</param>
         public MagneticCalculations(DateTime inDate, GeoMagVector fieldCalculations, GeoMagVector SecVarCalculations = null)
         {
             Date = inDate;

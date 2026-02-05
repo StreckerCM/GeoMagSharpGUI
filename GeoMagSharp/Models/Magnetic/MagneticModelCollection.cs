@@ -19,11 +19,15 @@ namespace GeoMagSharp
     /// </summary>
     public class MagneticModelCollection : IEnumerable<MagneticModelSet>
     {
+        /// <summary>The internal list of magnetic model sets.</summary>
         [JsonProperty(TypeNameHandling = TypeNameHandling.None)]
         public List<MagneticModelSet> TList { get; private set; }
 
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance with an empty model list.
+        /// </summary>
         public MagneticModelCollection()
         {
             TList = new List<MagneticModelSet>();
@@ -33,21 +37,39 @@ namespace GeoMagSharp
 
         #region Base Class Methods
 
+        /// <summary>
+        /// Adds a model set to the collection.
+        /// </summary>
+        /// <param name="item">The model set to add.</param>
         public void Add(MagneticModelSet item)
         {
             TList.Add(item);
         }
 
+        /// <summary>
+        /// Adds a range of model sets to the collection.
+        /// </summary>
+        /// <param name="collection">The model sets to add.</param>
         public void AddRange(IEnumerable<MagneticModelSet> collection)
         {
             TList.AddRange(collection);
         }
 
+        /// <summary>
+        /// Searches for a model set that matches the specified predicate.
+        /// </summary>
+        /// <param name="match">The predicate to match against.</param>
+        /// <returns>The first matching model set, or null if not found.</returns>
         public MagneticModelSet Find(Predicate<MagneticModelSet> match)
         {
             return TList.Find(match);
         }
 
+        /// <summary>
+        /// Searches for all model sets that match the specified predicate.
+        /// </summary>
+        /// <param name="match">The predicate to match against.</param>
+        /// <returns>A list of all matching model sets.</returns>
         public List<MagneticModelSet> FindAll(Predicate<MagneticModelSet> match)
         {
             return TList.FindAll(match);
@@ -97,6 +119,10 @@ namespace GeoMagSharp
             return false;
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the model sets.
+        /// </summary>
+        /// <returns>An enumerator for the collection.</returns>
         public IEnumerator<MagneticModelSet> GetEnumerator()
         {
             return TList.GetEnumerator();
@@ -111,6 +137,11 @@ namespace GeoMagSharp
 
         #region Object Serializers
 
+        /// <summary>
+        /// Serializes the collection to a JSON file.
+        /// </summary>
+        /// <param name="filename">The file path to save to.</param>
+        /// <returns><c>true</c> if the save was successful; otherwise, <c>false</c>.</returns>
         public bool Save(string filename)
         {
             if (string.IsNullOrEmpty(filename)) return false;
@@ -144,6 +175,11 @@ namespace GeoMagSharp
             return wasSucessful;
         }
 
+        /// <summary>
+        /// Deserializes a collection from a JSON file.
+        /// </summary>
+        /// <param name="filename">The file path to load from.</param>
+        /// <returns>The loaded collection, or a new empty collection if the file is missing or invalid.</returns>
         public static MagneticModelCollection Load(string filename)
         {
             if (string.IsNullOrEmpty(filename)) return new MagneticModelCollection();
@@ -182,6 +218,10 @@ namespace GeoMagSharp
 
         #region getters & setters
 
+        /// <summary>
+        /// Gets a DataTable representation of all models for UI data binding.
+        /// Columns: ID, ModelName, FileNames, DateMin, DateMax, NumberOfModels, Type.
+        /// </summary>
         public DataTable GetDataTable
         {
             get
