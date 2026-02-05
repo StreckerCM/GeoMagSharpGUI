@@ -144,18 +144,17 @@ namespace GeoMagSharp_UnitTests
                 Assert.Inconclusive("WMM2025.COF not found in TestData folder");
 
             var progressReports = new List<CalculationProgressInfo>();
-            var progress = new Progress<CalculationProgressInfo>(info =>
-                progressReports.Add(info));
+            var progress = new SynchronousProgress(progressReports);
 
             // Act
             var modelSet = await ModelReader.ReadAsync(filePath, progress);
 
-            // Allow progress events to propagate (Progress<T> posts to SynchronizationContext)
-            await Task.Delay(100);
-
             // Assert
             Assert.IsNotNull(modelSet);
-            Assert.IsTrue(progressReports.Count > 0, "Should have received at least one progress report");
+            Assert.AreEqual(2, progressReports.Count, "Should have received 2 progress reports (start and complete)");
+            Assert.AreEqual(1, progressReports[0].CurrentStep, "First report should be step 1");
+            Assert.AreEqual(2, progressReports[1].CurrentStep, "Second report should be step 2");
+            Assert.AreEqual("Model loaded successfully", progressReports[1].StatusMessage);
         }
 
         [TestMethod]
@@ -316,18 +315,22 @@ namespace GeoMagSharp_UnitTests
             calcOptions.SetElevation(0, Distance.Unit.meter, true);
 
             var progressReports = new List<CalculationProgressInfo>();
-            var progress = new Progress<CalculationProgressInfo>(info =>
-                progressReports.Add(info));
+            var progress = new SynchronousProgress(progressReports);
 
             // Act
             await geoMag.MagneticCalculationsAsync(calcOptions, progress);
 
-            // Allow progress events to propagate
-            await Task.Delay(100);
-
             // Assert
             Assert.IsNotNull(geoMag.ResultsOfCalculation);
-            Assert.IsTrue(progressReports.Count > 0, "Should have received progress reports");
+            Assert.IsTrue(progressReports.Count >= 2, "Should have received at least 2 progress reports");
+
+            // Verify progress steps are monotonically non-decreasing
+            for (int i = 1; i < progressReports.Count; i++)
+            {
+                Assert.IsTrue(progressReports[i].CurrentStep >= progressReports[i - 1].CurrentStep,
+                    string.Format("Progress steps should be non-decreasing: step {0} vs {1}",
+                        progressReports[i - 1].CurrentStep, progressReports[i].CurrentStep));
+            }
 
             // Last progress report should indicate completion
             var lastReport = progressReports[progressReports.Count - 1];
@@ -541,6 +544,178 @@ namespace GeoMagSharp_UnitTests
 
         #endregion
 
+        #region Additional Edge Case Tests
+
+        [TestMethod]
+        public async Task MagneticCalculationsAsync_NoModelLoaded_ThrowsException()
+        {
+            // Arrange
+            var geoMag = new GeoMag();
+            var calcOptions = new CalculationOptions
+            {
+                Latitude = 45.0,
+                Longitude = 0.0,
+                StartDate = new DateTime(2025, 7, 1),
+                CalculationMethod = Algorithm.BGS
+            };
+            calcOptions.SetElevation(0, Distance.Unit.meter, true);
+
+            // Act & Assert
+            await AssertThrowsAsync<GeoMagExceptionModelNotLoaded>(async () =>
+                await geoMag.MagneticCalculationsAsync(calcOptions));
+        }
+
+        [TestMethod]
+        public async Task MagneticCalculationsAsync_DateOutOfRange_ThrowsException()
+        {
+            // Arrange
+            string filePath = Path.Combine(TestDataPath, "WMM2025.COF");
+            if (!File.Exists(filePath))
+                Assert.Inconclusive("WMM2025.COF not found in TestData folder");
+
+            var geoMag = new GeoMag();
+            geoMag.LoadModel(filePath);
+
+            var calcOptions = new CalculationOptions
+            {
+                Latitude = 45.0,
+                Longitude = 0.0,
+                StartDate = new DateTime(1900, 1, 1), // Well outside WMM2025 range
+                CalculationMethod = Algorithm.BGS
+            };
+            calcOptions.SetElevation(0, Distance.Unit.meter, true);
+
+            // Act & Assert
+            await AssertThrowsAsync<GeoMagExceptionOutOfRange>(async () =>
+                await geoMag.MagneticCalculationsAsync(calcOptions));
+        }
+
+        [TestMethod]
+        public async Task ReadAsync_UnsupportedExtension_ThrowsModelNotLoaded()
+        {
+            // Arrange - Create a temp file with unsupported extension
+            string tempFile = Path.Combine(Path.GetTempPath(), "test_async.xyz");
+            try
+            {
+                File.WriteAllText(tempFile, "test content");
+
+                // Act & Assert
+                await AssertThrowsAsync<GeoMagExceptionModelNotLoaded>(async () =>
+                    await ModelReader.ReadAsync(tempFile));
+            }
+            finally
+            {
+                if (File.Exists(tempFile))
+                    File.Delete(tempFile);
+            }
+        }
+
+        [TestMethod]
+        public async Task SaveResultsAsync_CancelledToken_ThrowsOperationCancelled()
+        {
+            // Arrange
+            string filePath = Path.Combine(TestDataPath, "WMM2025.COF");
+            if (!File.Exists(filePath))
+                Assert.Inconclusive("WMM2025.COF not found in TestData folder");
+
+            var geoMag = new GeoMag();
+            geoMag.LoadModel(filePath);
+
+            var calcOptions = new CalculationOptions
+            {
+                Latitude = 45.0,
+                Longitude = 0.0,
+                StartDate = new DateTime(2025, 7, 1),
+                SecularVariation = true,
+                CalculationMethod = Algorithm.BGS
+            };
+            calcOptions.SetElevation(0, Distance.Unit.meter, true);
+
+            await geoMag.MagneticCalculationsAsync(calcOptions);
+
+            var cts = new CancellationTokenSource();
+            cts.Cancel(); // Pre-cancel
+
+            string outputFile = Path.Combine(Path.GetTempPath(), "async_cancel_save_test.txt");
+
+            // Act & Assert
+            await AssertThrowsAsync<OperationCanceledException>(async () =>
+                await geoMag.SaveResultsAsync(outputFile, false, cts.Token));
+        }
+
+        [TestMethod]
+        public async Task LoadAsync_CancelledToken_ThrowsOperationCancelled()
+        {
+            // Arrange
+            var cts = new CancellationTokenSource();
+            cts.Cancel(); // Pre-cancel
+
+            string tempFile = Path.Combine(Path.GetTempPath(), "async_cancel_load_test.json");
+            try
+            {
+                File.WriteAllText(tempFile, "[]");
+
+                // Act & Assert
+                await AssertThrowsAsync<OperationCanceledException>(async () =>
+                    await MagneticModelCollection.LoadAsync(tempFile, cts.Token));
+            }
+            finally
+            {
+                if (File.Exists(tempFile))
+                    File.Delete(tempFile);
+            }
+        }
+
+        [TestMethod]
+        public async Task SaveResultsAsync_MatchesSyncSave()
+        {
+            // Arrange
+            string filePath = Path.Combine(TestDataPath, "WMM2025.COF");
+            if (!File.Exists(filePath))
+                Assert.Inconclusive("WMM2025.COF not found in TestData folder");
+
+            var calcOptions = new CalculationOptions
+            {
+                Latitude = 45.0,
+                Longitude = 0.0,
+                StartDate = new DateTime(2025, 7, 1),
+                SecularVariation = true,
+                CalculationMethod = Algorithm.BGS
+            };
+            calcOptions.SetElevation(0, Distance.Unit.meter, true);
+
+            // Sync save
+            var syncGeoMag = new GeoMag();
+            syncGeoMag.LoadModel(filePath);
+            syncGeoMag.MagneticCalculations(new CalculationOptions(calcOptions));
+
+            string syncFile = Path.Combine(Path.GetTempPath(), "sync_save_test.txt");
+            syncGeoMag.SaveResults(syncFile);
+
+            // Async save
+            var asyncGeoMag = new GeoMag();
+            asyncGeoMag.LoadModel(filePath);
+            await asyncGeoMag.MagneticCalculationsAsync(new CalculationOptions(calcOptions));
+
+            string asyncFile = Path.Combine(Path.GetTempPath(), "async_save_test.txt");
+            await asyncGeoMag.SaveResultsAsync(asyncFile);
+
+            try
+            {
+                // Assert - file contents should be identical
+                string syncContent = File.ReadAllText(syncFile);
+                string asyncContent = File.ReadAllText(asyncFile);
+                Assert.AreEqual(syncContent, asyncContent, "Sync and async save should produce identical output");
+            }
+            finally
+            {
+                if (File.Exists(syncFile)) File.Delete(syncFile);
+                if (File.Exists(asyncFile)) File.Delete(asyncFile);
+            }
+        }
+
+        #endregion
+
         #region Helper Methods
 
         /// <summary>
@@ -561,6 +736,25 @@ namespace GeoMagSharp_UnitTests
             catch (AggregateException ex) when (ex.InnerException is TException)
             {
                 // Also acceptable - Task.Run can wrap in AggregateException
+            }
+        }
+
+        /// <summary>
+        /// Synchronous IProgress implementation that captures reports immediately
+        /// without posting to SynchronizationContext. Avoids race conditions in tests.
+        /// </summary>
+        private class SynchronousProgress : IProgress<CalculationProgressInfo>
+        {
+            private readonly List<CalculationProgressInfo> _reports;
+
+            public SynchronousProgress(List<CalculationProgressInfo> reports)
+            {
+                _reports = reports;
+            }
+
+            public void Report(CalculationProgressInfo value)
+            {
+                _reports.Add(value);
             }
         }
 
