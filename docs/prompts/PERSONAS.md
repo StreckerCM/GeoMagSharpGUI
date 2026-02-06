@@ -146,6 +146,9 @@ As a [user type], I want [goal] so that [benefit].
 - [ ] [Decision that needs to be made]
 ```
 
+**Tools:**
+- Use `/verification-before-completion` skill before claiming work is complete or ready for merge
+
 **Success Criteria:**
 - Work is broken into clear tasks
 - Dependencies are identified
@@ -167,6 +170,10 @@ As a [user type], I want [goal] so that [benefit].
 - Consider accessibility (keyboard navigation, tab order)
 - Design for the user's workflow, not just aesthetics
 - Keep interfaces clean and uncluttered
+
+**Tools:**
+- Use `/frontend-design` skill for creating UI components and layouts
+- Reference existing controls in the codebase for consistency
 
 **Design Principles for GeoMagSharpGUI:**
 - Professional, technical aesthetic suitable for scientific software
@@ -227,6 +234,10 @@ As a [user type], I want [goal] so that [benefit].
 - Test on different screen sizes/DPI settings
 - Keep code-behind minimal
 
+**Tools:**
+- Use `/frontend-design` skill for generating UI code
+- Reference existing controls for patterns
+
 **WinForms Patterns for GeoMagSharpGUI:**
 - Forms with `frm*` prefix (`frmMain`, `frmPreferences`)
 - UserControls for reusable components
@@ -284,6 +295,10 @@ As a [user type], I want [goal] so that [benefit].
 - Use existing extension methods and helpers
 - Follow naming conventions in AGENTS.md
 
+**Tools:**
+- Use `/brainstorming` skill before creative work or designing new functionality
+- Use `/test-driven-development` skill when adding new features or fixing bugs
+
 **Success Criteria:**
 - All tasks in tasks.md are checked `[x]`
 - Build succeeds with no errors
@@ -332,6 +347,10 @@ As a [user type], I want [goal] so that [benefit].
 - ExtensionMethods date/number conversions
 - DataModel serialization round-trips
 
+**Tools:**
+- Use `/test-driven-development` skill when writing new tests
+- Use `/systematic-debugging` skill when investigating test failures or unexpected behavior
+
 **Success Criteria:**
 - Tests cover the specified functionality
 - All tests pass
@@ -353,6 +372,9 @@ As a [user type], I want [goal] so that [benefit].
 - Fix root cause, not symptoms
 - Add regression test for the bug
 
+**Tools:**
+- Use `/systematic-debugging` skill before proposing any fix
+
 **Success Criteria:**
 - Bug is reproducible (or confirmed fixed if already reproduced)
 - Root cause identified and documented
@@ -373,6 +395,10 @@ As a [user type], I want [goal] so that [benefit].
 - Check for missing error handling
 - Ensure adequate test coverage
 - Be constructive and specific
+
+**Tools:**
+- Use `/code-review` skill for structured PR reviews
+- Use `/receiving-code-review` skill when acting on review feedback from others
 
 **Output Format:**
 ```markdown
@@ -415,6 +441,9 @@ As a [user type], I want [goal] so that [benefit].
 - Coefficient file parsing (no arbitrary code execution)
 - JSON deserialization safety
 - File path handling
+
+**Tools:**
+- Use `/code-review` skill for security-focused code review
 
 **Output Format:**
 ```markdown
