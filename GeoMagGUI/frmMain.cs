@@ -24,6 +24,8 @@ namespace GeoMagGUI
 
         private CancellationTokenSource _calculationCts;
 
+        private System.Windows.Forms.Timer _statusClearTimer;
+
         #region Getters & Setters
 
         public string ModelFolder
@@ -148,6 +150,25 @@ namespace GeoMagGUI
             {
                 toolStripProgressBar1.Value = 0;
             }
+        }
+
+        private void SetStatusTemporary(string message, int milliseconds = 5000)
+        {
+            toolStripStatusLabel1.Text = message;
+
+            if (_statusClearTimer != null)
+            {
+                _statusClearTimer.Stop();
+                _statusClearTimer.Dispose();
+            }
+
+            _statusClearTimer = new System.Windows.Forms.Timer { Interval = milliseconds };
+            _statusClearTimer.Tick += (s, args) =>
+            {
+                _statusClearTimer.Stop();
+                toolStripStatusLabel1.Text = "Ready";
+            };
+            _statusClearTimer.Start();
         }
 
         private void toolStripButtonCancel_Click(object sender, EventArgs e)
@@ -297,12 +318,12 @@ namespace GeoMagGUI
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnTotalField"].Style.BackColor = System.Drawing.Color.LightBlue;
 
                     saveToolStripMenuItem.Enabled = true;
-                    toolStripStatusLabel1.Text = "Calculation complete";
+                    SetStatusTemporary("Calculation complete");
                 }
                 catch (OperationCanceledException)
                 {
                     dataGridViewResults.Rows.Clear();
-                    toolStripStatusLabel1.Text = "Calculation cancelled - Ready";
+                    SetStatusTemporary("Calculation cancelled");
                     _MagCalculator = null;
                 }
                 catch (Exception ex)
@@ -372,11 +393,11 @@ namespace GeoMagGUI
                     await Models.SaveAsync(ModelJson, _calculationCts.Token);
 
                     LoadModels(fAddModel.Model?.ID.ToString());
-                    toolStripStatusLabel1.Text = "Model added successfully";
+                    SetStatusTemporary(string.Format("Model added: {0}", fAddModel.Model?.Name));
                 }
                 catch (OperationCanceledException)
                 {
-                    toolStripStatusLabel1.Text = "Model loading cancelled - Ready";
+                    SetStatusTemporary("Model loading cancelled");
                 }
                 catch (Exception ex)
                 {
@@ -429,11 +450,11 @@ namespace GeoMagGUI
                 await Models.SaveAsync(ModelJson, _calculationCts.Token);
 
                 LoadModels(model.ID.ToString());
-                toolStripStatusLabel1.Text = "Model loaded successfully";
+                SetStatusTemporary(string.Format("Model loaded: {0}", model.Name));
             }
             catch (OperationCanceledException)
             {
-                toolStripStatusLabel1.Text = "Model loading cancelled - Ready";
+                SetStatusTemporary("Model loading cancelled");
             }
             catch (Exception ex)
             {
@@ -815,7 +836,7 @@ namespace GeoMagGUI
                     UseWaitCursor = true;
                     toolStripStatusLabel1.Text = "Saving results...";
                     await _MagCalculator.SaveResultsAsync(fldlg.FileName);
-                    toolStripStatusLabel1.Text = "Results saved";
+                    SetStatusTemporary("Results saved");
                 }
                 catch (Exception ex)
                 {

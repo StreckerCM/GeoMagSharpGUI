@@ -22,6 +22,10 @@
                 Watcher?.Dispose();
                 Watcher = null;
 
+                _statusClearTimer?.Stop();
+                _statusClearTimer?.Dispose();
+                _statusClearTimer = null;
+
                 if (components != null)
                 {
                     components.Dispose();
@@ -99,6 +103,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderCheck)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewResults)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // dateTimePicker1
@@ -484,7 +489,7 @@
             this.dataGridViewResults.Name = "dataGridViewResults";
             this.dataGridViewResults.ReadOnly = true;
             this.tableLayoutPanel1.SetRowSpan(this.dataGridViewResults, 2);
-            this.dataGridViewResults.Size = new System.Drawing.Size(808, 117);
+            this.dataGridViewResults.Size = new System.Drawing.Size(808, 95);
             this.dataGridViewResults.TabIndex = 19;
             // 
             // ColumnDate
@@ -613,7 +618,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(844, 267);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(844, 245);
             this.tableLayoutPanel1.TabIndex = 23;
             // 
             // label3
@@ -696,9 +701,9 @@
             this.ComboBoxLatDir.TabIndex = 8;
             this.ComboBoxLatDir.Validating += new System.ComponentModel.CancelEventHandler(this.TextBoxLatitude_Validating);
             this.ComboBoxLatDir.Validated += new System.EventHandler(this.TextBoxLatitude_Validated);
-            //
+            // 
             // statusStrip1
-            //
+            // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this.toolStripProgressBar1,
@@ -708,25 +713,25 @@
             this.statusStrip1.Size = new System.Drawing.Size(844, 22);
             this.statusStrip1.TabIndex = 24;
             this.statusStrip1.Text = "statusStrip1";
-            //
+            // 
             // toolStripStatusLabel1
-            //
+            // 
             this.toolStripStatusLabel1.AccessibleName = "Status";
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(729, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(829, 17);
             this.toolStripStatusLabel1.Spring = true;
             this.toolStripStatusLabel1.Text = "Ready";
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            //
+            // 
             // toolStripProgressBar1
-            //
+            // 
             this.toolStripProgressBar1.AccessibleName = "Calculation progress";
             this.toolStripProgressBar1.Name = "toolStripProgressBar1";
             this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
             this.toolStripProgressBar1.Visible = false;
-            //
+            // 
             // toolStripButtonCancel
-            //
+            // 
             this.toolStripButtonCancel.AccessibleName = "Cancel calculation";
             this.toolStripButtonCancel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripButtonCancel.Name = "toolStripButtonCancel";
@@ -735,9 +740,9 @@
             this.toolStripButtonCancel.ToolTipText = "Cancel the current operation (Esc)";
             this.toolStripButtonCancel.Visible = false;
             this.toolStripButtonCancel.Click += new System.EventHandler(this.toolStripButtonCancel_Click);
-            //
+            // 
             // FrmMain
-            //
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(844, 291);
@@ -758,6 +763,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewResults)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
