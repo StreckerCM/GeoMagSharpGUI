@@ -1,20 +1,23 @@
 ﻿/****************************************************************************
- * File:            FileReader.cs
- * Description:     Routines read a given model file into the model structure
- *                  to be used for calculation
- * Author:          Christopher Strecker   
- * Website:         https://github.com/StreckerCM/GeoMagSharpGUI  
- * Warnings:
- * Current version: 
- *  ****************************************************************************/
+ * File:            ModelReader.cs
+ * Description:     Routines to read magnetic model coefficient files into
+ *                  the model structure for calculation
+ * Author:          Christopher Strecker
+ * Website:         https://github.com/StreckerCM/GeoMagSharpGUI
+ ****************************************************************************/
 
 using System;
 using System.Globalization;
 using System.Linq;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GeoMagSharp
 {
+    /// <summary>
+    /// Reads and parses magnetic model coefficient files (COF/DAT) into model structures.
+    /// </summary>
     public static class ModelReader
     {
         /// <summary>
@@ -95,6 +98,71 @@ namespace GeoMagSharp
 
             throw new GeoMagExceptionModelNotLoaded(string.Format(String.Format("Error: The file type '{0}' is not supported",
                                     Path.GetExtension(modelFile).ToUpper())));
+        }
+
+        /// <summary>
+        /// Asynchronously reads a magnetic model from a coefficient file.
+        /// </summary>
+        /// <param name="modelFile">Path to the coefficient file (.COF or .DAT)</param>
+        /// <param name="progress">Optional progress reporter</param>
+        /// <param name="cancellationToken">Optional cancellation token</param>
+        /// <returns>A MagneticModelSet containing the parsed model data</returns>
+        /// <exception cref="GeoMagExceptionFileNotFound">File does not exist</exception>
+        /// <exception cref="GeoMagExceptionOpenError">File is locked by another process</exception>
+        /// <exception cref="GeoMagExceptionModelNotLoaded">File type not supported or no models found</exception>
+        /// <exception cref="GeoMagExceptionBadCharacter">File contains invalid or malformed data</exception>
+        /// <exception cref="OperationCanceledException">The operation was cancelled</exception>
+        public static async Task<MagneticModelSet> ReadAsync(string modelFile,
+            IProgress<CalculationProgressInfo> progress = null,
+            CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(modelFile))
+                throw new ArgumentNullException(nameof(modelFile), "Model file path cannot be null or empty");
+
+            if (!File.Exists(modelFile))
+                throw new GeoMagExceptionFileNotFound(string.Format("Error: The file '{0}' was not found",
+                    modelFile));
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (IsFileLocked(modelFile))
+                throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' is locked by another user or application",
+                    Path.GetFileName(modelFile)));
+
+            progress?.Report(new CalculationProgressInfo
+            {
+                CurrentStep = 1,
+                TotalSteps = 2,
+                StatusMessage = "Reading coefficient file..."
+            });
+
+            var extension = Path.GetExtension(modelFile).ToUpper();
+
+            MagneticModelSet result = await Task.Run(() =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                switch (extension)
+                {
+                    case ".COF":
+                        return COFreader(modelFile);
+
+                    case ".DAT":
+                        return DATreader(modelFile);
+                }
+
+                throw new GeoMagExceptionModelNotLoaded(string.Format("Error: The file type '{0}' is not supported",
+                    extension));
+            }, cancellationToken).ConfigureAwait(false);
+
+            progress?.Report(new CalculationProgressInfo
+            {
+                CurrentStep = 2,
+                TotalSteps = 2,
+                StatusMessage = "Model loaded successfully"
+            });
+
+            return result;
         }
 
         /// <summary>
@@ -229,58 +297,8 @@ namespace GeoMagSharp
                         }
                         else if (mModelIdx > -1)
                         {
-                            if(outModels.Type.Equals(knownModels.EMM))
-                            {
-                                #region EMM File Line Reader
-                                // EMM format requires at least 6 columns: degree, order, g1, h1, g2, h2
-                                ValidateArrayLength(lineParase, 6, lineNumber);
-
-                                Int32 lineDegree = ParseInt(lineParase[0], lineNumber, "degree");
-                                Int32 lineOrder = ParseInt(lineParase[1], lineNumber, "order");
-
-                                // g1 coefficient
-                                tempDbl = ParseDouble(lineParase[2], lineNumber, "g1 coefficient");
-                                outModels.AddCoefficients(mModelIdx, tempDbl);
-
-                                // h1 coefficient (only if order > 0)
-                                tempDbl = ParseDouble(lineParase[3], lineNumber, "h1 coefficient");
-                                if (lineOrder > 0) outModels.AddCoefficients(mModelIdx, tempDbl);
-
-                                // g2 coefficient
-                                tempDbl = ParseDouble(lineParase[4], lineNumber, "g2 coefficient");
-                                outModels.AddCoefficients(eModelIdx, tempDbl);
-
-                                // h2 coefficient (only if order > 0)
-                                tempDbl = ParseDouble(lineParase[5], lineNumber, "h2 coefficient");
-                                if (lineOrder > 0) outModels.AddCoefficients(eModelIdx, tempDbl);
-                                #endregion
-                            }
-                            else
-                            {
-                                #region Standard COF File Line Reader
-                                // Standard COF format requires at least 6 columns: degree, order, g1, h1, g2, h2
-                                ValidateArrayLength(lineParase, 6, lineNumber);
-
-                                Int32 lineDegree = ParseInt(lineParase[0], lineNumber, "degree");
-                                Int32 lineOrder = ParseInt(lineParase[1], lineNumber, "order");
-
-                                // g1 coefficient
-                                tempDbl = ParseDouble(lineParase[2], lineNumber, "g1 coefficient");
-                                outModels.AddCoefficients(mModelIdx, tempDbl);
-
-                                // h1 coefficient (only if order > 0)
-                                tempDbl = ParseDouble(lineParase[3], lineNumber, "h1 coefficient");
-                                if (lineOrder > 0) outModels.AddCoefficients(mModelIdx, tempDbl);
-
-                                // g2 coefficient
-                                tempDbl = ParseDouble(lineParase[4], lineNumber, "g2 coefficient");
-                                outModels.AddCoefficients(eModelIdx, tempDbl);
-
-                                // h2 coefficient (only if order > 0)
-                                tempDbl = ParseDouble(lineParase[5], lineNumber, "h2 coefficient");
-                                if (lineOrder > 0) outModels.AddCoefficients(eModelIdx, tempDbl);
-                                #endregion
-                            }
+                            // Parse coefficient line - both EMM and standard COF use identical format
+                            ParseCOFCoefficients(lineParase, lineNumber, outModels, mModelIdx, eModelIdx);
                         }
                     }
                 }
@@ -402,6 +420,51 @@ namespace GeoMagSharp
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Parses a COF coefficient data line and adds coefficients to the model.
+        /// This method handles both EMM and standard COF formats, which share identical parsing logic.
+        /// </summary>
+        /// <param name="lineParase">The whitespace-split fields of the data line</param>
+        /// <param name="lineNumber">Line number for error reporting</param>
+        /// <param name="outModels">The MagneticModelSet to add coefficients to</param>
+        /// <param name="mModelIdx">Index of the main (M) model</param>
+        /// <param name="eModelIdx">Index of the secular variation (S) model</param>
+        private static void ParseCOFCoefficients(string[] lineParase, int lineNumber,
+            MagneticModelSet outModels, int mModelIdx, int eModelIdx)
+        {
+            // Both EMM and standard COF format require at least 6 columns: degree, order, g1, h1, g2, h2
+            ValidateArrayLength(lineParase, 6, lineNumber);
+
+            // Parse degree and order for validation and coefficient placement logic
+            int lineDegree = ParseInt(lineParase[0], lineNumber, "degree");
+            int lineOrder = ParseInt(lineParase[1], lineNumber, "order");
+
+            // Validate spherical harmonic constraints: degree >= 1, order >= 0, order <= degree
+            if (lineDegree < 1)
+                throw new GeoMagExceptionBadCharacter(string.Format(
+                    "Error: Invalid degree {0} at line {1}. Degree must be >= 1", lineDegree, lineNumber));
+            if (lineOrder < 0 || lineOrder > lineDegree)
+                throw new GeoMagExceptionBadCharacter(string.Format(
+                    "Error: Invalid order {0} at line {1}. Order must be between 0 and degree ({2})",
+                    lineOrder, lineNumber, lineDegree));
+
+            // g1 coefficient (main field)
+            double g1 = ParseDouble(lineParase[2], lineNumber, "g1 coefficient");
+            outModels.AddCoefficients(mModelIdx, g1);
+
+            // h1 coefficient (main field, only if order > 0)
+            double h1 = ParseDouble(lineParase[3], lineNumber, "h1 coefficient");
+            if (lineOrder > 0) outModels.AddCoefficients(mModelIdx, h1);
+
+            // g2 coefficient (secular variation)
+            double g2 = ParseDouble(lineParase[4], lineNumber, "g2 coefficient");
+            outModels.AddCoefficients(eModelIdx, g2);
+
+            // h2 coefficient (secular variation, only if order > 0)
+            double h2 = ParseDouble(lineParase[5], lineNumber, "h2 coefficient");
+            if (lineOrder > 0) outModels.AddCoefficients(eModelIdx, h2);
         }
 
         /// <summary>

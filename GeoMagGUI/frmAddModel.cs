@@ -5,6 +5,8 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using GeoMagSharp;
@@ -24,20 +26,44 @@ namespace GeoMagGUI
             }
         }
 
+        /// <summary>
+        /// Gets the file path selected by the user in the open file dialog.
+        /// Empty string if user cancelled.
+        /// </summary>
+        public string SelectedFilePath { get; private set; }
+
         public frmAddModel()
         {
             InitializeComponent();
 
-            var modelFile = AddFile();
-
-            LoadModelData(modelFile);
-
+            SelectedFilePath = AddFile();
         }
 
         private void LoadModelData(string modelFile)
         {
             _Model = ModelReader.Read(modelFile);
 
+            DisplayModelData();
+        }
+
+        /// <summary>
+        /// Asynchronously loads model data from a coefficient file.
+        /// </summary>
+        /// <param name="modelFile">Path to the coefficient file.</param>
+        /// <param name="progress">Optional progress reporter.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
+        public async Task LoadModelDataAsync(string modelFile,
+            IProgress<CalculationProgressInfo> progress = null,
+            CancellationToken cancellationToken = default)
+        {
+            _Model = await ModelReader.ReadAsync(modelFile, progress, cancellationToken)
+                .ConfigureAwait(true);
+
+            DisplayModelData();
+        }
+
+        private void DisplayModelData()
+        {
             if(_Model != null)
             {
                 _Model.Name = Path.GetFileNameWithoutExtension(Model.FileNames.First());
@@ -54,9 +80,9 @@ namespace GeoMagGUI
             }
             else
             {
-                MessageBox.Show(this, "", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "Failed to load model data from the selected file.",
+                    "Model Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
 
         private string AddFile()
@@ -89,6 +115,7 @@ namespace GeoMagGUI
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
+            DialogResult = DialogResult.OK;
             Hide();
         }
 

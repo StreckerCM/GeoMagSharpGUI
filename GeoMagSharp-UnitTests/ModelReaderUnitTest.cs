@@ -301,6 +301,280 @@ namespace GeoMagSharp_UnitTests
 
         #endregion
 
+        #region DAT File Format Tests
+
+        [TestMethod]
+        public void Read_ValidDATFile_ReturnsCorrectModel()
+        {
+            // Arrange - Use a DAT file if available in TestData
+            string filePath = Path.Combine(TestDataPath, "IGRF13.DAT");
+            if (!File.Exists(filePath))
+            {
+                // Try alternative DAT files
+                var datFiles = Directory.GetFiles(TestDataPath, "*.DAT");
+                if (datFiles.Length == 0)
+                    Assert.Inconclusive("No DAT files found in TestData folder");
+                filePath = datFiles[0];
+            }
+
+            // Act
+            var modelSet = ModelReader.Read(filePath);
+
+            // Assert
+            Assert.IsNotNull(modelSet);
+            Assert.IsTrue(modelSet.NumberOfModels > 0, "Should have at least one model");
+        }
+
+        #endregion
+
+        #region Edge Case Tests
+
+        [TestMethod]
+        public void Read_COFFileWithWhitespace_ParsesCorrectly()
+        {
+            // Arrange
+            string filePath = Path.Combine(TestDataPath, "WMM2025.COF");
+            if (!File.Exists(filePath))
+                Assert.Inconclusive("WMM2025.COF not found in TestData folder");
+
+            // Act - COF files have whitespace-separated fields
+            var modelSet = ModelReader.Read(filePath);
+
+            // Assert - Should parse without errors
+            Assert.IsNotNull(modelSet);
+            Assert.IsTrue(modelSet.NumberOfModels >= 2, "Should have parsed M and S models");
+        }
+
+        [TestMethod]
+        public void Read_ModelSetDateRange_IsValid()
+        {
+            // Arrange
+            string filePath = Path.Combine(TestDataPath, "WMM2025.COF");
+            if (!File.Exists(filePath))
+                Assert.Inconclusive("WMM2025.COF not found in TestData folder");
+
+            // Act
+            var modelSet = ModelReader.Read(filePath);
+
+            // Assert - MaxDate should be 5 years after MinDate for WMM models
+            Assert.IsTrue(modelSet.MaxDate > modelSet.MinDate, "MaxDate should be greater than MinDate");
+            Assert.AreEqual(2030.0, modelSet.MaxDate, 0.01, "MaxDate should be MinDate + 5 for WMM models");
+        }
+
+        [TestMethod]
+        public void Read_ModelHasBothMAndSTypes()
+        {
+            // Arrange
+            string filePath = Path.Combine(TestDataPath, "WMM2025.COF");
+            if (!File.Exists(filePath))
+                Assert.Inconclusive("WMM2025.COF not found in TestData folder");
+
+            // Act
+            var modelSet = ModelReader.Read(filePath);
+            var models = modelSet.GetModels;
+
+            // Assert - Should have both M (Main) and S (Secular variation) models
+            bool hasM = false;
+            bool hasS = false;
+            foreach (var model in models)
+            {
+                if (model.Type == "M") hasM = true;
+                if (model.Type == "S") hasS = true;
+            }
+
+            Assert.IsTrue(hasM, "Should have M (Main) model");
+            Assert.IsTrue(hasS, "Should have S (Secular variation) model");
+        }
+
+        [TestMethod]
+        public void Read_FileNameIsStored()
+        {
+            // Arrange
+            string filePath = Path.Combine(TestDataPath, "WMM2025.COF");
+            if (!File.Exists(filePath))
+                Assert.Inconclusive("WMM2025.COF not found in TestData folder");
+
+            // Act
+            var modelSet = ModelReader.Read(filePath);
+
+            // Assert
+            Assert.IsNotNull(modelSet.FileNames);
+            Assert.IsTrue(modelSet.FileNames.Count > 0, "Should store filename");
+            Assert.AreEqual("WMM2025.COF", modelSet.FileNames[0], "Should store correct filename");
+        }
+
+        #endregion
+
+        #region IsFileLocked Tests
+
+        [TestMethod]
+        public void IsFileLocked_UnlockedFile_ReturnsFalse()
+        {
+            // Arrange
+            string filePath = Path.Combine(TestDataPath, "WMM2025.COF");
+            if (!File.Exists(filePath))
+                Assert.Inconclusive("WMM2025.COF not found in TestData folder");
+
+            // Act
+            bool isLocked = ModelReader.IsFileLocked(filePath);
+
+            // Assert
+            Assert.IsFalse(isLocked, "Unlocked file should return false");
+        }
+
+        [TestMethod]
+        public void IsFileLocked_EmptyPath_ReturnsFalse()
+        {
+            // Act
+            bool isLocked = ModelReader.IsFileLocked(string.Empty);
+
+            // Assert
+            Assert.IsFalse(isLocked, "Empty path should return false");
+        }
+
+        #endregion
+
+        #region Unsupported File Type Tests
+
+        [TestMethod]
+        [ExpectedException(typeof(GeoMagExceptionModelNotLoaded))]
+        public void Read_UnsupportedExtension_ThrowsModelNotLoaded()
+        {
+            // Arrange - Create a temp file with unsupported extension
+            string tempFile = Path.Combine(Path.GetTempPath(), "test.xyz");
+            try
+            {
+                File.WriteAllText(tempFile, "test content");
+
+                // Act
+                ModelReader.Read(tempFile);
+            }
+            finally
+            {
+                if (File.Exists(tempFile))
+                    File.Delete(tempFile);
+            }
+        }
+
+        #endregion
+
+        #region Coefficient Validation Tests
+
+        [TestMethod]
+        public void Read_WMM2025_CoefficientsAreReasonable()
+        {
+            // Arrange
+            string filePath = Path.Combine(TestDataPath, "WMM2025.COF");
+            if (!File.Exists(filePath))
+                Assert.Inconclusive("WMM2025.COF not found in TestData folder");
+
+            // Act
+            var modelSet = ModelReader.Read(filePath);
+            var models = modelSet.GetModels;
+
+            // Assert - WMM models have degree 12, which means n*(n+2) = 168 coefficients
+            // The main field (M) model should have coefficients in reasonable ranges
+            var mModel = models.Find(m => m.Type == "M");
+            Assert.IsNotNull(mModel, "Should have M model");
+
+            // g(1,0) coefficient is around -29000 nT for recent epochs
+            // This is the first coefficient and should be a large negative number
+            Assert.IsTrue(mModel.SharmCoeff.Count >= 168, "Degree 12 model should have at least 168 coefficients");
+            Assert.IsTrue(mModel.SharmCoeff[0] < -20000, "g(1,0) coefficient should be large negative");
+        }
+
+        [TestMethod]
+        public void Read_ModelDegree_CalculatesCorrectly()
+        {
+            // Arrange
+            string filePath = Path.Combine(TestDataPath, "WMM2025.COF");
+            if (!File.Exists(filePath))
+                Assert.Inconclusive("WMM2025.COF not found in TestData folder");
+
+            // Act
+            var modelSet = ModelReader.Read(filePath);
+            var models = modelSet.GetModels;
+            var mModel = models.Find(m => m.Type == "M");
+
+            // Assert - Standard WMM is degree 12
+            Assert.AreEqual(12, mModel.Max_Degree, "WMM should be degree 12");
+        }
+
+        [TestMethod]
+        public void Read_WMMHR_HigherDegree()
+        {
+            // Arrange
+            string filePath = Path.Combine(TestDataPath, "WMMHR.COF");
+            if (!File.Exists(filePath))
+                Assert.Inconclusive("WMMHR.COF not found in TestData folder");
+
+            // Act
+            var modelSet = ModelReader.Read(filePath);
+            var models = modelSet.GetModels;
+            var mModel = models.Find(m => m.Type == "M");
+
+            // Assert - WMMHR is degree 18
+            Assert.IsTrue(mModel.Max_Degree > 12, "WMMHR should have degree higher than 12");
+        }
+
+        #endregion
+
+        #region Spherical Harmonic Validation Tests
+
+        [TestMethod]
+        public void Read_WMM2025_DegreeAndOrderAreValid()
+        {
+            // Arrange
+            string filePath = Path.Combine(TestDataPath, "WMM2025.COF");
+            if (!File.Exists(filePath))
+                Assert.Inconclusive("WMM2025.COF not found in TestData folder");
+
+            // Act - This should parse without throwing validation errors
+            var modelSet = ModelReader.Read(filePath);
+
+            // Assert - If we got here, all degree/order values were valid
+            Assert.IsNotNull(modelSet);
+            Assert.IsTrue(modelSet.NumberOfModels >= 2, "Should have M and S models");
+        }
+
+        [TestMethod]
+        public void Read_WMMHR_DegreeAndOrderAreValid()
+        {
+            // Arrange - WMMHR has higher degree coefficients
+            string filePath = Path.Combine(TestDataPath, "WMMHR.COF");
+            if (!File.Exists(filePath))
+                Assert.Inconclusive("WMMHR.COF not found in TestData folder");
+
+            // Act - This should parse without throwing validation errors
+            var modelSet = ModelReader.Read(filePath);
+
+            // Assert - If we got here, all degree/order values were valid
+            Assert.IsNotNull(modelSet);
+        }
+
+        [TestMethod]
+        public void Read_AllWMMFiles_HaveValidSphericalHarmonicCoefficients()
+        {
+            // Arrange - Get all WMM COF files in TestData
+            string[] wmmFiles = Directory.GetFiles(TestDataPath, "WMM*.COF");
+            if (wmmFiles.Length == 0)
+                Assert.Inconclusive("No WMM COF files found in TestData folder");
+
+            // Act & Assert - Each file should parse without validation errors
+            foreach (var filePath in wmmFiles)
+            {
+                var modelSet = ModelReader.Read(filePath);
+                Assert.IsNotNull(modelSet, $"Failed to parse {Path.GetFileName(filePath)}");
+
+                // Verify M model exists and has reasonable coefficients
+                var mModel = modelSet.GetModels.Find(m => m.Type == "M");
+                Assert.IsNotNull(mModel, $"{Path.GetFileName(filePath)} should have M model");
+                Assert.IsTrue(mModel.Max_Degree >= 12, $"{Path.GetFileName(filePath)} should have degree >= 12");
+            }
+        }
+
+        #endregion
+
         #region CheckStringForModel Extension Method Tests
 
         [TestMethod]

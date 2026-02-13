@@ -138,6 +138,5 @@ See [GeoMagGUI/documentation/LICENSE](./GeoMagGUI/documentation/LICENSE)
 
 ## Credits
 
-- Original NOAA Geomag 7.0 software
-- British Geological Survey (BGS) calculation algorithms
+- NOAA World Magnetic Model (WMM) and Geomag 7.0 software
 - Port to C# with GUI by StreckerCM
