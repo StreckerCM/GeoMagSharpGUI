@@ -184,3 +184,8 @@ appsettings.local.json
 secrets.json
 .env
 .env.*
+
+# Claude Code local files (allow settings.json to be tracked)
+.claude/*
+!.claude/settings.json
+*.local.md

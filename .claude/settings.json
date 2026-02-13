@@ -1,0 +1,45 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//C:/GitHub/**)",
+      "Read(//C:/Program Files/Microsoft Visual Studio/**)",
+
+      "Edit(/GeoMagGUI/**)",
+      "Edit(/GeoMagSharp/**)",
+      "Edit(/GeoMagSharp-UnitTests/**)",
+      "Edit(/Installer/**)",
+      "Edit(/docs/**)",
+      "Edit(/.github/**)",
+      "Edit(/.claude/**)",
+      "Edit(/*.md)",
+      "Edit(/*.sln)",
+      "Edit(/*.props)",
+      "Edit(/*.json)",
+      "Edit(/.gitignore)",
+
+      "Bash(msbuild *)",
+      "Bash(\"C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe\" *)",
+      "Bash(vstest.console.exe *)",
+      "Bash(\"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe\" *)",
+      "Bash(nuget *)",
+      "Bash(git status *)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(git stash *)",
+      "Bash(git ls-tree *)",
+      "Bash(git remote *)",
+      "Bash(gh pr *)",
+      "Bash(gh issue *)",
+      "Bash(gh api *)",
+      "Bash(gh run *)"
+    ],
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Bash(rm -rf *)",
+      "Bash(del /s *)"
+    ]
+  }
+}
