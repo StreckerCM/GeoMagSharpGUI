@@ -4,6 +4,8 @@ using System;
 using System.Device.Location;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GeoMagGUI
@@ -19,6 +21,10 @@ namespace GeoMagGUI
         public Preferences ApplicationPreferences;
 
         private GeoMag _MagCalculator;
+
+        private CancellationTokenSource _calculationCts;
+
+        private System.Windows.Forms.Timer _statusClearTimer;
 
         #region Getters & Setters
 
@@ -123,10 +129,58 @@ namespace GeoMagGUI
                 buttonMyLocation_Click(sender, e);
                 e.Handled = true;
             }
+            // Escape - Cancel active operation (only when a calculation is running)
+            else if (e.KeyCode == Keys.Escape && _calculationCts != null)
+            {
+                _calculationCts.Cancel();
+                e.Handled = true;
+            }
         }
 
-        private void buttonCalculate_Click(object sender, EventArgs e)
+        private void SetUIBusy(bool busy)
         {
+            buttonCalculate.Enabled = !busy;
+            addModelToolStripMenuItem.Enabled = !busy;
+            loadModelToolStripMenuItem.Enabled = !busy;
+            toolStripProgressBar1.Visible = busy;
+            toolStripButtonCancel.Visible = busy;
+            UseWaitCursor = busy;
+
+            if (!busy)
+            {
+                toolStripProgressBar1.Value = 0;
+            }
+        }
+
+        private void SetStatusTemporary(string message, int milliseconds = 5000)
+        {
+            toolStripStatusLabel1.Text = message;
+
+            if (_statusClearTimer != null)
+            {
+                _statusClearTimer.Stop();
+                _statusClearTimer.Dispose();
+            }
+
+            _statusClearTimer = new System.Windows.Forms.Timer { Interval = milliseconds };
+            _statusClearTimer.Tick += (s, args) =>
+            {
+                _statusClearTimer.Stop();
+                toolStripStatusLabel1.Text = "Ready";
+            };
+            _statusClearTimer.Start();
+        }
+
+        private void toolStripButtonCancel_Click(object sender, EventArgs e)
+        {
+            _calculationCts?.Cancel();
+        }
+
+        private async void buttonCalculate_Click(object sender, EventArgs e)
+        {
+            // Re-entrancy guard: ignore if already calculating
+            if (_calculationCts != null) return;
+
             _MagCalculator = null;
             saveToolStripMenuItem.Enabled = false;
 
@@ -146,20 +200,6 @@ namespace GeoMagGUI
 
             if (selectedModel != null)
             {
-                //if (DBNull.Value.Equals(dRow.First()["FileName"]))
-                //{
-                //    this.errorProviderCheck.SetError(comboBoxModels, @"No file name was found for the model you selected");
-                //    return;
-                //}
-
-                //string modelFile = dRow.First()["FileName"].ToString();
-
-                //if (!File.Exists(modelFile))
-                //{
-                //    this.errorProviderCheck.SetError(comboBoxModels, string.Format("The model file {0} could not be found", Path.GetFileName(modelFile)));
-                //    return;
-                //}
-
                 if (comboBoxAltitudeUnits.SelectedItem == null)
                 {
                     this.errorProviderCheck.SetError(comboBoxAltitudeUnits, @"No Units have been selected");
@@ -188,9 +228,12 @@ namespace GeoMagGUI
                     return;
                 }
 
+                _calculationCts = new CancellationTokenSource();
+
                 try
                 {
-                    Cursor = Cursors.WaitCursor;
+                    SetUIBusy(true);
+                    toolStripStatusLabel1.Text = "Calculating...";
 
                     var calcOptions = new CalculationOptions
                         {
@@ -210,7 +253,13 @@ namespace GeoMagGUI
 
                     if (toolStripMenuItemUseRangeOfDates.Checked) calcOptions.EndDate = dateTimePicker2.Value;
 
-                    _MagCalculator.MagneticCalculations(calcOptions);
+                    var progress = new Progress<CalculationProgressInfo>(info =>
+                    {
+                        toolStripStatusLabel1.Text = info.StatusMessage;
+                        toolStripProgressBar1.Value = Math.Min((int)info.PercentComplete, 100);
+                    });
+
+                    await _MagCalculator.MagneticCalculationsAsync(calcOptions, progress, _calculationCts.Token);
 
                     if (_MagCalculator.ResultsOfCalculation == null || !_MagCalculator.ResultsOfCalculation.Any())
                     {
@@ -269,15 +318,26 @@ namespace GeoMagGUI
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnTotalField"].Style.BackColor = System.Drawing.Color.LightBlue;
 
                     saveToolStripMenuItem.Enabled = true;
+                    SetStatusTemporary("Calculation complete");
+                }
+                catch (OperationCanceledException)
+                {
+                    dataGridViewResults.Rows.Clear();
+                    SetStatusTemporary("Calculation cancelled");
+                    _MagCalculator = null;
                 }
                 catch (Exception ex)
                 {
+                    dataGridViewResults.Rows.Clear();
                     MessageBox.Show(ex.Message, "Error: Calculating Magnetics", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    toolStripStatusLabel1.Text = "Ready";
                     _MagCalculator = null;
                 }
                 finally
                 {
-                    Cursor = Cursors.Default;
+                    SetUIBusy(false);
+                    _calculationCts?.Dispose();
+                    _calculationCts = null;
                 }
             }
         }
@@ -297,31 +357,66 @@ namespace GeoMagGUI
             if(selectedIdx != Guid.Empty) comboBoxModels.SelectedValue = selectedIdx;
         }
 
-        private void addModelToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void addModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (_calculationCts != null) return;
+
             using (var fAddModel = new frmAddModel())
             {
+                if (string.IsNullOrEmpty(fAddModel.SelectedFilePath))
+                    return;
+
+                _calculationCts = new CancellationTokenSource();
                 try
                 {
-                    this.Cursor = Cursors.WaitCursor;
+                    SetUIBusy(true);
+                    toolStripStatusLabel1.Text = "Reading model file...";
 
-                    fAddModel.ShowDialog(this);
+                    var progress = new Progress<CalculationProgressInfo>(info =>
+                    {
+                        toolStripStatusLabel1.Text = info.StatusMessage;
+                        toolStripProgressBar1.Value = Math.Min((int)info.PercentComplete, 100);
+                    });
+
+                    await fAddModel.LoadModelDataAsync(fAddModel.SelectedFilePath, progress, _calculationCts.Token);
+
+                    SetUIBusy(false);
+                    toolStripStatusLabel1.Text = "Ready";
+
+                    if (fAddModel.ShowDialog(this) != DialogResult.OK)
+                        return;
+
+                    SetUIBusy(true);
+                    toolStripStatusLabel1.Text = "Saving model...";
 
                     Models.AddOrReplace(fAddModel.Model);
+                    await Models.SaveAsync(ModelJson, _calculationCts.Token);
 
-                    Models.Save(Path.Combine(ModelFolder, Resources.File_Name_Magnetic_Model_JSON));
-
-                    LoadModels();
+                    LoadModels(fAddModel.Model?.ID.ToString());
+                    SetStatusTemporary(string.Format("Model added: {0}", fAddModel.Model?.Name));
+                }
+                catch (OperationCanceledException)
+                {
+                    SetStatusTemporary("Model loading cancelled");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error: Adding Model", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    toolStripStatusLabel1.Text = "Ready";
                 }
                 finally
                 {
-                    this.Cursor = Cursors.Default;
+                    SetUIBusy(false);
+                    _calculationCts?.Dispose();
+                    _calculationCts = null;
                 }
             }
         }
 
-        private void loadModelToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void loadModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (_calculationCts != null) return;
+
             var fDlg = new OpenFileDialog
             {
                 Title = @"Select a Model Data File",
@@ -329,13 +424,48 @@ namespace GeoMagGUI
                 Multiselect = false
             };
 
-            if (fDlg.ShowDialog() != DialogResult.Cancel)
+            if (fDlg.ShowDialog() == DialogResult.Cancel) return;
+
+            var copyToLocation = Path.Combine(ModelFolder, Path.GetFileName(fDlg.FileName));
+
+            _calculationCts = new CancellationTokenSource();
+            try
             {
-                var copyToLocation = string.Format("{0}{1}", ModelFolder, Path.GetFileName(fDlg.FileName));
+                SetUIBusy(true);
+                toolStripStatusLabel1.Text = "Copying model file...";
 
                 File.Copy(fDlg.FileName, copyToLocation, overwrite: true);
 
-                LoadModels(copyToLocation);
+                toolStripStatusLabel1.Text = "Reading model file...";
+                var progress = new Progress<CalculationProgressInfo>(info =>
+                {
+                    toolStripStatusLabel1.Text = info.StatusMessage;
+                    toolStripProgressBar1.Value = Math.Min((int)info.PercentComplete, 100);
+                });
+
+                var model = await ModelReader.ReadAsync(copyToLocation, progress, _calculationCts.Token);
+
+                toolStripStatusLabel1.Text = "Saving model collection...";
+                Models.AddOrReplace(model);
+                await Models.SaveAsync(ModelJson, _calculationCts.Token);
+
+                LoadModels(model.ID.ToString());
+                SetStatusTemporary(string.Format("Model loaded: {0}", model.Name));
+            }
+            catch (OperationCanceledException)
+            {
+                SetStatusTemporary("Model loading cancelled");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error: Loading Model", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                toolStripStatusLabel1.Text = "Ready";
+            }
+            finally
+            {
+                SetUIBusy(false);
+                _calculationCts?.Dispose();
+                _calculationCts = null;
             }
         }
 
@@ -680,8 +810,12 @@ namespace GeoMagGUI
             SetElevationDisplay();
         }
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        private bool _isSaving;
+
+        private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (_isSaving || _MagCalculator == null) return;
+
             var fileName = @"Results";
 
             var fldlg = new SaveFileDialog
@@ -694,14 +828,27 @@ namespace GeoMagGUI
 
             if (fldlg.ShowDialog() == DialogResult.OK)
             {
+                _isSaving = true;
                 try
                 {
-                    Cursor = Cursors.WaitCursor;
-                    _MagCalculator.SaveResults(fldlg.FileName);
+                    buttonCalculate.Enabled = false;
+                    saveToolStripMenuItem.Enabled = false;
+                    UseWaitCursor = true;
+                    toolStripStatusLabel1.Text = "Saving results...";
+                    await _MagCalculator.SaveResultsAsync(fldlg.FileName);
+                    SetStatusTemporary("Results saved");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error: Saving Results", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    toolStripStatusLabel1.Text = "Error saving";
                 }
                 finally
                 {
-                    Cursor = Cursors.Default;
+                    buttonCalculate.Enabled = true;
+                    saveToolStripMenuItem.Enabled = true;
+                    UseWaitCursor = false;
+                    _isSaving = false;
                 }
             }
         }

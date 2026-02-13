@@ -1,0 +1,122 @@
+name: Preview Release
+
+on:
+  push:
+    branches: [ preview ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  SOLUTION_FILE: GeoMagGUI.sln
+  CONFIGURATION: Release
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Calculate version
+      id: version
+      shell: pwsh
+      run: |
+        [xml]$versionProps = Get-Content "Version.props"
+        $major = $versionProps.Project.PropertyGroup.MajorVersion
+        $minor = $versionProps.Project.PropertyGroup.MinorVersion
+        $patch = $versionProps.Project.PropertyGroup.PatchVersion
+        $baseVersion = "$major.$minor.$patch"
+        $runNumber = "${{ github.run_number }}"
+        $fullVersion = "$baseVersion.$runNumber"
+        $version = "$baseVersion-preview.$runNumber"
+        Write-Host "Version: $version"
+        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+        echo "FULL_VERSION=$fullVersion" >> $env:GITHUB_OUTPUT
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+
+    - name: Restore NuGet packages
+      run: nuget restore ${{ env.SOLUTION_FILE }}
+
+    - name: Update AssemblyInfo versions
+      shell: pwsh
+      run: |
+        $version = "${{ steps.version.outputs.FULL_VERSION }}"
+        foreach ($path in @("GeoMagGUI\Properties\AssemblyInfo.cs", "GeoMagSharp\Properties\AssemblyInfo.cs")) {
+          $content = Get-Content $path -Raw
+          $content = $content -replace 'AssemblyVersion\("[^"]+"\)', "AssemblyVersion(`"$version`")"
+          $content = $content -replace 'AssemblyFileVersion\("[^"]+"\)', "AssemblyFileVersion(`"$version`")"
+          Set-Content $path $content -NoNewline
+        }
+        Write-Host "Updated assembly versions to $version"
+
+    - name: Build solution
+      run: msbuild ${{ env.SOLUTION_FILE }} /p:Configuration=${{ env.CONFIGURATION }} /p:Platform="Mixed Platforms" /m
+
+    - name: Run tests
+      shell: pwsh
+      run: |
+        $vsTestPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Workload.ManagedDesktop -find Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe
+        if (-not $vsTestPath) {
+            $vsTestPath = Get-ChildItem -Path "${env:ProgramFiles}\Microsoft Visual Studio" -Recurse -Filter "vstest.console.exe" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+        }
+        if ($vsTestPath) {
+            & $vsTestPath "GeoMagSharp-UnitTests\bin\Release\GeoMagSharp-UnitTests.dll" --logger:trx --ResultsDirectory:TestResults
+        } else {
+            Write-Host "VSTest not found, skipping tests"
+        }
+
+    - name: Install WiX Toolset
+      shell: pwsh
+      run: dotnet tool install --global wix --version 5.0.2
+
+    - name: Generate WiX file components
+      shell: pwsh
+      run: |
+        $buildOutput = "GeoMagGUI\bin\Release"
+        $version = "${{ steps.version.outputs.FULL_VERSION }}"
+        & "Installer\Generate-FileComponents.ps1" -BuildOutputPath $buildOutput -Version $version
+
+    - name: Build MSI installer
+      shell: pwsh
+      run: |
+        $version = "${{ steps.version.outputs.FULL_VERSION }}"
+        cd Installer
+        wix build -arch x86 -d Version=$version -d Channel=preview -d BuildOutput=..\GeoMagGUI\bin\Release -out ..\artifacts\GeoMagGUI-${{ steps.version.outputs.VERSION }}.msi Product.wxs FileComponents.wxs
+
+    - name: Generate release notes
+      shell: pwsh
+      run: |
+        $lastTag = $null
+        try { $lastTag = git describe --tags --match "v*-preview.*" --abbrev=0 2>$null } catch { }
+        if ($lastTag) { $commits = git log --oneline "$lastTag..HEAD" 2>$null }
+        else { $commits = git log --oneline -20 2>$null }
+        $version = "${{ steps.version.outputs.VERSION }}"
+        $notes = "Preview Release $version`n`n### Changes`n"
+        if ($commits) { $commits -split "`n" | ForEach-Object { $l = $_.Trim(); if ($l) { $notes += "- $l`n" } } }
+        else { $notes += "- Build from latest preview branch`n" }
+        Set-Content -Path "release-notes.md" -Value $notes -Encoding UTF8
+
+    - name: Create GitHub Pre-release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      shell: pwsh
+      run: |
+        $version = "${{ steps.version.outputs.VERSION }}"
+        gh release create "v$version" "artifacts\GeoMagGUI-$version.msi" --title "GeoMag GUI $version" --notes-file "release-notes.md" --prerelease
+
+    - name: Upload MSI artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: GeoMagGUI-preview-${{ steps.version.outputs.VERSION }}-msi
+        path: artifacts/*.msi
+        retention-days: 90

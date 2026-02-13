@@ -10,6 +10,8 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GeoMagSharp
 {
@@ -96,6 +98,71 @@ namespace GeoMagSharp
 
             throw new GeoMagExceptionModelNotLoaded(string.Format(String.Format("Error: The file type '{0}' is not supported",
                                     Path.GetExtension(modelFile).ToUpper())));
+        }
+
+        /// <summary>
+        /// Asynchronously reads a magnetic model from a coefficient file.
+        /// </summary>
+        /// <param name="modelFile">Path to the coefficient file (.COF or .DAT)</param>
+        /// <param name="progress">Optional progress reporter</param>
+        /// <param name="cancellationToken">Optional cancellation token</param>
+        /// <returns>A MagneticModelSet containing the parsed model data</returns>
+        /// <exception cref="GeoMagExceptionFileNotFound">File does not exist</exception>
+        /// <exception cref="GeoMagExceptionOpenError">File is locked by another process</exception>
+        /// <exception cref="GeoMagExceptionModelNotLoaded">File type not supported or no models found</exception>
+        /// <exception cref="GeoMagExceptionBadCharacter">File contains invalid or malformed data</exception>
+        /// <exception cref="OperationCanceledException">The operation was cancelled</exception>
+        public static async Task<MagneticModelSet> ReadAsync(string modelFile,
+            IProgress<CalculationProgressInfo> progress = null,
+            CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(modelFile))
+                throw new ArgumentNullException(nameof(modelFile), "Model file path cannot be null or empty");
+
+            if (!File.Exists(modelFile))
+                throw new GeoMagExceptionFileNotFound(string.Format("Error: The file '{0}' was not found",
+                    modelFile));
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (IsFileLocked(modelFile))
+                throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' is locked by another user or application",
+                    Path.GetFileName(modelFile)));
+
+            progress?.Report(new CalculationProgressInfo
+            {
+                CurrentStep = 1,
+                TotalSteps = 2,
+                StatusMessage = "Reading coefficient file..."
+            });
+
+            var extension = Path.GetExtension(modelFile).ToUpper();
+
+            MagneticModelSet result = await Task.Run(() =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                switch (extension)
+                {
+                    case ".COF":
+                        return COFreader(modelFile);
+
+                    case ".DAT":
+                        return DATreader(modelFile);
+                }
+
+                throw new GeoMagExceptionModelNotLoaded(string.Format("Error: The file type '{0}' is not supported",
+                    extension));
+            }, cancellationToken).ConfigureAwait(false);
+
+            progress?.Report(new CalculationProgressInfo
+            {
+                CurrentStep = 2,
+                TotalSteps = 2,
+                StatusMessage = "Model loaded successfully"
+            });
+
+            return result;
         }
 
         /// <summary>

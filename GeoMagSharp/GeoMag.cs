@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace GeoMagSharp
@@ -259,10 +261,214 @@ namespace GeoMagSharp
             {
                 outFile.Write(tabStrRight.ToString());
             }
-                
-            
 
 
+
+
+        }
+
+        /// <summary>
+        /// Asynchronously performs magnetic field calculations over the specified date range and location.
+        /// Results are stored in <see cref="ResultsOfCalculation"/>.
+        /// </summary>
+        /// <param name="inCalculationOptions">The calculation parameters including location, dates, and elevation.</param>
+        /// <param name="progress">Optional progress reporter for UI updates.</param>
+        /// <param name="cancellationToken">Optional cancellation token to cancel the operation.</param>
+        /// <exception cref="GeoMagExceptionModelNotLoaded">Thrown when no model has been loaded.</exception>
+        /// <exception cref="GeoMagExceptionOutOfRange">Thrown when the start or end date is outside the model's valid range.</exception>
+        /// <exception cref="OperationCanceledException">Thrown when the operation is cancelled.</exception>
+        public async Task MagneticCalculationsAsync(CalculationOptions inCalculationOptions,
+            IProgress<CalculationProgressInfo> progress = null,
+            CancellationToken cancellationToken = default)
+        {
+            _CalculationOptions = null;
+            ResultsOfCalculation = null;
+
+            if (_Models == null || _Models.NumberOfModels.Equals(0))
+                throw new GeoMagExceptionModelNotLoaded("Error: No models avaliable for calculation");
+
+            if (!_Models.IsDateInRange(inCalculationOptions.StartDate))
+            {
+                throw new GeoMagExceptionOutOfRange(string.Format("Error: the date {0} is out of range for this model{1}The valid date range for the is {2} to {3}",
+                    inCalculationOptions.StartDate.ToShortDateString(), Environment.NewLine, _Models.MinDate.ToDateTime().ToShortDateString(),
+                    _Models.MaxDate.ToDateTime().ToShortDateString()));
+            }
+
+            if (inCalculationOptions.EndDate.Equals(DateTime.MinValue)) inCalculationOptions.EndDate = inCalculationOptions.StartDate;
+
+            if (!_Models.IsDateInRange(inCalculationOptions.EndDate))
+            {
+                throw new GeoMagExceptionOutOfRange(string.Format("Error: the date {0} is out of range for this model{1}The valid date range for the is {2} to {3}",
+                    inCalculationOptions.EndDate.ToShortDateString(), Environment.NewLine, _Models.MinDate.ToDateTime().ToShortDateString(),
+                    _Models.MaxDate.ToDateTime().ToShortDateString()));
+            }
+
+            TimeSpan timespan = (inCalculationOptions.EndDate.Date - inCalculationOptions.StartDate.Date);
+
+            double dayInc = inCalculationOptions.StepInterval < 1 ? 1 : inCalculationOptions.StepInterval;
+
+            // Count total steps for progress reporting
+            int totalSteps = 0;
+            double tempIdx = 0;
+            while (tempIdx <= timespan.Days)
+            {
+                totalSteps++;
+                tempIdx = ((tempIdx < timespan.Days) && ((tempIdx + dayInc) > timespan.Days))
+                            ? timespan.Days
+                            : tempIdx + dayInc;
+            }
+
+            double dateIdx = 0;
+            int currentStep = 0;
+
+            ResultsOfCalculation = new List<MagneticCalculations>();
+
+            _CalculationOptions = new CalculationOptions(inCalculationOptions);
+
+            while (dateIdx <= timespan.Days)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                DateTime intervalDate = _CalculationOptions.StartDate.AddDays(dateIdx);
+
+                currentStep++;
+                progress?.Report(new CalculationProgressInfo
+                {
+                    CurrentStep = currentStep,
+                    TotalSteps = totalSteps,
+                    StatusMessage = string.Format("Calculating for {0}...", intervalDate.ToString("yyyy-MM-dd"))
+                });
+
+                var internalSH = new Coefficients();
+                var externalSH = new Coefficients();
+
+                _Models.GetIntExt(intervalDate.ToDecimal(), out internalSH, out externalSH);
+
+                var models = _Models;
+                var calcOptions = _CalculationOptions;
+
+                var magCalcDate = await Task.Run(() =>
+                    Calculator.SpotCalculation(calcOptions, intervalDate, models, internalSH, externalSH, models.EarthRadius),
+                    cancellationToken).ConfigureAwait(false);
+
+                if (magCalcDate != null) ResultsOfCalculation.Add(magCalcDate);
+
+                dateIdx = ((dateIdx < timespan.Days) && ((dateIdx + dayInc) > timespan.Days))
+                            ? timespan.Days
+                            : dateIdx + dayInc;
+            }
+
+            progress?.Report(new CalculationProgressInfo
+            {
+                CurrentStep = totalSteps,
+                TotalSteps = totalSteps,
+                StatusMessage = "Calculation complete"
+            });
+        }
+
+        /// <summary>
+        /// Asynchronously saves the calculation results to a tab-separated text file.
+        /// </summary>
+        /// <param name="fileName">The output file path.</param>
+        /// <param name="loadAfterSave">Reserved for future use.</param>
+        /// <param name="cancellationToken">Optional cancellation token to cancel the operation.</param>
+        /// <exception cref="GeoMagExceptionModelNotLoaded">Thrown when no calculation results are available.</exception>
+        /// <exception cref="GeoMagExceptionOpenError">Thrown when the file is locked or cannot be deleted.</exception>
+        /// <exception cref="OperationCanceledException">Thrown when the operation is cancelled.</exception>
+        public async Task SaveResultsAsync(string fileName, bool loadAfterSave = false,
+            CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (ResultsOfCalculation == null)
+                throw new GeoMagExceptionModelNotLoaded("Error: No calculation results to save");
+
+            if (_Models == null || _CalculationOptions == null)
+                throw new GeoMagExceptionModelNotLoaded("Error: Model and calculation options must be set before saving results");
+
+            // Build the output string on the current thread (fast), write to file on background thread
+            Int32 lineCount = 0;
+            var tabStrRight = new StringBuilder();
+
+            tabStrRight.AppendFormat("{0}:\t{1}{2}", "Model".PadLeft(15, ' '), Path.GetFileNameWithoutExtension(_Models.Name).ToUpper(), Environment.NewLine);
+            lineCount++;
+
+            tabStrRight.AppendFormat("{0}:\t{1}{2}", "latitude".PadLeft(15, ' '), _CalculationOptions.Latitude.ToString("F7"), Environment.NewLine);
+            lineCount++;
+
+            tabStrRight.AppendFormat("{0}:\t{1}{2}", "longitude".PadLeft(15, ' '), _CalculationOptions.Longitude.ToString("F7"), Environment.NewLine);
+            lineCount++;
+
+            var elevation = _CalculationOptions.GetElevation;
+
+            tabStrRight.AppendFormat("{0}:\t{1}\t{2}{3}", string.Format("{0}", elevation[0]).PadLeft(15, ' '), Convert.ToDouble(elevation[1]).ToString("F4"), elevation[2], Environment.NewLine);
+            lineCount++;
+
+            tabStrRight.AppendFormat("{0}", Environment.NewLine);
+            lineCount++;
+
+            const Int32 padlen = 25;
+            const string rowFormat = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}{8}";
+
+            tabStrRight.AppendFormat(rowFormat,
+                "Date".PadRight(padlen, ' '), "Declination (+E/W)".PadRight(padlen, ' '), "Inclination (+D/-U)".PadRight(padlen, ' '),
+                "Horizontal Intensity".PadRight(padlen, ' '), "North Comp (+N/-S)".PadRight(padlen, ' '), "East Comp (+E/-W)".PadRight(padlen, ' '),
+                "Vertical Comp (+D/-U)".PadRight(padlen, ' '), "Total Field".PadRight(padlen, ' '), Environment.NewLine);
+            lineCount++;
+
+            tabStrRight.AppendFormat(rowFormat,
+            "".PadRight(padlen, ' '), "deg".PadRight(padlen, ' '), "deg".PadRight(padlen, ' '),
+            "nT".PadRight(padlen, ' '), "nT".PadRight(padlen, ' '), "nT".PadRight(padlen, ' '),
+            "nT".PadRight(padlen, ' '), "nT".PadRight(padlen, ' '), Environment.NewLine);
+            lineCount++;
+
+            tabStrRight.AppendFormat("{0}", Environment.NewLine);
+            lineCount++;
+
+            foreach (var result in ResultsOfCalculation)
+            {
+                tabStrRight.AppendFormat(rowFormat,
+                    result.Date.ToString("MM/dd/yyyy").PadRight(padlen, ' '), result.Declination.Value.ToString("F3").PadRight(padlen, ' '),
+                    result.Inclination.Value.ToString("F3").PadRight(padlen, ' '), result.HorizontalIntensity.Value.ToString("F2").PadRight(padlen, ' '),
+                    result.NorthComp.Value.ToString("F2").PadRight(padlen, ' '), result.EastComp.Value.ToString("F2").PadRight(padlen, ' '),
+                    result.VerticalComp.Value.ToString("F2").PadRight(padlen, ' '), result.TotalField.Value.ToString("F2").PadRight(padlen, ' '),
+                    Environment.NewLine);
+
+                lineCount++;
+            }
+
+            tabStrRight.AppendFormat(rowFormat,
+                "Change Per year".PadRight(padlen, ' '), ResultsOfCalculation.First().Declination.ChangePerYear.ToString("F3").PadRight(padlen, ' '),
+                ResultsOfCalculation.First().Inclination.ChangePerYear.ToString("F3").PadRight(padlen, ' '), ResultsOfCalculation.First().HorizontalIntensity.ChangePerYear.ToString("F2").PadRight(padlen, ' '),
+                ResultsOfCalculation.First().NorthComp.ChangePerYear.ToString("F2").PadRight(padlen, ' '), ResultsOfCalculation.First().EastComp.ChangePerYear.ToString("F2").PadRight(padlen, ' '),
+                ResultsOfCalculation.First().VerticalComp.ChangePerYear.ToString("F2").PadRight(padlen, ' '), ResultsOfCalculation.First().TotalField.ChangePerYear.ToString("F2").PadRight(padlen, ' '),
+                Environment.NewLine);
+
+            var content = tabStrRight.ToString();
+
+            await Task.Run(() =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (ModelReader.IsFileLocked(fileName))
+                    throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' is locked by another user or application",
+                        Path.GetFileName(fileName)));
+
+                if (File.Exists(fileName))
+                {
+                    try
+                    {
+                        File.Delete(fileName);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new GeoMagExceptionOpenError(string.Format("Error: The file '{0}' could not be deleted",
+                            Path.GetFileName(fileName)), e);
+                    }
+                }
+
+                File.WriteAllText(fileName, content);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
     }

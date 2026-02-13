@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GeoMagSharp
 {
@@ -212,6 +214,95 @@ namespace GeoMagSharp
             }
 
             return outData;
+        }
+
+        /// <summary>
+        /// Asynchronously serializes the collection to a JSON file.
+        /// </summary>
+        /// <param name="filename">The file path to save to.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
+        /// <returns><c>true</c> if the save was successful; otherwise, <c>false</c>.</returns>
+        public async Task<bool> SaveAsync(string filename, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(filename)) return false;
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var inData = this;
+
+            return await Task.Run(() =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                try
+                {
+                    JsonSerializer serializer = new JsonSerializer
+                    {
+                        NullValueHandling = NullValueHandling.Ignore,
+                        Formatting = Newtonsoft.Json.Formatting.Indented
+                    };
+
+                    using (StreamWriter sw = new StreamWriter(filename))
+                    using (JsonWriter writer = new JsonTextWriter(sw))
+                    {
+                        serializer.Serialize(writer, inData);
+                    }
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("MagneticModelCollection Error: {0}", ex.ToString());
+                    return false;
+                }
+            }, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Asynchronously deserializes a collection from a JSON file.
+        /// </summary>
+        /// <param name="filename">The file path to load from.</param>
+        /// <param name="cancellationToken">Optional cancellation token.</param>
+        /// <returns>The loaded collection, or a new empty collection if the file is missing or invalid.</returns>
+        public static async Task<MagneticModelCollection> LoadAsync(string filename, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(filename)) return new MagneticModelCollection();
+
+            if (!System.IO.File.Exists(filename)) return new MagneticModelCollection();
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await Task.Run(() =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                MagneticModelCollection outData = null;
+
+                try
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+
+                    serializer.NullValueHandling = NullValueHandling.Ignore;
+                    serializer.Formatting = Newtonsoft.Json.Formatting.Indented;
+
+                    using (var sr = new System.IO.StreamReader(filename))
+                    using (var reader = new JsonTextReader(sr))
+                    {
+                        var deserializeList = JsonConvert.DeserializeObject<IEnumerable<MagneticModelSet>>(serializer.Deserialize(reader).ToString());
+
+                        outData = new MagneticModelCollection();
+
+                        outData.AddRange(deserializeList);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("MagneticModelCollection Error: {0}", ex.ToString());
+                    outData = null;
+                }
+
+                return outData;
+            }, cancellationToken).ConfigureAwait(false);
         }
 
         #endregion
