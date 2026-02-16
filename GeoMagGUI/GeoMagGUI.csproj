@@ -145,10 +145,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GeoMagSharp\GeoMagSharp.csproj">
-      <Project>{AE04340D-E45E-4BDC-942A-58BD0424CEFC}</Project>
-      <Name>GeoMagSharp</Name>
-    </ProjectReference>
+    <PackageReference Include="GeoMagSharp">
+      <Version>1.4.0</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

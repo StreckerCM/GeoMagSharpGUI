@@ -2,6 +2,11 @@
 
 A C# WinForms application for calculating geomagnetic field values using spherical harmonic models. This is a port of the NOAA Geomag 7.0 software with a modern graphical interface.
 
+> **Note:** The core calculation library has been split into its own repository and is available as a standalone NuGet package:
+> **[GeoMagSharp](https://github.com/StreckerCM/GeoMagSharp)** | [NuGet](https://www.nuget.org/packages/GeoMagSharp)
+>
+> This repo contains only the GUI application, which consumes GeoMagSharp via NuGet.
+
 ## Overview
 
 GeoMagSharpGUI calculates Earth's magnetic field components (declination, inclination, intensity) at any location and date using coefficient files from models like:
@@ -38,27 +43,19 @@ GeoMagGUI.sln
 │   ├── frmPreferences.cs   # User preferences dialog
 │   └── Program.cs          # Application entry point
 │
-├── GeoMagSharp/            # Core Calculation Library (.NET Framework 4.0)
-│   ├── GeoMag.cs           # Main calculation orchestrator
-│   ├── Calculator.cs       # Spherical harmonic calculations
-│   ├── DataModel.cs        # Data structures and models
-│   ├── ModelReader.cs      # Coefficient file parser
-│   ├── Units.cs            # Unit conversion utilities
-│   └── GeoMagException.cs  # Custom exception types
-│
-├── GeoMagSharp-UnitTests/  # Unit Tests (MSTest, .NET Framework 4.5.2)
-│   └── ExtensionMethodsUnitTest.cs
+├── Installer/              # WiX MSI installer
 │
 └── docs/                   # Documentation
     ├── prompts/            # Claude personas and prompt templates
     └── features/           # Feature specifications and plans
 ```
 
+The core calculation library ([GeoMagSharp](https://github.com/StreckerCM/GeoMagSharp)) and its unit tests are maintained in a separate repository and consumed via NuGet.
+
 ## Build Requirements
 
 - Visual Studio 2019 or later
-- .NET Framework 4.0 (GUI and Library)
-- .NET Framework 4.5.2 (Unit Tests)
+- .NET Framework 4.0
 
 ## Build Commands
 
@@ -70,10 +67,9 @@ msbuild GeoMagGUI.sln /p:Configuration=Debug /p:Platform="x86"
 
 # Release build (x86)
 msbuild GeoMagGUI.sln /p:Configuration=Release /p:Platform="x86"
-
-# Run unit tests
-vstest.console.exe GeoMagSharp-UnitTests\bin\Debug\GeoMagSharp-UnitTests.dll
 ```
+
+NuGet restore automatically downloads the [GeoMagSharp](https://www.nuget.org/packages/GeoMagSharp) package.
 
 ## Usage
 
@@ -105,7 +101,7 @@ vstest.console.exe GeoMagSharp-UnitTests\bin\Debug\GeoMagSharp-UnitTests.dll
 
 ## Dependencies
 
-- **Newtonsoft.Json** v10.0.1 - JSON serialization
+- **[GeoMagSharp](https://www.nuget.org/packages/GeoMagSharp)** v1.4.0 - Geomagnetic field calculation library
 - **System.Device** - GPS location services (Windows)
 
 ## Architecture
@@ -115,10 +111,8 @@ vstest.console.exe GeoMagSharp-UnitTests\bin\Debug\GeoMagSharp-UnitTests.dll
 │   Presentation (WinForms)           │
 │   frmMain, dialogs, UI controls     │
 ├─────────────────────────────────────┤
-│   Business Logic (GeoMagSharp)      │
+│   GeoMagSharp (NuGet package)       │
 │   GeoMag, Calculator, Models        │
-├─────────────────────────────────────┤
-│   Data Access                       │
 │   ModelReader, JSON serialization   │
 ├─────────────────────────────────────┤
 │   External Data                     │

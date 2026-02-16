@@ -47,33 +47,21 @@ jobs:
     - name: Restore NuGet packages
       run: nuget restore ${{ env.SOLUTION_FILE }}
 
-    - name: Update AssemblyInfo versions
+    - name: Update AssemblyInfo version
       shell: pwsh
       run: |
         $version = "${{ steps.version.outputs.FULL_VERSION }}"
-        foreach ($path in @("GeoMagGUI\Properties\AssemblyInfo.cs", "GeoMagSharp\Properties\AssemblyInfo.cs")) {
-          $content = Get-Content $path -Raw
-          $content = $content -replace 'AssemblyVersion\("[^"]+"\)', "AssemblyVersion(`"$version`")"
-          $content = $content -replace 'AssemblyFileVersion\("[^"]+"\)', "AssemblyFileVersion(`"$version`")"
-          Set-Content $path $content -NoNewline
-        }
-        Write-Host "Updated assembly versions to $version"
+
+        $guiAssemblyInfo = "GeoMagGUI\Properties\AssemblyInfo.cs"
+        $content = Get-Content $guiAssemblyInfo -Raw
+        $content = $content -replace 'AssemblyVersion\("[^"]+"\)', "AssemblyVersion(`"$version`")"
+        $content = $content -replace 'AssemblyFileVersion\("[^"]+"\)', "AssemblyFileVersion(`"$version`")"
+        Set-Content $guiAssemblyInfo $content -NoNewline
+
+        Write-Host "Updated GeoMagGUI assembly version to $version"
 
     - name: Build solution
-      run: msbuild ${{ env.SOLUTION_FILE }} /p:Configuration=${{ env.CONFIGURATION }} /p:Platform="Mixed Platforms" /m
-
-    - name: Run tests
-      shell: pwsh
-      run: |
-        $vsTestPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Workload.ManagedDesktop -find Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe
-        if (-not $vsTestPath) {
-            $vsTestPath = Get-ChildItem -Path "${env:ProgramFiles}\Microsoft Visual Studio" -Recurse -Filter "vstest.console.exe" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
-        }
-        if ($vsTestPath) {
-            & $vsTestPath "GeoMagSharp-UnitTests\bin\Release\GeoMagSharp-UnitTests.dll" --logger:trx --ResultsDirectory:TestResults
-        } else {
-            Write-Host "VSTest not found, skipping tests"
-        }
+      run: msbuild ${{ env.SOLUTION_FILE }} /p:Configuration=${{ env.CONFIGURATION }} /p:Platform="x86" /m
 
     - name: Install WiX Toolset
       shell: pwsh
