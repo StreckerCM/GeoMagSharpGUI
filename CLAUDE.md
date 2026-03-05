@@ -203,12 +203,12 @@ If any of these are missing, create them first. **Do NOT start coding without ta
 ```
 Iteration % 6 determines the current persona:
 
-[0] #5 IMPLEMENTER   - Complete tasks, write code
-[1] #9 REVIEWER      - Review for bugs, code quality
-[2] #7 TESTER        - Verify functionality, add tests
-[3] #3 UI_UX_DESIGNER - Review UI/UX, accessibility
-[4] #10 SECURITY     - Security review, input validation
-[5] #2 PROJECT_MGR   - Check requirements, update tasks
+[0] #5 IMPLEMENTER (sonnet)   - Complete tasks, write code
+[1] #9 REVIEWER (opus)        - Review for bugs, code quality
+[2] #7 TESTER (sonnet)        - Verify functionality, add tests
+[3] #3 UI_UX_DESIGNER (sonnet) - Review UI/UX, accessibility
+[4] #10 SECURITY (opus)       - Security review, input validation
+[5] #2 PROJECT_MGR (haiku)    - Check requirements, update tasks
 ```
 
 ### Each Iteration Must:

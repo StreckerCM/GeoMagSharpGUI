@@ -31,37 +31,37 @@ PHASE 1 - TASK COMPLETION:
 PHASE 2 - ROTATING PERSONA REVIEW (cycle each iteration):
 Current Persona = ITERATION MOD 6:
 
-[0] #5 IMPLEMENTER:
+[0] #5 IMPLEMENTER (model:sonnet):
 - Check tasks.md for incomplete items
 - Implement next unchecked task
 - Follow existing code patterns
 - Run build after changes
 
-[1] #9 CODE REVIEWER:
+[1] #9 CODE REVIEWER (model:opus):
 - Review recent changes for bugs, edge cases
 - Check error handling and null safety
 - Verify code follows project patterns
 - Fix any issues found
 
-[2] #7 TESTER:
+[2] #7 TESTER (model:sonnet):
 - Run: vstest.console.exe GeoMagSharp-UnitTests\\bin\\Debug\\GeoMagSharp-UnitTests.dll
 - Check test coverage for new code
 - Write missing unit tests
 - Verify edge cases are covered
 
-[3] #3 UI_UX_DESIGNER (if UI changes):
+[3] #3 UI_UX_DESIGNER (model:sonnet) (if UI changes):
 - Review WinForms layout and controls
 - Check tab order and keyboard navigation
 - Verify consistent styling
 - Check visual states (enabled, disabled, error)
 
-[4] #10 SECURITY_AUDITOR:
+[4] #10 SECURITY_AUDITOR (model:opus):
 - Check for hardcoded values that should be config
 - Verify input validation for coordinates
 - Look for potential security issues
 - Review any new file I/O code
 
-[5] #2 PROJECT_MANAGER:
+[5] #2 PROJECT_MANAGER (model:haiku):
 - Verify all tasks in tasks.md are checked
 - Check spec.md requirements are met
 - Document any gaps or issues found
@@ -100,35 +100,35 @@ PHASE 1 - TASK COMPLETION:
 PHASE 2 - ROTATING PERSONA REVIEW (cycle each iteration):
 Current Persona = ITERATION MOD 6:
 
-[0] #5 IMPLEMENTER:
+[0] #5 IMPLEMENTER (model:sonnet):
 - Check tasks.md for incomplete items
 - Implement next unchecked task
 - Follow existing ModelReader patterns
 - Run build after changes
 
-[1] #9 CODE REVIEWER:
+[1] #9 CODE REVIEWER (model:opus):
 - Review recent changes for bugs, edge cases
 - Check coefficient parsing is correct
 - Verify error handling for malformed files
 - Fix any issues found
 
-[2] #7 TESTER:
+[2] #7 TESTER (model:sonnet):
 - Run unit tests
 - Add tests for EMM file parsing
 - Verify calculations match reference values
 - Test edge cases (min/max dates, boundaries)
 
-[3] #3 UI_UX_DESIGNER:
+[3] #3 UI_UX_DESIGNER (model:sonnet):
 - Verify EMM appears correctly in model dropdown
 - Check model info display is consistent
 - Verify date range validation UI
 
-[4] #10 SECURITY_AUDITOR:
+[4] #10 SECURITY_AUDITOR (model:opus):
 - Check EMM file parsing is safe
 - Verify no path traversal vulnerabilities
 - Review coefficient array bounds
 
-[5] #2 PROJECT_MANAGER:
+[5] #2 PROJECT_MANAGER (model:haiku):
 - Verify all tasks in tasks.md are checked
 - Ensure backward compatibility maintained
 - Document any remaining work
@@ -160,10 +160,10 @@ Feature: [FEATURE_NUMBER]-[feature-name]
 
 ROTATING PERSONA (ITERATION MOD 4):
 
-[0] #5 IMPLEMENTER: Complete next task from tasks.md, run build
-[1] #9 REVIEWER: Review code for bugs/issues, fix problems
-[2] #7 TESTER: Verify functionality, add tests if needed
-[3] #2 PROJECT_MANAGER: Check all requirements met, update tasks.md
+[0] #5 IMPLEMENTER (model:sonnet): Complete next task from tasks.md, run build
+[1] #9 REVIEWER (model:opus): Review code for bugs/issues, fix problems
+[2] #7 TESTER (model:sonnet): Verify functionality, add tests if needed
+[3] #2 PROJECT_MANAGER (model:haiku): Check all requirements met, update tasks.md
 
 EACH ITERATION:
 1. Run current persona's checks
@@ -187,17 +187,17 @@ Feature: [FEATURE_NUMBER]-[feature-name]
 
 ROTATING PERSONA (ITERATION MOD 11):
 
-[0] #1 BUSINESS_ANALYST: Verify requirements clarity, check acceptance criteria
-[1] #2 PROJECT_MANAGER: Check progress, identify blockers, update tasks
-[2] #3 UI_UX_DESIGNER: Review UI design, user flows, accessibility
-[3] #4 UI_IMPLEMENTER: Check WinForms quality, bindings, control layout
-[4] #5 IMPLEMENTER: Complete next task, follow patterns
-[5] #6 REFACTORER: Clean up code, improve organization
-[6] #7 TESTER: Run tests, add coverage, verify edge cases
-[7] #8 DEBUGGER: Look for potential bugs, add defensive code
-[8] #9 REVIEWER: Full code review, check quality
-[9] #10 SECURITY_AUDITOR: Security review, check for vulnerabilities
-[10] #11 DOCUMENTER: Update comments, check documentation
+[0] #1 BUSINESS_ANALYST (haiku): Verify requirements clarity, check acceptance criteria
+[1] #2 PROJECT_MANAGER (haiku): Check progress, identify blockers, update tasks
+[2] #3 UI_UX_DESIGNER (sonnet): Review UI design, user flows, accessibility
+[3] #4 UI_IMPLEMENTER (sonnet): Check WinForms quality, bindings, control layout
+[4] #5 IMPLEMENTER (sonnet): Complete next task, follow patterns
+[5] #6 REFACTORER (sonnet): Clean up code, improve organization
+[6] #7 TESTER (sonnet): Run tests, add coverage, verify edge cases
+[7] #8 DEBUGGER (sonnet): Look for potential bugs, add defensive code
+[8] #9 REVIEWER (opus): Full code review, check quality
+[9] #10 SECURITY_AUDITOR (opus): Security review, check for vulnerabilities
+[10] #11 DOCUMENTER (haiku): Update comments, check documentation
 
 OUTPUT <promise>FEATURE COMPLETE</promise> when all tasks done and clean cycle.
 " --completion-promise "FEATURE COMPLETE" --max-iterations 44
