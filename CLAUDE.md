@@ -12,19 +12,16 @@ GeoMagSharpGUI is a Windows desktop application for calculating geomagnetic fiel
 
 ```bash
 # Debug build (x86)
-msbuild GeoMagGUI.sln /p:Configuration=Debug /p:Platform="x86"
+"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" GeoMagGUI.sln -t:Build -p:Configuration=Debug -p:Platform=x86 -v:minimal -noAutoResponse
 
 # Release build (x86)
-msbuild GeoMagGUI.sln /p:Configuration=Release /p:Platform="x86"
-
-# Run unit tests
-vstest.console.exe GeoMagSharp-UnitTests\bin\Debug\GeoMagSharp-UnitTests.dll
+"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" GeoMagGUI.sln -t:Build -p:Configuration=Release -p:Platform=x86 -v:minimal -noAutoResponse
 
 # Run the application (after build)
 GeoMagGUI\bin\Debug\GeoMagGUI.exe
 ```
 
-Note: Use Developer Command Prompt for Visual Studio. This is a legacy .NET Framework project.
+Note: Unit tests live in the [GeoMagSharp](https://github.com/StreckerCM/GeoMagSharp) repo. This repo has no tests.
 
 ## Branching Strategy
 
@@ -66,22 +63,17 @@ feature/* ─────── Feature development work
 
 ### Solution Structure
 
-- **GeoMagGUI** (`GeoMagGUI/`) - WinForms application (.NET Framework 4.0 Client)
-- **GeoMagSharp** (`GeoMagSharp/`) - Core calculation library (.NET Framework 4.0)
-- **GeoMagSharp-UnitTests** (`GeoMagSharp-UnitTests/`) - MSTest unit tests (.NET Framework 4.5.2)
+- **GeoMagGUI** (`GeoMagGUI/`) - WinForms application (.NET Framework 4.8, x86)
+- **GeoMagSharp** - Core calculation library, consumed as a [NuGet package](https://www.nuget.org/packages/GeoMagSharp). Source lives in a separate repo: [StreckerCM/GeoMagSharp](https://github.com/StreckerCM/GeoMagSharp)
 
 ### Key Source Files
 
 | File | Purpose |
 |------|--------|
-| `GeoMagSharp/GeoMag.cs` | Main calculation orchestrator |
-| `GeoMagSharp/Calculator.cs` | Spherical harmonic calculations |
-| `GeoMagSharp/ModelReader.cs` | Coefficient file parser (.COF, .DAT) |
-| `GeoMagSharp/DataModel.cs` | Data structures and model classes |
-| `GeoMagSharp/Units.cs` | Unit conversion utilities |
 | `GeoMagGUI/frmMain.cs` | Main application window |
 | `GeoMagGUI/frmPreferences.cs` | User preferences dialog |
 | `GeoMagGUI/frmAddModel.cs` | Add model dialog |
+| `GeoMagGUI/Helper.cs` | Utility helpers |
 
 ### Data Directories
 
@@ -169,9 +161,15 @@ Use the Ralph Wiggum loop with the rotating persona pattern defined in `docs/pro
 | Private fields | _camelCase | `_modelCollection` |
 | Parameters | camelCase | `latitude` |
 
+## Versioning Rules
+
+- After every successful release (merge to `master` + tag), **immediately bump the version** in `Version.props` on `preview` — either minor or patch — so that no new preview or release build shares a version number with the released version.
+- After a release, **delete any stale preview tags** (e.g., `v1.2.0-preview.2`) that are superseded by the release. Preview tags become meaningless once the full release exists.
+- Version lives in `Version.props` (`MajorVersion`, `MinorVersion`, `PatchVersion`). CI computes `FullVersion` from these.
+
 ## Platform Constraints
 
-- .NET Framework 4.0 required
+- .NET Framework 4.8 required
 - Windows-only (WinForms)
 - x86 platform target
 - Visual Studio 2019 or later recommended
@@ -180,7 +178,7 @@ Use the Ralph Wiggum loop with the rotating persona pattern defined in `docs/pro
 
 | Package | Purpose |
 |---------|---------|
-| Newtonsoft.Json | JSON serialization |
+| GeoMagSharp (NuGet) | Core geomagnetic calculation library |
 | System.Device | GPS location services (Windows) |
 
 ## Ralph Loop / Iterative Development
