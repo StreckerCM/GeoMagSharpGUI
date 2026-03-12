@@ -126,16 +126,6 @@ namespace GeoMagGUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] IGRF12 {
-            get {
-                object obj = ResourceManager.GetObject("IGRF12", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
         internal static byte[] LICENSE {
             get {
                 object obj = ResourceManager.GetObject("LICENSE", resourceCulture);
@@ -173,14 +163,5 @@ namespace GeoMagGUI.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] WMM2015 {
-            get {
-                object obj = ResourceManager.GetObject("WMM2015", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

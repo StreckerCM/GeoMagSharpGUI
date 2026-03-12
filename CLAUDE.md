@@ -86,7 +86,7 @@ feature/* ─────── Feature development work
 
 | Directory | Purpose |
 |-----------|--------|
-| `GeoMagGUI/coefficient/` | Magnetic model files (.COF, .DAT) and MagneticModels.json |
+| `GeoMagGUI/coefficient/` | Created at build time by GeoMagSharp NuGet package (not in repo) |
 | `GeoMagGUI/assets/` | Icons and images |
 | `GeoMagGUI/documentation/` | License and docs |
 
