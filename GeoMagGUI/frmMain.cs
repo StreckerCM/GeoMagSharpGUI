@@ -322,6 +322,39 @@ namespace GeoMagGUI
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnTotalField"].Value = string.Format("{0} nT", _MagCalculator.ResultsOfCalculation.Last().TotalField.ChangePerYear.ToString("F2"));
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnTotalField"].Style.BackColor = System.Drawing.Color.LightBlue;
 
+                    // Uncertainty summary row (ISCWSA 1-sigma) — only shown when uncertainty data exists
+                    var lastUncertainty = _MagCalculator.ResultsOfCalculation.Last().Uncertainty;
+                    if (lastUncertainty != null)
+                    {
+                        dataGridViewResults.Rows.Add();
+                        var uncertaintyRow = dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1];
+
+                        uncertaintyRow.Cells["ColumnDate"].Value = "Uncertainty (1\u03C3)";
+                        uncertaintyRow.Cells["ColumnDate"].ToolTipText = "ISCWSA 1-sigma geomagnetic uncertainty estimate";
+                        uncertaintyRow.Cells["ColumnDate"].Style.BackColor = System.Drawing.Color.LightGoldenrodYellow;
+
+                        uncertaintyRow.Cells["ColumnDeclination"].Value = string.Format("\u00B1{0}\u00B0", lastUncertainty.Declination.ToString("F4"));
+                        uncertaintyRow.Cells["ColumnDeclination"].Style.BackColor = System.Drawing.Color.LightGoldenrodYellow;
+
+                        uncertaintyRow.Cells["ColumnInclination"].Value = string.Format("\u00B1{0}\u00B0", lastUncertainty.DipAngle.ToString("F4"));
+                        uncertaintyRow.Cells["ColumnInclination"].Style.BackColor = System.Drawing.Color.LightGoldenrodYellow;
+
+                        uncertaintyRow.Cells["ColumnHorizontalIntensity"].Value = "\u2014";
+                        uncertaintyRow.Cells["ColumnHorizontalIntensity"].Style.BackColor = System.Drawing.Color.LightGoldenrodYellow;
+
+                        uncertaintyRow.Cells["ColumnNorthComp"].Value = "\u2014";
+                        uncertaintyRow.Cells["ColumnNorthComp"].Style.BackColor = System.Drawing.Color.LightGoldenrodYellow;
+
+                        uncertaintyRow.Cells["ColumnEastComp"].Value = "\u2014";
+                        uncertaintyRow.Cells["ColumnEastComp"].Style.BackColor = System.Drawing.Color.LightGoldenrodYellow;
+
+                        uncertaintyRow.Cells["ColumnVerticalComp"].Value = "\u2014";
+                        uncertaintyRow.Cells["ColumnVerticalComp"].Style.BackColor = System.Drawing.Color.LightGoldenrodYellow;
+
+                        uncertaintyRow.Cells["ColumnTotalField"].Value = string.Format("\u00B1{0} nT", lastUncertainty.TotalField.ToString("F2"));
+                        uncertaintyRow.Cells["ColumnTotalField"].Style.BackColor = System.Drawing.Color.LightGoldenrodYellow;
+                    }
+
                     saveToolStripMenuItem.Enabled = true;
                     SetStatusTemporary("Calculation complete");
                 }
