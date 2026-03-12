@@ -330,6 +330,7 @@ namespace GeoMagGUI
                         var uncertaintyRow = dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1];
 
                         uncertaintyRow.Cells["ColumnDate"].Value = "Uncertainty (1\u03C3)";
+                        uncertaintyRow.Cells["ColumnDate"].ToolTipText = "ISCWSA 1-sigma geomagnetic uncertainty estimate";
                         uncertaintyRow.Cells["ColumnDate"].Style.BackColor = System.Drawing.Color.LightGoldenrodYellow;
 
                         uncertaintyRow.Cells["ColumnDeclination"].Value = string.Format("\u00B1{0}\u00B0", lastUncertainty.Declination.ToString("F4"));
