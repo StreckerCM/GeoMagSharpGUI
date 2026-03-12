@@ -78,6 +78,11 @@ namespace GeoMagGUI
 
             if (Models == null) Models = new MagneticModelCollection();
 
+            if (Models.TList == null || Models.TList.Count == 0)
+            {
+                DiscoverAndLoadModels();
+            }
+
             LoadModels();
 
             SetCoordinateDisplay();
@@ -355,6 +360,41 @@ namespace GeoMagGUI
             comboBoxModels.ValueMember = "ID";
 
             if(selectedIdx != Guid.Empty) comboBoxModels.SelectedValue = selectedIdx;
+        }
+
+        private void DiscoverAndLoadModels()
+        {
+            if (!Directory.Exists(ModelFolder))
+                return;
+
+            var supportedExtensions = new[] { ".cof", ".dat" };
+            var modelFiles = Directory.GetFiles(ModelFolder)
+                .Where(f => supportedExtensions.Contains(Path.GetExtension(f).ToLowerInvariant()))
+                .ToArray();
+
+            foreach (var file in modelFiles)
+            {
+                try
+                {
+                    var model = ModelReader.Read(file);
+                    if (model != null)
+                    {
+                        model.Name = Path.GetFileNameWithoutExtension(file);
+                        Models.AddOrReplace(model);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log and skip files that fail to parse — other models still load.
+                    // Status bar isn't available yet (form not visible), so use debug output.
+                    System.Diagnostics.Debug.WriteLine($"Auto-discover: failed to parse {file}: {ex.Message}");
+                }
+            }
+
+            if (Models.TList.Count > 0)
+            {
+                Models.Save(ModelJson);
+            }
         }
 
         private async void addModelToolStripMenuItem_Click(object sender, EventArgs e)
