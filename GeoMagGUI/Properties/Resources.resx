@@ -130,17 +130,11 @@
   <data name="File_Type_All_Coeff_Files" xml:space="preserve">
     <value>All Supported Coefficient Files (*.cof;*.dat)|*.cof;*.dat</value>
   </data>
-  <data name="IGRF12" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\coefficient\igrf12.cof;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="Location_icon_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\assets\location-icon_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Magnet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\assets\magnet.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="WMM2015" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\coefficient\wmm2015.cof;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="File_Name_Application_Preferences_JSON" xml:space="preserve">
     <value>ApplicationPreferences.json</value>
