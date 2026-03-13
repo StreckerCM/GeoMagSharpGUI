@@ -202,7 +202,7 @@ The existing library export uses `ResultsOfCalculation.First()` for secular vari
 - Modified: `frmMain.cs` — 2 new fields, 2 lines in calculate handler, save handler rewrite (~25 lines changed)
 - Modified: `Resources.resx` (2 new string resources)
 - No GeoMagSharp library changes
-- No new NuGet dependencies (Newtonsoft.Json already referenced)
+- One explicit NuGet dependency added (Newtonsoft.Json — already a transitive dependency via GeoMagSharp, now directly referenced)
 
 ## Out of Scope
 
