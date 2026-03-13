@@ -88,11 +88,20 @@ namespace GeoMagGUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Text File  (Tab delimited) (*.txt)|*.txt.
+        ///   Looks up a localized string similar to CSV Files (*.csv)|*.csv.
         /// </summary>
-        internal static string File_Type_Text_Tab {
+        internal static string File_Type_CSV {
             get {
-                return ResourceManager.GetString("File_Type_Text_Tab", resourceCulture);
+                return ResourceManager.GetString("File_Type_CSV", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to JSON Files (*.json)|*.json.
+        /// </summary>
+        internal static string File_Type_JSON {
+            get {
+                return ResourceManager.GetString("File_Type_JSON", resourceCulture);
             }
         }
         
