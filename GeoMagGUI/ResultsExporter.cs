@@ -23,6 +23,8 @@ namespace GeoMagGUI
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var resultsList = results.ToList();
+            if (resultsList.Count == 0)
+                throw new ArgumentException("Results collection must not be empty.", nameof(results));
             var last = resultsList.Last();
             var ci = CultureInfo.InvariantCulture;
             var sb = new StringBuilder();
@@ -86,6 +88,8 @@ namespace GeoMagGUI
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var resultsList = results.ToList();
+            if (resultsList.Count == 0)
+                throw new ArgumentException("Results collection must not be empty.", nameof(results));
             var last = resultsList.Last();
             var ci = CultureInfo.InvariantCulture;
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
