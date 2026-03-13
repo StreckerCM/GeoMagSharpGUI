@@ -935,7 +935,7 @@ namespace GeoMagGUI
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error: Saving Results", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    toolStripStatusLabel1.Text = "Error saving";
+                    SetStatusTemporary("Error saving");
                 }
                 finally
                 {
