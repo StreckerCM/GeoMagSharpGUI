@@ -894,14 +894,11 @@ namespace GeoMagGUI
         {
             if (_isSaving || _MagCalculator == null) return;
 
-            var fileName = @"Results";
-
             var fldlg = new SaveFileDialog
             {
-                Filter = Resources.File_Type_Text_Tab,
+                Filter = string.Format("{0}|{1}", Resources.File_Type_CSV, Resources.File_Type_JSON),
                 Title = "Save Results",
-                FileName = fileName
-
+                FileName = "Results"
             };
 
             if (fldlg.ShowDialog() == DialogResult.OK)
@@ -913,7 +910,25 @@ namespace GeoMagGUI
                     saveToolStripMenuItem.Enabled = false;
                     UseWaitCursor = true;
                     toolStripStatusLabel1.Text = "Saving results...";
-                    await _MagCalculator.SaveResultsAsync(fldlg.FileName);
+
+                    var ext = Path.GetExtension(fldlg.FileName).ToLowerInvariant();
+                    if (ext == ".json")
+                    {
+                        await ResultsExporter.ExportJsonAsync(
+                            fldlg.FileName,
+                            _MagCalculator.ResultsOfCalculation,
+                            _lastCalculationOptions,
+                            _lastModelName);
+                    }
+                    else
+                    {
+                        await ResultsExporter.ExportCsvAsync(
+                            fldlg.FileName,
+                            _MagCalculator.ResultsOfCalculation,
+                            _lastCalculationOptions,
+                            _lastModelName);
+                    }
+
                     SetStatusTemporary("Results saved");
                 }
                 catch (Exception ex)
