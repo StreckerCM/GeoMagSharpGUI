@@ -93,6 +93,7 @@
     </Compile>
     <Compile Include="Helper.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ResultsExporter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AboutBoxGeoMag.resx">
       <DependentUpon>AboutBoxGeoMag.cs</DependentUpon>
