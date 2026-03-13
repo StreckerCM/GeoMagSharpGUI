@@ -256,6 +256,9 @@ namespace GeoMagGUI
 
                     _MagCalculator.LoadModel(selectedModel);
 
+                    _lastCalculationOptions = calcOptions;
+                    _lastModelName = selectedModel.Name;
+
                     if (toolStripMenuItemUseRangeOfDates.Checked) calcOptions.EndDate = dateTimePicker2.Value;
 
                     var progress = new Progress<CalculationProgressInfo>(info =>
@@ -884,6 +887,8 @@ namespace GeoMagGUI
         }
 
         private bool _isSaving;
+        private CalculationOptions _lastCalculationOptions;
+        private string _lastModelName;
 
         private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
