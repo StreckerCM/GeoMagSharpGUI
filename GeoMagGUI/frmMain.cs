@@ -892,7 +892,8 @@ namespace GeoMagGUI
 
         private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_isSaving || _MagCalculator == null || _lastCalculationOptions == null) return;
+            if (_isSaving || _MagCalculator == null || _lastCalculationOptions == null
+                || _MagCalculator.ResultsOfCalculation == null || !_MagCalculator.ResultsOfCalculation.Any()) return;
 
             var fldlg = new SaveFileDialog
             {
