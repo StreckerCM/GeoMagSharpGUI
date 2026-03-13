@@ -854,6 +854,15 @@ namespace GeoMagGUI
 
             TimeSpan timespan = (dateTimePicker2.Value - dateTimePicker1.Value);
 
+            if (timespan.Days < 1)
+            {
+                numericUpDownStepSize.Minimum = 1;
+                numericUpDownStepSize.Maximum = 1;
+                numericUpDownStepSize.Value = 1;
+                numericUpDownStepSize.Increment = 1;
+                return;
+            }
+
             numericUpDownStepSize.Minimum = 1;
             numericUpDownStepSize.Maximum = Convert.ToDecimal(timespan.Days);
             numericUpDownStepSize.Value = Convert.ToDecimal(timespan.Days);
