@@ -1,6 +1,7 @@
 ﻿using GeoMagGUI.Properties;
 using GeoMagSharp;
 using System;
+using System.Collections.Generic;
 using System.Device.Location;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace GeoMagGUI
     {
         private GeoCoordinateWatcher Watcher = null;
 
-        private MagneticModelCollection Models;
+        private List<ModelDescriptor> _modelDescriptors = new List<ModelDescriptor>();
 
         public bool _processingEvents;
 
@@ -33,14 +34,6 @@ namespace GeoMagGUI
             get
             {
                 return Path.Combine(Application.StartupPath, Resources.Folder_Coeffient);
-            }
-        }
-
-        public string ModelJson
-        {
-            get
-            {
-                return Path.Combine(Application.StartupPath, Resources.Folder_Coeffient, Resources.File_Name_Magnetic_Model_JSON);
             }
         }
 
@@ -74,14 +67,7 @@ namespace GeoMagGUI
 
             ComboBoxLongDir.SelectedItem = ApplicationPreferences.LongitudeHemisphere;
 
-            Models = MagneticModelCollection.Load(ModelJson);
-
-            if (Models == null) Models = new MagneticModelCollection();
-
-            if (Models.TList == null || Models.TList.Count == 0)
-            {
-                DiscoverAndLoadModels();
-            }
+            DiscoverModels();
 
             LoadModels();
 
@@ -201,9 +187,11 @@ namespace GeoMagGUI
                 return;
             }
 
-            var selectedModel = Models.TList.Find(model => model.ID.Equals(comboBoxModels.SelectedValue));
+            var selectedFilePath = comboBoxModels.SelectedValue as string;
+            var selectedDescriptor = _modelDescriptors.FirstOrDefault(d =>
+                string.Equals(d.FilePath, selectedFilePath, StringComparison.OrdinalIgnoreCase));
 
-            if (selectedModel != null)
+            if (selectedDescriptor != null)
             {
                 if (comboBoxAltitudeUnits.SelectedItem == null)
                 {
@@ -254,10 +242,10 @@ namespace GeoMagGUI
 
                     _MagCalculator = new GeoMag();
 
-                    _MagCalculator.LoadModel(selectedModel);
+                    _MagCalculator.LoadModel(selectedDescriptor.FilePath);
 
                     _lastCalculationOptions = calcOptions;
-                    _lastModelName = selectedModel.Name;
+                    _lastModelName = selectedDescriptor.DisplayName;
 
                     if (toolStripMenuItemUseRangeOfDates.Checked) calcOptions.EndDate = dateTimePicker2.Value;
 
@@ -383,97 +371,62 @@ namespace GeoMagGUI
             }
         }
 
-        private void LoadModels(string selected = null)
+        private void LoadModels(string selectedFilePath = null)
         {
-            Guid selectedIdx;
+            comboBoxModels.DataSource = null;
+            comboBoxModels.DisplayMember = "DisplayName";
+            comboBoxModels.ValueMember = "FilePath";
+            comboBoxModels.DataSource = _modelDescriptors;
 
-            Guid.TryParse(selected, out selectedIdx);
-
-            comboBoxModels.DataSource = Models.GetDataTable.DefaultView;
-
-            comboBoxModels.DisplayMember = "ModelName";
-
-            comboBoxModels.ValueMember = "ID";
-
-            if(selectedIdx != Guid.Empty) comboBoxModels.SelectedValue = selectedIdx;
-        }
-
-        private void DiscoverAndLoadModels()
-        {
-            if (!Directory.Exists(ModelFolder))
-                return;
-
-            var supportedExtensions = new[] { ".cof", ".dat" };
-            var modelFiles = Directory.GetFiles(ModelFolder)
-                .Where(f => supportedExtensions.Contains(Path.GetExtension(f).ToLowerInvariant()))
-                .ToArray();
-
-            foreach (var file in modelFiles)
+            if (!string.IsNullOrEmpty(selectedFilePath))
             {
-                try
-                {
-                    var model = ModelReader.Read(file);
-                    if (model != null)
-                    {
-                        model.Name = Path.GetFileNameWithoutExtension(file);
-                        Models.AddOrReplace(model);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Log and skip files that fail to parse — other models still load.
-                    // Status bar isn't available yet (form not visible), so use debug output.
-                    System.Diagnostics.Debug.WriteLine($"Auto-discover: failed to parse {file}: {ex.Message}");
-                }
-            }
-
-            if (Models.TList.Count > 0)
-            {
-                Models.Save(ModelJson);
+                var match = _modelDescriptors.FirstOrDefault(d =>
+                    string.Equals(d.FilePath, selectedFilePath, StringComparison.OrdinalIgnoreCase));
+                if (match != null) comboBoxModels.SelectedValue = match.FilePath;
             }
         }
 
-        private async void addModelToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DiscoverModels()
+        {
+            _modelDescriptors = ModelDiscovery.DiscoverModels(ModelFolder, new ModelDiscoveryOptions
+            {
+                Mode = ScanMode.Full,
+                UseCache = true,
+                OnError = (path, ex) =>
+                    System.Diagnostics.Debug.WriteLine($"Discover: {path}: {ex.Message}")
+            }).ToList();
+        }
+
+        private void addModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_calculationCts != null) return;
 
             using (var fAddModel = new frmAddModel())
             {
-                if (string.IsNullOrEmpty(fAddModel.SelectedFilePath))
+                if (string.IsNullOrEmpty(fAddModel.SelectedFilePath) || fAddModel.Model == null)
                     return;
 
-                _calculationCts = new CancellationTokenSource();
+                if (fAddModel.ShowDialog(this) != DialogResult.OK)
+                    return;
+
                 try
                 {
                     SetUIBusy(true);
-                    toolStripStatusLabel1.Text = "Reading model file...";
+                    toolStripStatusLabel1.Text = "Adding model...";
 
-                    var progress = new Progress<CalculationProgressInfo>(info =>
+                    var copyToLocation = Path.Combine(ModelFolder, Path.GetFileName(fAddModel.SelectedFilePath));
+
+                    if (!string.Equals(Path.GetFullPath(fAddModel.SelectedFilePath),
+                                       Path.GetFullPath(copyToLocation),
+                                       StringComparison.OrdinalIgnoreCase))
                     {
-                        toolStripStatusLabel1.Text = info.StatusMessage;
-                        toolStripProgressBar1.Value = Math.Min((int)info.PercentComplete, 100);
-                    });
+                        Directory.CreateDirectory(ModelFolder);
+                        File.Copy(fAddModel.SelectedFilePath, copyToLocation, overwrite: true);
+                    }
 
-                    await fAddModel.LoadModelDataAsync(fAddModel.SelectedFilePath, progress, _calculationCts.Token);
-
-                    SetUIBusy(false);
-                    toolStripStatusLabel1.Text = "Ready";
-
-                    if (fAddModel.ShowDialog(this) != DialogResult.OK)
-                        return;
-
-                    SetUIBusy(true);
-                    toolStripStatusLabel1.Text = "Saving model...";
-
-                    Models.AddOrReplace(fAddModel.Model);
-                    await Models.SaveAsync(ModelJson, _calculationCts.Token);
-
-                    LoadModels(fAddModel.Model?.ID.ToString());
-                    SetStatusTemporary(string.Format("Model added: {0}", fAddModel.Model?.Name));
-                }
-                catch (OperationCanceledException)
-                {
-                    SetStatusTemporary("Model loading cancelled");
+                    DiscoverModels();
+                    LoadModels(copyToLocation);
+                    SetStatusTemporary(string.Format("Model added: {0}", fAddModel.Model.DisplayName));
                 }
                 catch (Exception ex)
                 {
@@ -483,13 +436,11 @@ namespace GeoMagGUI
                 finally
                 {
                     SetUIBusy(false);
-                    _calculationCts?.Dispose();
-                    _calculationCts = null;
                 }
             }
         }
 
-        private async void loadModelToolStripMenuItem_Click(object sender, EventArgs e)
+        private void loadModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_calculationCts != null) return;
 
@@ -502,35 +453,34 @@ namespace GeoMagGUI
 
             if (fDlg.ShowDialog() == DialogResult.Cancel) return;
 
-            var copyToLocation = Path.Combine(ModelFolder, Path.GetFileName(fDlg.FileName));
-
-            _calculationCts = new CancellationTokenSource();
             try
             {
                 SetUIBusy(true);
-                toolStripStatusLabel1.Text = "Copying model file...";
+                toolStripStatusLabel1.Text = "Validating model file...";
 
-                File.Copy(fDlg.FileName, copyToLocation, overwrite: true);
-
-                toolStripStatusLabel1.Text = "Reading model file...";
-                var progress = new Progress<CalculationProgressInfo>(info =>
+                var descriptor = ModelDiscovery.DescribeFile(fDlg.FileName);
+                if (descriptor == null)
                 {
-                    toolStripStatusLabel1.Text = info.StatusMessage;
-                    toolStripProgressBar1.Value = Math.Min((int)info.PercentComplete, 100);
-                });
+                    MessageBox.Show(this,
+                        "The selected file is not a recognized magnetic model.",
+                        "Unknown File Type", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-                var model = await ModelReader.ReadAsync(copyToLocation, progress, _calculationCts.Token);
+                toolStripStatusLabel1.Text = "Copying model file...";
+                var copyToLocation = Path.Combine(ModelFolder, Path.GetFileName(fDlg.FileName));
 
-                toolStripStatusLabel1.Text = "Saving model collection...";
-                Models.AddOrReplace(model);
-                await Models.SaveAsync(ModelJson, _calculationCts.Token);
+                if (!string.Equals(Path.GetFullPath(fDlg.FileName),
+                                   Path.GetFullPath(copyToLocation),
+                                   StringComparison.OrdinalIgnoreCase))
+                {
+                    Directory.CreateDirectory(ModelFolder);
+                    File.Copy(fDlg.FileName, copyToLocation, overwrite: true);
+                }
 
-                LoadModels(model.ID.ToString());
-                SetStatusTemporary(string.Format("Model loaded: {0}", model.Name));
-            }
-            catch (OperationCanceledException)
-            {
-                SetStatusTemporary("Model loading cancelled");
+                DiscoverModels();
+                LoadModels(copyToLocation);
+                SetStatusTemporary(string.Format("Model loaded: {0}", descriptor.DisplayName));
             }
             catch (Exception ex)
             {
@@ -540,8 +490,6 @@ namespace GeoMagGUI
             finally
             {
                 SetUIBusy(false);
-                _calculationCts?.Dispose();
-                _calculationCts = null;
             }
         }
 

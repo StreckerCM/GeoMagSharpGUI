@@ -82,8 +82,7 @@
             this.textBoxModelName.Name = "textBoxModelName";
             this.textBoxModelName.Size = new System.Drawing.Size(319, 20);
             this.textBoxModelName.TabIndex = 2;
-            this.textBoxModelName.Validated += new System.EventHandler(this.textBoxModelName_Validated);
-            // 
+            //
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
