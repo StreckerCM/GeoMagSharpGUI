@@ -1,29 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System;
+using System.IO;
 using System.Windows.Forms;
 
 using GeoMagSharp;
-using System.IO;
 
 namespace GeoMagGUI
 {
     public partial class frmAddModel : Form
     {
-        private MagneticModelSet _Model;
+        private ModelDescriptor _Model;
 
-        public MagneticModelSet Model
+        public ModelDescriptor Model
         {
-            get
-            {
-                return _Model;
-            }
+            get { return _Model; }
         }
 
         /// <summary>
@@ -37,52 +26,44 @@ namespace GeoMagGUI
             InitializeComponent();
 
             SelectedFilePath = AddFile();
+
+            if (!string.IsNullOrEmpty(SelectedFilePath))
+            {
+                LoadModelData(SelectedFilePath);
+            }
         }
 
         private void LoadModelData(string modelFile)
         {
-            _Model = ModelReader.Read(modelFile);
-
-            DisplayModelData();
-        }
-
-        /// <summary>
-        /// Asynchronously loads model data from a coefficient file.
-        /// </summary>
-        /// <param name="modelFile">Path to the coefficient file.</param>
-        /// <param name="progress">Optional progress reporter.</param>
-        /// <param name="cancellationToken">Optional cancellation token.</param>
-        public async Task LoadModelDataAsync(string modelFile,
-            IProgress<CalculationProgressInfo> progress = null,
-            CancellationToken cancellationToken = default)
-        {
-            _Model = await ModelReader.ReadAsync(modelFile, progress, cancellationToken)
-                .ConfigureAwait(true);
+            _Model = ModelDiscovery.DescribeFile(modelFile);
 
             DisplayModelData();
         }
 
         private void DisplayModelData()
         {
-            if(_Model != null)
+            if (_Model == null || _Model.DetectedType == knownModels.NONE)
             {
-                _Model.Name = Path.GetFileNameWithoutExtension(Model.FileNames.First());
-
-                textBoxModelName.Text = _Model.Name;
-
-                labelModelType.Text = Model.Type.ToString();
-
-                labelModelNumberOfModels.Text = Model.NumberOfModels.ToString();
-
-                labelModelDateMin.Text = Model.MinDate.ToDateTime().ToShortDateString();
-
-                labelModelDateMax.Text = Model.MaxDate.ToDateTime().ToShortDateString();
-            }
-            else
-            {
-                MessageBox.Show(this, "Failed to load model data from the selected file.",
+                MessageBox.Show(this,
+                    "The selected file's content could not be identified as a magnetic model.",
                     "Model Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _Model = null;
+                return;
             }
+
+            textBoxModelName.Text = _Model.DisplayName;
+
+            labelModelType.Text = _Model.DetectedType.ToString();
+
+            labelModelNumberOfModels.Text = string.Empty;
+
+            labelModelDateMin.Text = _Model.MinDate.HasValue
+                ? _Model.MinDate.Value.ToDateTime().ToShortDateString()
+                : "—";
+
+            labelModelDateMax.Text = _Model.MaxDate.HasValue
+                ? _Model.MaxDate.Value.ToDateTime().ToShortDateString()
+                : "—";
         }
 
         private string AddFile()
@@ -110,18 +91,13 @@ namespace GeoMagGUI
 
         private void buttonAddFile_Click(object sender, EventArgs e)
         {
-            var modelFile = AddFile();
+            AddFile();
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
             Hide();
-        }
-
-        private void textBoxModelName_Validated(object sender, EventArgs e)
-        {
-            Model.Name = textBoxModelName.Text;
         }
     }
 }

@@ -19,23 +19,27 @@ GeoMagSharpGUI calculates Earth's magnetic field components (declination, inclin
 ## Features
 
 - Calculate magnetic declination, inclination, and field intensity
+- Auto-discovery of model files in the `coefficient/` folder (`.COF`, `.DAT`, HDGM `.DLL`)
+- HDGM (High Definition Geomagnetic Model) support via NOAA-supplied DLL (Windows-only)
+- ISCWSA-based uncertainty (1-sigma) shown in the results grid
 - Support for multiple coordinate input formats (Decimal Degrees, DMS)
 - GPS location integration via Windows Location Services
 - Historical calculations with date range support
 - Multiple output units (nanoTesla, Gauss)
 - Secular variation (change per year) calculations
-- Save results to file
+- Async calculation with cancellation and progress reporting
+- Export results to TXT, CSV, and JSON formats
 - User-configurable preferences
 
 ## Solution Structure
 
 ```
 GeoMagGUI.sln
-├── GeoMagGUI/              # WinForms Application (.NET Framework 4.0)
-│   ├── coefficient/        # Magnetic model coefficient files
-│   │   ├── IGRF12.COF
-│   │   ├── WMM2015.COF
-│   │   └── MagneticModels.json
+├── GeoMagGUI/              # WinForms Application (.NET Framework 4.8)
+│   ├── coefficient/        # Coefficient files populated from GeoMagSharp
+│   │                       # NuGet at build time (WMM2025, WMMHR, IGRF14, etc.).
+│   │                       # Drop additional .COF / .DAT / HDGM .DLL files
+│   │                       # here — they are auto-discovered on launch.
 │   ├── assets/             # Icons and images
 │   ├── documentation/      # License and docs
 │   ├── frmMain.cs          # Main application window
@@ -55,7 +59,7 @@ The core calculation library ([GeoMagSharp](https://github.com/StreckerCM/GeoMag
 ## Build Requirements
 
 - Visual Studio 2019 or later
-- .NET Framework 4.0
+- .NET Framework 4.8
 
 ## Build Commands
 
@@ -94,15 +98,21 @@ NuGet restore automatically downloads the [GeoMagSharp](https://www.nuget.org/pa
 
 ## Adding New Models
 
-1. Obtain coefficient file (.COF or .DAT format)
-2. Place in `GeoMagGUI/coefficient/` directory
-3. Use Tools > Add Model to register the model
-4. Model will be available in the dropdown
+The GUI uses GeoMagSharp's `ModelDiscovery` API to scan the `coefficient/` folder on launch. Any supported file dropped into that folder is auto-discovered — no manual registration required.
+
+1. Obtain a coefficient file (`.COF`, `.DAT`, or HDGM `.DLL`)
+2. Drop it into `GeoMagGUI/bin/Debug/coefficient/` (or `bin/Release/coefficient/`)
+3. Restart the app — the model appears in the dropdown automatically
+
+You can also use **File > Add Model** to pick a file from anywhere on disk; the GUI copies it into the coefficient folder and refreshes the dropdown. The Add Model dialog filters for `.cof` / `.dat` / `.dll` separately or all at once.
+
+For multi-epoch IGRF/DGRF files, the dropdown shows the latest epoch label (e.g. `IGRF2025` for IGRF14.COF) covering the file's full validity range.
 
 ## Dependencies
 
-- **[GeoMagSharp](https://www.nuget.org/packages/GeoMagSharp)** v1.4.0 - Geomagnetic field calculation library
+- **[GeoMagSharp](https://www.nuget.org/packages/GeoMagSharp)** - Geomagnetic field calculation library (latest version pinned in `GeoMagGUI.csproj`)
 - **System.Device** - GPS location services (Windows)
+- **Newtonsoft.Json** - JSON serialization for preferences and (legacy) model registry
 
 ## Architecture
 

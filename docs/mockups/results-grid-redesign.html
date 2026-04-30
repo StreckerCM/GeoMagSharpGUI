@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GeoMagSharpGUI — Results Grid Redesign Mockups</title>
+<style>
+  /* ─── Page chrome ─────────────────────────────────────────────── */
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: #e8eaed;
+    color: #1f2328;
+  }
+  body { padding: 24px; }
+  h1 { font-size: 20px; margin: 0 0 4px 0; }
+  .subtitle { font-size: 13px; color: #57606a; margin-bottom: 20px; }
+
+  /* Mockup switcher */
+  .switcher {
+    display: flex;
+    gap: 4px;
+    background: #d0d7de;
+    padding: 4px;
+    border-radius: 8px;
+    width: fit-content;
+    margin-bottom: 8px;
+  }
+  .switcher button {
+    background: transparent;
+    border: 0;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    color: #57606a;
+  }
+  .switcher button.active {
+    background: #ffffff;
+    color: #1f2328;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    font-weight: 600;
+  }
+  .scenario {
+    font-size: 12px;
+    color: #57606a;
+    margin-bottom: 16px;
+    font-family: ui-monospace, "Consolas", monospace;
+    background: #f6f8fa;
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 1px solid #d0d7de;
+    width: fit-content;
+  }
+
+  /* ─── WinForms-ish "window" container ─────────────────────────── */
+  .window {
+    background: #f0f0f0;
+    border: 1px solid #8a8886;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    overflow: hidden;
+    max-width: 1180px;
+  }
+  .titlebar {
+    background: linear-gradient(to bottom, #fafafa, #e8e8e8);
+    border-bottom: 1px solid #c8c6c4;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #444;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .titlebar .controls { color: #888; font-size: 11px; }
+  .menubar {
+    background: #f0f0f0;
+    border-bottom: 1px solid #c8c6c4;
+    padding: 4px 12px;
+    font-size: 12px;
+  }
+  .menubar span { padding: 2px 8px; cursor: pointer; }
+  .menubar span:hover { background: #cde8ff; }
+
+  .toolbar {
+    padding: 12px;
+    border-bottom: 1px solid #c8c6c4;
+    background: #f8f8f8;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 12px;
+  }
+  .toolbar label { display: flex; gap: 4px; align-items: center; color: #444; }
+  .toolbar input, .toolbar select {
+    border: 1px solid #c8c6c4;
+    background: white;
+    padding: 3px 6px;
+    font: inherit;
+    font-size: 12px;
+    border-radius: 2px;
+  }
+  .toolbar input { width: 90px; }
+  .toolbar input.wide { width: 110px; }
+  .toolbar select { width: 150px; }
+  .toolbar button.calc {
+    background: #0078d4;
+    color: white;
+    border: 1px solid #005a9e;
+    padding: 4px 18px;
+    font: inherit;
+    font-size: 12px;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-left: auto;
+  }
+  .toolbar button.calc:hover { background: #106ebe; }
+
+  .statusbar {
+    background: #f0f0f0;
+    border-top: 1px solid #c8c6c4;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: #444;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .statusbar .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 8px;
+    background: #e8f0fe;
+    border: 1px solid #aac9f2;
+    border-radius: 10px;
+    color: #174ea6;
+    font-size: 11px;
+  }
+  .statusbar .pill.ok { background: #e6f4ea; border-color: #a8d5b8; color: #137333; }
+  .statusbar .pill.warn { background: #fef7e0; border-color: #fcc934; color: #b06000; }
+
+  /* ─── Grid styling (shared) ───────────────────────────────────── */
+  table.results {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    background: white;
+  }
+  table.results thead th {
+    background: #e1dfdd;
+    border-bottom: 1px solid #8a8886;
+    border-right: 1px solid #c8c6c4;
+    padding: 6px 8px;
+    text-align: right;
+    font-weight: 600;
+    color: #1f2328;
+  }
+  table.results thead th:first-child { text-align: left; }
+  table.results tbody td {
+    border-bottom: 1px solid #ebebeb;
+    border-right: 1px solid #ebebeb;
+    padding: 5px 8px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-family: ui-monospace, "Consolas", monospace;
+    font-size: 12px;
+  }
+  table.results tbody td:first-child { text-align: left; }
+  table.results tbody tr.value:hover { background: #f3f8fd; cursor: pointer; }
+  table.results tbody tr.selected { background: #cde8ff !important; }
+  table.results tbody tr.uncertainty { background: #fff8e1; color: #5f5b00; }
+  table.results tbody tr.uncertainty td:first-child { font-style: italic; }
+  table.results tbody tr.changeperyr { background: #e3f0ff; color: #003666; }
+  table.results tbody tr.changeperyr td:first-child { font-weight: 600; }
+
+  /* ─── Mockup 1 (status quo extended) ──────────────────────────── */
+  .mockup { display: none; }
+  .mockup.active { display: block; }
+
+  /* ─── Mockup 2 (master-detail) ────────────────────────────────── */
+  .mock2-body {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    background: white;
+    min-height: 460px;
+  }
+  .mock2-grid { border-right: 1px solid #c8c6c4; overflow-y: auto; }
+  .detail-pane {
+    padding: 14px 16px;
+    background: #fafbfc;
+    font-size: 12px;
+    overflow-y: auto;
+    max-height: 460px;
+  }
+  .detail-pane h2 {
+    font-size: 13px;
+    margin: 0 0 4px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #d0d7de;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .detail-pane h2 .meta {
+    font-weight: normal;
+    color: #57606a;
+    font-size: 11px;
+    font-family: ui-monospace, monospace;
+  }
+  .detail-pane h3 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 14px 0 6px 0;
+    color: #57606a;
+    font-weight: 600;
+  }
+  .detail-pane dl {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 3px 12px;
+    margin: 0;
+    font-family: ui-monospace, "Consolas", monospace;
+    font-size: 12px;
+  }
+  .detail-pane dt { color: #57606a; }
+  .detail-pane dd { margin: 0; text-align: left; }
+  .detail-pane dd .sigma { color: #b06000; }
+  .detail-pane dd .delta { color: #003666; }
+  .detail-pane .badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .badge {
+    font-size: 10px;
+    padding: 1px 7px;
+    border-radius: 9px;
+    background: #e6f4ea;
+    color: #137333;
+    border: 1px solid #a8d5b8;
+  }
+  .badge.cat { background: #e8f0fe; color: #174ea6; border-color: #aac9f2; }
+  .badge.warn { background: #fef7e0; color: #b06000; border-color: #fcc934; }
+
+  /* ─── Mockup 3 (paired rows) ──────────────────────────────────── */
+  .mock3-toggle {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 6px 12px;
+    background: #f8f8f8;
+    border-bottom: 1px solid #c8c6c4;
+    font-size: 12px;
+  }
+  .mock3-toggle input { vertical-align: middle; }
+  .mock3-toggle .info { color: #57606a; margin-left: auto; font-size: 11px; }
+
+  /* ─── Notes / explainer ───────────────────────────────────────── */
+  .notes {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #1f2328;
+    max-width: 1180px;
+  }
+  .notes h3 { margin: 0 0 6px 0; font-size: 13px; }
+  .notes ul { margin: 4px 0 0 0; padding-left: 18px; }
+  .notes li { margin: 2px 0; }
+  .notes .pill {
+    display: inline-block;
+    padding: 0 6px;
+    background: #ddf4ff;
+    color: #0969da;
+    border-radius: 4px;
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+  }
+
+  /* ─── Export Patterns section (Mockup 4) ──────────────────────── */
+  .export-patterns {
+    max-width: 1180px;
+  }
+  .pattern-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #d0d7de;
+    padding-bottom: 0;
+  }
+  .pattern-tab {
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    padding: 8px 16px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    color: #57606a;
+  }
+  .pattern-tab.active {
+    color: #0969da;
+    border-bottom-color: #0969da;
+    font-weight: 600;
+  }
+  .pattern-body {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .pattern-body.active { display: grid; }
+  .pattern-card {
+    background: white;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .pattern-card-header {
+    background: #f6f8fa;
+    border-bottom: 1px solid #d0d7de;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #57606a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .pattern-card-body { padding: 14px 16px; }
+
+  /* Faux File menu dropdown */
+  .file-menu {
+    background: white;
+    border: 1px solid #8a8886;
+    box-shadow: 1px 2px 8px rgba(0,0,0,0.15);
+    width: 220px;
+    font-size: 12px;
+    margin: 0;
+    padding: 2px 0;
+  }
+  .file-menu .menu-row {
+    padding: 5px 14px;
+    cursor: default;
+    display: flex;
+    justify-content: space-between;
+    color: #1f2328;
+  }
+  .file-menu .menu-row:hover { background: #cde8ff; }
+  .file-menu .menu-row.highlight { background: #cde8ff; }
+  .file-menu .menu-row.disabled { color: #b1b1b1; }
+  .file-menu .separator {
+    border-top: 1px solid #d0d7de;
+    margin: 4px 0;
+  }
+  .file-menu .shortcut { color: #888; font-size: 11px; }
+
+  /* Faux save dialog */
+  .save-dialog {
+    background: #f0f0f0;
+    border: 1px solid #8a8886;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    border-radius: 4px;
+    overflow: hidden;
+    font-size: 12px;
+    margin-top: 12px;
+  }
+  .save-dialog .dialog-titlebar {
+    background: linear-gradient(to bottom, #fafafa, #e8e8e8);
+    border-bottom: 1px solid #c8c6c4;
+    padding: 6px 12px;
+    color: #444;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .save-dialog .dialog-body {
+    padding: 12px 14px;
+    background: white;
+  }
+  .save-dialog .form-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .save-dialog .form-row label { width: 90px; color: #444; }
+  .save-dialog .form-row input,
+  .save-dialog .form-row select {
+    flex: 1;
+    border: 1px solid #c8c6c4;
+    padding: 4px 6px;
+    font: inherit;
+    font-size: 12px;
+    background: white;
+    border-radius: 2px;
+  }
+  .save-dialog .checklist {
+    margin: 8px 0 12px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+  }
+  .save-dialog .checklist label {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    color: #1f2328;
+  }
+  .save-dialog .checklist label.required { color: #57606a; font-style: italic; }
+  .save-dialog .dialog-actions {
+    background: #f6f8fa;
+    border-top: 1px solid #c8c6c4;
+    padding: 10px 14px;
+    text-align: right;
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+  .save-dialog button {
+    border: 1px solid #c8c6c4;
+    background: #f8f8f8;
+    padding: 4px 18px;
+    font: inherit;
+    font-size: 12px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .save-dialog button.primary {
+    background: #0078d4;
+    color: white;
+    border-color: #005a9e;
+  }
+  .save-dialog .note {
+    background: #e6f4ea;
+    border: 1px solid #a8d5b8;
+    color: #137333;
+    border-radius: 4px;
+    padding: 6px 10px;
+    margin-top: 8px;
+    font-size: 11px;
+  }
+
+  /* Output preview */
+  .output-preview {
+    font-family: ui-monospace, "Consolas", monospace;
+    font-size: 11px;
+    background: #0d1117;
+    color: #c9d1d9;
+    padding: 12px 14px;
+    border-radius: 0 0 6px 6px;
+    max-height: 360px;
+    overflow: auto;
+    white-space: pre;
+  }
+  .output-preview .key { color: #79c0ff; }
+  .output-preview .str { color: #a5d6ff; }
+  .output-preview .num { color: #ffa657; }
+  .output-preview .bool { color: #ff7b72; }
+  .output-preview .null { color: #8b949e; font-style: italic; }
+  .output-preview .comment { color: #8b949e; font-style: italic; }
+  .output-format {
+    display: inline-flex;
+    background: #d0d7de;
+    border-radius: 4px;
+    padding: 2px;
+    margin-bottom: 8px;
+  }
+  .output-format label { padding: 2px 8px; cursor: pointer; }
+  .output-format input { display: none; }
+  .output-format input:checked + span {
+    background: white;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    color: #1f2328;
+  }
+  .output-format span {
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    color: #57606a;
+  }
+  .pattern-summary {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: #f6f8fa;
+    border-left: 3px solid #0969da;
+    font-size: 12px;
+  }
+  .pattern-summary strong { color: #0969da; }
+
+  /* ─── Date range view toggle ──────────────────────────────────── */
+  .view-toggle {
+    display: inline-flex;
+    background: #d0d7de;
+    border-radius: 4px;
+    padding: 2px;
+    margin-left: 8px;
+  }
+  .view-toggle label {
+    padding: 2px 8px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 11px;
+    color: #57606a;
+  }
+  .view-toggle input { display: none; }
+  .view-toggle input:checked + span {
+    background: white;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    color: #1f2328;
+  }
+  .view-toggle span { padding: 2px 8px; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<h1>GeoMagSharpGUI — Results Grid Redesign Mockups</h1>
+<div class="subtitle">
+  Interactive HTML sketch of three layout options. Click rows in Mockup 2 to update the side panel.
+  Toggle uncertainty rows in Mockup 3.
+</div>
+
+<div class="switcher" id="mockSwitcher">
+  <button class="active" data-target="m1">Mockup 1 — Status Quo Extended</button>
+  <button data-target="m2">Mockup 2 — Master-Detail</button>
+  <button data-target="m3">Mockup 3 — Paired Rows</button>
+  <button data-target="m4">Export Patterns →</button>
+</div>
+
+<div class="scenario">
+  Scenario: HDGM2025 model · lat 41.31°N · lon -81.33°W · 5-year date range starting 2026-04-30
+</div>
+
+<!-- ──────────────────────────────────────────────────────────────── -->
+<!-- MOCKUP 1: STATUS QUO EXTENDED                                   -->
+<!-- ──────────────────────────────────────────────────────────────── -->
+<div class="mockup active" id="m1">
+  <div class="window">
+    <div class="titlebar">
+      <span>GeoMag # — HDGM2025</span>
+      <span class="controls">─ ☐ ✕</span>
+    </div>
+    <div class="menubar"><span>File</span><span>Tools</span><span>Help</span></div>
+
+    <div class="toolbar">
+      <label>Model: <select><option>HDGM2025</option></select></label>
+      <label>Lat: <input value="41.3100"></label>
+      <label>Lon: <input value="-81.3300"></label>
+      <label>Alt: <input value="0" style="width:50px"> <select style="width:80px"><option>m</option></select></label>
+      <label>Date: <input class="wide" value="2026-04-30"></label>
+      <label><input type="checkbox" checked> Range +5y</label>
+      <button class="calc">Calculate</button>
+    </div>
+
+    <table class="results">
+      <thead>
+        <tr>
+          <th>Date</th><th>Decl.</th><th>Incl.</th><th>Hor.Int.</th>
+          <th>North</th><th>East</th><th>Vert.</th><th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="m1-tbody">
+        <tr class="value"><td>4/30/2026</td><td>-8.4523°</td><td>69.2156°</td><td>18,923 nT</td><td>18,712 nT</td><td>-1,255 nT</td><td>50,127 nT</td><td>53,589 nT</td></tr>
+        <tr class="value"><td>4/30/2027</td><td>-8.3536°</td><td>69.1735°</td><td>18,889 nT</td><td>18,679 nT</td><td>-1,262 nT</td><td>50,045 nT</td><td>53,501 nT</td></tr>
+        <tr class="value"><td>4/30/2028</td><td>-8.2549°</td><td>69.1314°</td><td>18,855 nT</td><td>18,646 nT</td><td>-1,269 nT</td><td>49,963 nT</td><td>53,413 nT</td></tr>
+        <tr class="value"><td>4/30/2029</td><td>-8.1562°</td><td>69.0893°</td><td>18,821 nT</td><td>18,613 nT</td><td>-1,277 nT</td><td>49,881 nT</td><td>53,325 nT</td></tr>
+        <tr class="value"><td>4/30/2030</td><td>-8.0575°</td><td>69.0472°</td><td>18,787 nT</td><td>18,580 nT</td><td>-1,284 nT</td><td>49,799 nT</td><td>53,237 nT</td></tr>
+        <tr class="changeperyr"><td>Change/yr</td><td>+0.0987°</td><td>-0.0421°</td><td>-34.2 nT</td><td>-32.8 nT</td><td>-7.3 nT</td><td>-82.4 nT</td><td>-88.1 nT</td></tr>
+        <tr class="uncertainty"><td>± 1σ</td><td>±0.27°</td><td>±0.18°</td><td>±112 nT</td><td>±118 nT</td><td>±77 nT</td><td>±125 nT</td><td>±121 nT</td></tr>
+      </tbody>
+    </table>
+
+    <div class="statusbar">
+      <span>Calculation complete · 5 dates</span>
+      <span title="HDGM coverage flag has nowhere to go in this layout">⚠ HDGM coverage info hidden</span>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h3>Notes on Mockup 1</h3>
+    <ul>
+      <li>Adds <span class="pill">± 1σ</span> row at the bottom (yellow tint), <span class="pill">Change/yr</span> row above it (blue tint).</li>
+      <li><strong>Coverage flag has no good home</strong> — can only fit as a tooltip or status-bar pill.</li>
+      <li>"Model category", validity range, and HDGM-specific NSD coverage all squeezed into status bar at best.</li>
+      <li>Columns must squeeze to fit; long values like <code>50,127 nT</code> bump close together.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────────────────────────── -->
+<!-- MOCKUP 2: MASTER-DETAIL (interactive)                           -->
+<!-- ──────────────────────────────────────────────────────────────── -->
+<div class="mockup" id="m2">
+  <div class="window">
+    <div class="titlebar">
+      <span>GeoMag # — HDGM2025</span>
+      <span class="controls">─ ☐ ✕</span>
+    </div>
+    <div class="menubar"><span>File</span><span>Tools</span><span>Help</span></div>
+
+    <div class="toolbar">
+      <label>Model: <select><option>HDGM2025</option></select></label>
+      <label>Lat: <input value="41.3100"></label>
+      <label>Lon: <input value="-81.3300"></label>
+      <label>Alt: <input value="0" style="width:50px"> <select style="width:80px"><option>m</option></select></label>
+      <label>Date: <input class="wide" value="2026-04-30"></label>
+      <label><input type="checkbox" checked> Range +5y</label>
+      <button class="calc">Calculate</button>
+    </div>
+
+    <div class="mock2-body">
+      <div class="mock2-grid">
+        <table class="results">
+          <thead>
+            <tr><th>Date</th><th>Decl.</th><th>Incl.</th><th>Hor.Int.</th><th>Total Field</th></tr>
+          </thead>
+          <tbody id="m2-tbody">
+            <!-- Rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <aside class="detail-pane" id="m2-detail">
+        <!-- Filled by JS based on selected row -->
+      </aside>
+    </div>
+
+    <div class="statusbar">
+      <span>Calculation complete · 5 dates · Click a row to see details</span>
+      <span class="pill ok">✓ NSD coverage</span>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h3>Notes on Mockup 2 — Click any row to see it update</h3>
+    <ul>
+      <li>Grid is <strong>values only</strong> — clean, scannable, exports cleanly to CSV/JSON.</li>
+      <li>Side panel = full breakdown of the selected row: components, uncertainty (per-component σ when available), change/yr, model info.</li>
+      <li><strong>Coverage badge</strong> lives naturally in the model section. NSD-covered = green ✓; satellite fallback = yellow warning.</li>
+      <li>For a <strong>single date</strong>, the side panel just shows that one row's detail (no clicking needed).</li>
+      <li>Translates 1:1 to WPF as <code>&lt;Grid&gt;</code> + <code>&lt;ContentControl Content="{Binding Selected}" /&gt;</code> for the eventual rewrite.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────────────────────────── -->
+<!-- MOCKUP 3: PAIRED ROWS                                            -->
+<!-- ──────────────────────────────────────────────────────────────── -->
+<div class="mockup" id="m3">
+  <div class="window">
+    <div class="titlebar">
+      <span>GeoMag # — HDGM2025</span>
+      <span class="controls">─ ☐ ✕</span>
+    </div>
+    <div class="menubar"><span>File</span><span>Tools</span><span>Help</span></div>
+
+    <div class="toolbar">
+      <label>Model: <select><option>HDGM2025</option></select></label>
+      <label>Lat: <input value="41.3100"></label>
+      <label>Lon: <input value="-81.3300"></label>
+      <label>Alt: <input value="0" style="width:50px"> <select style="width:80px"><option>m</option></select></label>
+      <label>Date: <input class="wide" value="2026-04-30"></label>
+      <label><input type="checkbox" checked> Range +5y</label>
+      <button class="calc">Calculate</button>
+    </div>
+
+    <div class="mock3-toggle">
+      <label><input type="checkbox" id="m3-show-unc" checked> Show uncertainty rows (±1σ)</label>
+      <span class="info">Toggle off for tighter grid; useful for long date ranges</span>
+    </div>
+
+    <table class="results">
+      <thead>
+        <tr>
+          <th>Date</th><th>Decl.</th><th>Incl.</th><th>Hor.Int.</th>
+          <th>North</th><th>East</th><th>Vert.</th><th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="m3-tbody">
+        <!-- Rows injected by JS -->
+      </tbody>
+    </table>
+
+    <div class="statusbar">
+      <span>HDGM2025 · HighResolution category · Valid 2025–2030 ·</span>
+      <span class="pill ok">✓ NSD coverage</span>
+      <span style="margin-left:auto">Calculation complete · 5 dates</span>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h3>Notes on Mockup 3 — Toggle uncertainty rows above</h3>
+    <ul>
+      <li>Each date produces 2 rows: the <strong>value</strong> and its <strong>±1σ</strong> uncertainty (yellow tint).</li>
+      <li>Coverage flag and model category live in a <strong>status strip</strong> at the bottom — finds a home outside the grid.</li>
+      <li>Toggle hides uncertainty rows when you want a tight scrollable view (e.g. for 30-day ranges).</li>
+      <li>Single grid means existing <strong>copy/export</strong> code works unchanged (every row is a date or a label).</li>
+      <li>Information dense, but with 5 dates this is already 12 rows; for 30 dates → 60+ rows with uncertainty on, ~30 with off.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────────────────────────── -->
+<!-- MOCKUP 4: EXPORT PATTERNS                                        -->
+<!-- ──────────────────────────────────────────────────────────────── -->
+<div class="mockup" id="m4">
+  <div class="export-patterns">
+    <p style="font-size:13px; color:#57606a; margin:0 0 14px 0;">
+      Three options for surfacing the export feature, assuming Mockup 2 (master-detail) is the chosen layout.
+      The visible grid shows a subset; export captures the full data model regardless.
+    </p>
+
+    <div class="pattern-tabs" id="patternTabs">
+      <button class="pattern-tab active" data-pat="A">Pattern A — Single Export, Always Full</button>
+      <button class="pattern-tab" data-pat="B">Pattern B — Dialog with Checkboxes</button>
+      <button class="pattern-tab" data-pat="C">Pattern C — Two Menu Items</button>
+    </div>
+
+    <!-- Pattern A -->
+    <div class="pattern-body active" id="patA">
+      <div class="pattern-card">
+        <div class="pattern-card-header">User Flow</div>
+        <div class="pattern-card-body">
+          <div style="font-size:11px; color:#57606a; margin-bottom:6px;">1. Click <strong>File → Save Results…</strong></div>
+          <div class="file-menu">
+            <div class="menu-row">Open Model… <span class="shortcut">Ctrl+O</span></div>
+            <div class="menu-row highlight">Save Results… <span class="shortcut">Ctrl+S</span></div>
+            <div class="separator"></div>
+            <div class="menu-row">Preferences…</div>
+            <div class="menu-row">Exit</div>
+          </div>
+
+          <div style="font-size:11px; color:#57606a; margin:14px 0 6px 0;">2. Standard Save dialog (format dropdown picks the file shape):</div>
+          <div class="save-dialog">
+            <div class="dialog-titlebar"><span>Save Results</span><span style="color:#888">─ ☐ ✕</span></div>
+            <div class="dialog-body">
+              <div class="form-row"><label>File name:</label><input value="results.json"></div>
+              <div class="form-row">
+                <label>Save as type:</label>
+                <select>
+                  <option>JSON (*.json)</option>
+                  <option>CSV — wide (*.csv)</option>
+                  <option>CSV — long/tidy (*.csv)</option>
+                  <option>Plain Text (*.txt)</option>
+                </select>
+              </div>
+              <div class="note">Output always includes uncertainty, change/yr, model metadata, and HDGM coverage flag when available.</div>
+            </div>
+            <div class="dialog-actions">
+              <button class="primary">Save</button>
+              <button>Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <div class="pattern-card-header">Output Preview <span style="float:right;font-weight:400;">format:
+          <span class="output-format" style="vertical-align:middle">
+            <label><input type="radio" name="fmtA" value="json" checked><span>JSON</span></label>
+            <label><input type="radio" name="fmtA" value="csv-wide"><span>CSV (wide)</span></label>
+            <label><input type="radio" name="fmtA" value="csv-long"><span>CSV (long)</span></label>
+          </span>
+        </span></div>
+        <div class="output-preview" id="outA"></div>
+      </div>
+
+      <div class="pattern-summary" style="grid-column:1/-1">
+        <strong>Pattern A trade-offs:</strong> simplest UX, single menu item, no dialog complexity. User gets <em>everything</em> every time — file is always self-describing.
+        Trade-off: power users who want a slimmer file have to open it and trim, or you add a CLI/scripting path later.
+      </div>
+    </div>
+
+    <!-- Pattern B -->
+    <div class="pattern-body" id="patB">
+      <div class="pattern-card">
+        <div class="pattern-card-header">User Flow</div>
+        <div class="pattern-card-body">
+          <div style="font-size:11px; color:#57606a; margin-bottom:6px;">1. Click <strong>File → Save Results…</strong></div>
+          <div class="file-menu">
+            <div class="menu-row">Open Model… <span class="shortcut">Ctrl+O</span></div>
+            <div class="menu-row highlight">Save Results… <span class="shortcut">Ctrl+S</span></div>
+            <div class="separator"></div>
+            <div class="menu-row">Preferences…</div>
+            <div class="menu-row">Exit</div>
+          </div>
+
+          <div style="font-size:11px; color:#57606a; margin:14px 0 6px 0;">2. Custom dialog with section toggles (live preview updates →):</div>
+          <div class="save-dialog">
+            <div class="dialog-titlebar"><span>Save Results</span><span style="color:#888">─ ☐ ✕</span></div>
+            <div class="dialog-body">
+              <div class="form-row">
+                <label>Format:</label>
+                <select id="patB-format">
+                  <option value="json">JSON (*.json)</option>
+                  <option value="csv-wide">CSV — wide (*.csv)</option>
+                  <option value="csv-long">CSV — long/tidy (*.csv)</option>
+                  <option value="txt">Plain Text (*.txt)</option>
+                </select>
+              </div>
+
+              <div style="font-size:11px; color:#57606a; margin:6px 0 4px 90px;">Include in export:</div>
+              <div class="checklist">
+                <label class="required"><input type="checkbox" checked disabled> Field values <span style="color:#888">(required)</span></label>
+                <label><input type="checkbox" id="patB-unc" checked> Uncertainty (1σ) per component</label>
+                <label><input type="checkbox" id="patB-cpy" checked> Change per year</label>
+                <label><input type="checkbox" id="patB-meta" checked> Model metadata (name, category, validity)</label>
+                <label><input type="checkbox" id="patB-cov" checked> HDGM coverage flag (when applicable)</label>
+              </div>
+
+              <div class="form-row" style="margin-top:12px;">
+                <label>File name:</label>
+                <input id="patB-filename" value="results.json">
+              </div>
+            </div>
+            <div class="dialog-actions">
+              <button class="primary">Save</button>
+              <button>Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <div class="pattern-card-header">Output Preview (live — toggle checkboxes)</div>
+        <div class="output-preview" id="outB"></div>
+      </div>
+
+      <div class="pattern-summary" style="grid-column:1/-1">
+        <strong>Pattern B trade-offs:</strong> most flexible — user controls payload size. Good for power users.
+        Trade-off: more dialog complexity (custom WinForms dialog, not the standard SaveFileDialog), more states to test, and most users will just leave the defaults checked.
+      </div>
+    </div>
+
+    <!-- Pattern C -->
+    <div class="pattern-body" id="patC">
+      <div class="pattern-card">
+        <div class="pattern-card-header">User Flow</div>
+        <div class="pattern-card-body">
+          <div style="font-size:11px; color:#57606a; margin-bottom:6px;">1. File menu offers two distinct exports:</div>
+          <div class="file-menu">
+            <div class="menu-row">Open Model… <span class="shortcut">Ctrl+O</span></div>
+            <div class="menu-row" id="patC-grid">Save Results… <span class="shortcut">Ctrl+S</span></div>
+            <div class="menu-row" id="patC-full">Export Full Data… <span class="shortcut">Ctrl+Shift+E</span></div>
+            <div class="separator"></div>
+            <div class="menu-row">Preferences…</div>
+            <div class="menu-row">Exit</div>
+          </div>
+
+          <div style="font-size:11px; color:#57606a; margin:14px 0 6px 0;">2. Two parallel paths — pick one above to preview →</div>
+
+          <div class="save-dialog">
+            <div class="dialog-titlebar"><span id="patC-title">Save Results</span><span style="color:#888">─ ☐ ✕</span></div>
+            <div class="dialog-body">
+              <div class="form-row"><label>File name:</label><input id="patC-filename" value="results.csv"></div>
+              <div class="form-row">
+                <label>Save as type:</label>
+                <select id="patC-format">
+                  <option>CSV (*.csv)</option>
+                  <option>Plain Text (*.txt)</option>
+                  <option>JSON (*.json)</option>
+                </select>
+              </div>
+              <div class="note" id="patC-note">Saves the visible grid columns (Date, Decl., Incl., Hor.Int., Total Field).</div>
+            </div>
+            <div class="dialog-actions">
+              <button class="primary">Save</button>
+              <button>Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <div class="pattern-card-header">Output Preview <span id="patC-mode-label" style="float:right;font-weight:400;color:#57606a;">"Save Results" — visible columns only</span></div>
+        <div class="output-preview" id="outC"></div>
+      </div>
+
+      <div class="pattern-summary" style="grid-column:1/-1">
+        <strong>Pattern C trade-offs:</strong> explicit and discoverable — the menu name tells you which gives you the slim version vs the firehose.
+        Good for users who occasionally want a quick "what's on screen" CSV. Trade-off: two code paths and two menu items to maintain; users can be surprised when "Save Results" doesn't include uncertainty.
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h3>Comparing the three patterns</h3>
+    <ul>
+      <li><strong>Pattern A</strong> — clearest UX, zero ambiguity, but no escape hatch for "smaller please." Recommended default.</li>
+      <li><strong>Pattern B</strong> — flexible but adds a custom dialog. Worth it if users actually report wanting smaller files; otherwise yagni.</li>
+      <li><strong>Pattern C</strong> — preserves "Save Results" muscle memory while introducing "Export Full Data" as a separate, deliberate action. Risk: surprise when grid view changes what gets saved.</li>
+    </ul>
+    <p style="margin-top:8px;font-size:12px;color:#57606a;">
+      Note for all three: JSON keeps schema cleanest (HDGM-only fields stay nested under <code>uncertainty</code>; missing values are <code>null</code>).
+      CSV-wide is fine for ≤10 columns; once HDGM adds 7 σ values + coverage + components, it becomes 25+ columns and the long/tidy CSV format is more spreadsheet-friendly.
+    </p>
+  </div>
+</div>
+
+<script>
+/* ─── Mockup switcher ─────────────────────────────────────────── */
+document.querySelectorAll('#mockSwitcher button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#mockSwitcher button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.mockup').forEach(m => m.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.target).classList.add('active');
+  });
+});
+
+/* ─── Realistic calculation data (HDGM at 41.31°N, -81.33°W) ───── */
+const calcData = [
+  {
+    date: '4/30/2026',
+    D: -8.4523, I: 69.2156, H: 18923, X: 18712, Y: -1255, Z: 50127, F: 53589,
+    sD: 0.27, sI: 0.18, sH: 112, sX: 118, sY: 77, sZ: 125, sF: 121
+  },
+  {
+    date: '4/30/2027',
+    D: -8.3536, I: 69.1735, H: 18889, X: 18679, Y: -1262, Z: 50045, F: 53501,
+    sD: 0.27, sI: 0.18, sH: 112, sX: 118, sY: 77, sZ: 125, sF: 121
+  },
+  {
+    date: '4/30/2028',
+    D: -8.2549, I: 69.1314, H: 18855, X: 18646, Y: -1269, Z: 49963, F: 53413,
+    sD: 0.27, sI: 0.18, sH: 112, sX: 118, sY: 77, sZ: 125, sF: 121
+  },
+  {
+    date: '4/30/2029',
+    D: -8.1562, I: 69.0893, H: 18821, X: 18613, Y: -1277, Z: 49881, F: 53325,
+    sD: 0.27, sI: 0.18, sH: 112, sX: 118, sY: 77, sZ: 125, sF: 121
+  },
+  {
+    date: '4/30/2030',
+    D: -8.0575, I: 69.0472, H: 18787, X: 18580, Y: -1284, Z: 49799, F: 53237,
+    sD: 0.27, sI: 0.18, sH: 112, sX: 118, sY: 77, sZ: 125, sF: 121
+  }
+];
+
+const changePerYr = {
+  D: 0.0987, I: -0.0421, H: -34.2, X: -32.8, Y: -7.3, Z: -82.4, F: -88.1
+};
+
+const fmtSign = n => (n >= 0 ? '+' : '') + n.toFixed(4);
+
+/* ─── Mockup 2: master-detail (interactive) ───────────────────── */
+function renderM2Grid() {
+  const tbody = document.getElementById('m2-tbody');
+  tbody.innerHTML = calcData.map((r, i) => `
+    <tr class="value" data-idx="${i}">
+      <td>${r.date}</td>
+      <td>${r.D.toFixed(4)}°</td>
+      <td>${r.I.toFixed(4)}°</td>
+      <td>${r.H.toLocaleString()} nT</td>
+      <td>${r.F.toLocaleString()} nT</td>
+    </tr>
+  `).join('');
+  tbody.querySelectorAll('tr').forEach(tr => {
+    tr.addEventListener('click', () => selectM2Row(parseInt(tr.dataset.idx)));
+  });
+}
+function selectM2Row(idx) {
+  document.querySelectorAll('#m2-tbody tr').forEach((tr, i) => {
+    tr.classList.toggle('selected', i === idx);
+  });
+  const r = calcData[idx];
+  const detail = document.getElementById('m2-detail');
+  detail.innerHTML = `
+    <h2>📅 ${r.date} <span class="meta">row ${idx + 1} of ${calcData.length}</span></h2>
+
+    <h3>Field Values</h3>
+    <dl>
+      <dt>Decl.</dt><dd>${r.D.toFixed(4)}° <span class="sigma">± ${r.sD}°</span></dd>
+      <dt>Incl.</dt><dd>${r.I.toFixed(4)}° <span class="sigma">± ${r.sI}°</span></dd>
+      <dt>H</dt><dd>${r.H.toLocaleString()} nT <span class="sigma">± ${r.sH} nT</span></dd>
+      <dt>F</dt><dd>${r.F.toLocaleString()} nT <span class="sigma">± ${r.sF} nT</span></dd>
+    </dl>
+
+    <h3>Components (X N · Y E · Z Down)</h3>
+    <dl>
+      <dt>X</dt><dd>${r.X.toLocaleString()} nT <span class="sigma">± ${r.sX} nT</span></dd>
+      <dt>Y</dt><dd>${r.Y.toLocaleString()} nT <span class="sigma">± ${r.sY} nT</span></dd>
+      <dt>Z</dt><dd>${r.Z.toLocaleString()} nT <span class="sigma">± ${r.sZ} nT</span></dd>
+    </dl>
+
+    <h3>Change per Year</h3>
+    <dl>
+      <dt>Decl.</dt><dd><span class="delta">${fmtSign(changePerYr.D)}°/yr</span></dd>
+      <dt>Incl.</dt><dd><span class="delta">${changePerYr.I.toFixed(4)}°/yr</span></dd>
+      <dt>F</dt><dd><span class="delta">${changePerYr.F} nT/yr</span></dd>
+      <dt>H</dt><dd><span class="delta">${changePerYr.H} nT/yr</span></dd>
+    </dl>
+
+    <h3>Model</h3>
+    <dl>
+      <dt>Name</dt><dd>HDGM2025</dd>
+      <dt>Type</dt><dd>HDGM</dd>
+      <dt>Validity</dt><dd>2025 – 2030</dd>
+      <dt>σ source</dt><dd>NOAA DLL (per-point)</dd>
+    </dl>
+    <div class="badges">
+      <span class="badge cat">HighResolution</span>
+      <span class="badge">✓ NSD covered</span>
+      <span class="badge">degree 740</span>
+    </div>
+  `;
+}
+renderM2Grid();
+selectM2Row(0);
+
+/* ─── Mockup 3: paired rows toggle ────────────────────────────── */
+function renderM3Grid(showUncertainty) {
+  const tbody = document.getElementById('m3-tbody');
+  let rows = '';
+  calcData.forEach(r => {
+    rows += `
+      <tr class="value">
+        <td>${r.date}</td>
+        <td>${r.D.toFixed(4)}°</td>
+        <td>${r.I.toFixed(4)}°</td>
+        <td>${r.H.toLocaleString()} nT</td>
+        <td>${r.X.toLocaleString()} nT</td>
+        <td>${r.Y.toLocaleString()} nT</td>
+        <td>${r.Z.toLocaleString()} nT</td>
+        <td>${r.F.toLocaleString()} nT</td>
+      </tr>
+    `;
+    if (showUncertainty) {
+      rows += `
+        <tr class="uncertainty">
+          <td>± 1σ</td>
+          <td>±${r.sD}°</td>
+          <td>±${r.sI}°</td>
+          <td>±${r.sH} nT</td>
+          <td>±${r.sX} nT</td>
+          <td>±${r.sY} nT</td>
+          <td>±${r.sZ} nT</td>
+          <td>±${r.sF} nT</td>
+        </tr>
+      `;
+    }
+  });
+  rows += `
+    <tr class="changeperyr">
+      <td>Change/yr</td>
+      <td>${fmtSign(changePerYr.D)}°</td>
+      <td>${changePerYr.I.toFixed(4)}°</td>
+      <td>${changePerYr.H} nT</td>
+      <td>${changePerYr.X} nT</td>
+      <td>${changePerYr.Y} nT</td>
+      <td>${changePerYr.Z} nT</td>
+      <td>${changePerYr.F} nT</td>
+    </tr>
+  `;
+  tbody.innerHTML = rows;
+}
+const m3Toggle = document.getElementById('m3-show-unc');
+m3Toggle.addEventListener('change', () => renderM3Grid(m3Toggle.checked));
+renderM3Grid(true);
+
+/* ─── Mockup 4: Export pattern previews ───────────────────────── */
+function renderJSON(opts) {
+  // opts: { unc, cpy, meta, cov }
+  const r = calcData[0];
+  let out = '';
+  out += '<span class="comment">// First entry shown; full file has all 5 dates</span>\n';
+  out += '{\n';
+  if (opts.meta) {
+    out += '  <span class="key">"model"</span>: {\n';
+    out += '    <span class="key">"name"</span>: <span class="str">"HDGM2025"</span>,\n';
+    out += '    <span class="key">"type"</span>: <span class="str">"HDGM"</span>,\n';
+    out += '    <span class="key">"category"</span>: <span class="str">"HighResolution"</span>,\n';
+    out += '    <span class="key">"validityYears"</span>: [<span class="num">2025</span>, <span class="num">2030</span>],\n';
+    out += '    <span class="key">"sigmaSource"</span>: <span class="str">"NOAA DLL (per-point)"</span>\n';
+    out += '  },\n';
+  }
+  out += '  <span class="key">"results"</span>: [\n';
+  out += '    {\n';
+  out += '      <span class="key">"date"</span>: <span class="str">"2026-04-30"</span>,\n';
+  out += `      <span class="key">"declination"</span>: <span class="num">${r.D}</span>,\n`;
+  out += `      <span class="key">"inclination"</span>: <span class="num">${r.I}</span>,\n`;
+  out += `      <span class="key">"totalField"</span>: <span class="num">${r.F}</span>,\n`;
+  out += `      <span class="key">"horizontalIntensity"</span>: <span class="num">${r.H}</span>,\n`;
+  out += `      <span class="key">"northComp"</span>: <span class="num">${r.X}</span>,\n`;
+  out += `      <span class="key">"eastComp"</span>: <span class="num">${r.Y}</span>,\n`;
+  out += `      <span class="key">"verticalComp"</span>: <span class="num">${r.Z}</span>,\n`;
+  if (opts.unc) {
+    out += '      <span class="key">"uncertainty"</span>: {\n';
+    out += `        <span class="key">"sigmaD"</span>: <span class="num">${r.sD}</span>,\n`;
+    out += `        <span class="key">"sigmaI"</span>: <span class="num">${r.sI}</span>,\n`;
+    out += `        <span class="key">"sigmaH"</span>: <span class="num">${r.sH}</span>,\n`;
+    out += `        <span class="key">"sigmaF"</span>: <span class="num">${r.sF}</span>,\n`;
+    out += `        <span class="key">"sigmaX"</span>: <span class="num">${r.sX}</span>,\n`;
+    out += `        <span class="key">"sigmaY"</span>: <span class="num">${r.sY}</span>,\n`;
+    out += `        <span class="key">"sigmaZ"</span>: <span class="num">${r.sZ}</span>,\n`;
+    if (opts.cov) {
+      out += '        <span class="key">"highResolutionCoverage"</span>: <span class="bool">true</span>\n';
+    } else {
+      out += '        <span class="key">"sigmaSource"</span>: <span class="str">"per-point"</span>\n';
+    }
+    out += '      }' + (opts.cpy ? ',' : '') + '\n';
+  }
+  if (opts.cpy) {
+    out += '      <span class="key">"changePerYear"</span>: {\n';
+    out += `        <span class="key">"declination"</span>: <span class="num">${changePerYr.D}</span>,\n`;
+    out += `        <span class="key">"inclination"</span>: <span class="num">${changePerYr.I}</span>,\n`;
+    out += `        <span class="key">"totalField"</span>: <span class="num">${changePerYr.F}</span>\n`;
+    out += '      }\n';
+  }
+  out += '    },\n';
+  out += '    <span class="comment">// ... 4 more entries (2027 through 2030)</span>\n';
+  out += '  ]\n';
+  out += '}';
+  return out;
+}
+
+function renderCsvWide(opts) {
+  let header = 'Date,Declination,Inclination,Hor.Int.,North,East,Vertical,TotalField';
+  if (opts.unc) header += ',sigmaD,sigmaI,sigmaH,sigmaX,sigmaY,sigmaZ,sigmaF';
+  if (opts.cpy) header += ',d_Decl/yr,d_Incl/yr,d_F/yr';
+  if (opts.cov) header += ',NSDCovered';
+  let rows = '';
+  calcData.forEach(r => {
+    let row = `${r.date},${r.D},${r.I},${r.H},${r.X},${r.Y},${r.Z},${r.F}`;
+    if (opts.unc) row += `,${r.sD},${r.sI},${r.sH},${r.sX},${r.sY},${r.sZ},${r.sF}`;
+    if (opts.cpy) row += `,${changePerYr.D},${changePerYr.I},${changePerYr.F}`;
+    if (opts.cov) row += `,true`;
+    rows += row + '\n';
+  });
+  let head = '<span class="key">' + header + '</span>\n';
+  if (opts.meta) {
+    head = '<span class="comment"># model: HDGM2025 (HDGM, HighResolution, valid 2025-2030)</span>\n' + head;
+  }
+  return head + rows;
+}
+
+function renderCsvLong(opts) {
+  let header = 'Date,Field,Value,Unit';
+  if (opts.unc) header += ',Sigma';
+  if (opts.cpy) header += ',ChangePerYr';
+  let rows = '';
+  const fields = [
+    ['Declination', 'D', '°'],
+    ['Inclination', 'I', '°'],
+    ['HorizontalIntensity', 'H', 'nT'],
+    ['TotalField', 'F', 'nT'],
+    ['NorthComp', 'X', 'nT'],
+    ['EastComp', 'Y', 'nT'],
+    ['VerticalComp', 'Z', 'nT']
+  ];
+  calcData.slice(0, 1).forEach(r => {
+    fields.forEach(([name, key, unit]) => {
+      const valKey = key === 'F' ? 'F' : key;
+      const sKey = 's' + key;
+      let row = `${r.date},${name},${r[valKey]},${unit}`;
+      if (opts.unc) row += `,${r[sKey] ?? ''}`;
+      if (opts.cpy && changePerYr[valKey] !== undefined) row += `,${changePerYr[valKey]}`;
+      else if (opts.cpy) row += `,`;
+      rows += row + '\n';
+    });
+  });
+  let head = '<span class="key">' + header + '</span>\n';
+  if (opts.meta) {
+    head = '<span class="comment"># model: HDGM2025 (HDGM, HighResolution, valid 2025-2030)</span>\n' + head;
+  }
+  return head + rows + '<span class="comment"># ... same shape for 4 more dates</span>';
+}
+
+function renderTxt() {
+  return 'GeoMag # Calculation Results\n' +
+         'Model: HDGM2025\n' +
+         'Lat: 41.3100  Lon: -81.3300  Alt: 0 m\n\n' +
+         'Date         Decl.     Incl.     H        F\n' +
+         '2026-04-30   -8.4523°  69.2156°  18923    53589\n' +
+         '... (5 dates total)\n';
+}
+
+/* ── Pattern A: format toggle, always full data ── */
+function patAFormat() {
+  const sel = document.querySelector('input[name="fmtA"]:checked').value;
+  const opts = { unc: true, cpy: true, meta: true, cov: true };
+  let html;
+  if (sel === 'json') html = renderJSON(opts);
+  else if (sel === 'csv-wide') html = renderCsvWide(opts);
+  else html = renderCsvLong(opts);
+  document.getElementById('outA').innerHTML = html;
+}
+document.querySelectorAll('input[name="fmtA"]').forEach(r => r.addEventListener('change', patAFormat));
+patAFormat();
+
+/* ── Pattern B: live checkbox-driven preview ── */
+function patBRender() {
+  const fmt = document.getElementById('patB-format').value;
+  const opts = {
+    unc:  document.getElementById('patB-unc').checked,
+    cpy:  document.getElementById('patB-cpy').checked,
+    meta: document.getElementById('patB-meta').checked,
+    cov:  document.getElementById('patB-cov').checked
+  };
+  // update extension on filename
+  const ext = fmt.startsWith('csv') ? 'csv' : (fmt === 'txt' ? 'txt' : 'json');
+  const fn = document.getElementById('patB-filename');
+  fn.value = fn.value.replace(/\.(json|csv|txt)$/, '.' + ext);
+
+  let html;
+  if (fmt === 'json') html = renderJSON(opts);
+  else if (fmt === 'csv-wide') html = renderCsvWide(opts);
+  else if (fmt === 'csv-long') html = renderCsvLong(opts);
+  else html = renderTxt();
+  document.getElementById('outB').innerHTML = html;
+}
+['patB-format', 'patB-unc', 'patB-cpy', 'patB-meta', 'patB-cov'].forEach(id => {
+  document.getElementById(id).addEventListener('change', patBRender);
+});
+patBRender();
+
+/* ── Pattern C: two menu items switch the dialog/output ── */
+function patCSet(mode) {
+  const fn = document.getElementById('patC-filename');
+  const note = document.getElementById('patC-note');
+  const title = document.getElementById('patC-title');
+  const label = document.getElementById('patC-mode-label');
+  if (mode === 'grid') {
+    fn.value = 'results.csv';
+    title.textContent = 'Save Results';
+    note.textContent = 'Saves the visible grid columns (Date, Decl., Incl., Hor.Int., Total Field).';
+    label.textContent = '"Save Results" — visible columns only';
+    document.getElementById('patC-grid').classList.add('highlight');
+    document.getElementById('patC-full').classList.remove('highlight');
+    // Slim CSV with only visible columns
+    let header = 'Date,Declination,Inclination,Hor.Int.,TotalField\n';
+    let rows = '';
+    calcData.forEach(r => {
+      rows += `${r.date},${r.D},${r.I},${r.H},${r.F}\n`;
+    });
+    document.getElementById('outC').innerHTML = '<span class="key">' + header + '</span>' + rows;
+  } else {
+    fn.value = 'results-full.json';
+    title.textContent = 'Export Full Data';
+    note.textContent = 'Saves the complete data model: components, per-component σ, change/yr, model metadata, HDGM coverage flag.';
+    label.textContent = '"Export Full Data" — complete model';
+    document.getElementById('patC-full').classList.add('highlight');
+    document.getElementById('patC-grid').classList.remove('highlight');
+    document.getElementById('outC').innerHTML = renderJSON({ unc: true, cpy: true, meta: true, cov: true });
+  }
+}
+document.getElementById('patC-grid').addEventListener('click', () => patCSet('grid'));
+document.getElementById('patC-full').addEventListener('click', () => patCSet('full'));
+patCSet('grid');
+
+/* ── Sub-tab switcher within Mockup 4 ── */
+document.querySelectorAll('#patternTabs .pattern-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('#patternTabs .pattern-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.pattern-body').forEach(b => b.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('pat' + tab.dataset.pat).classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>
