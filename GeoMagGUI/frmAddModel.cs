@@ -42,10 +42,12 @@ namespace GeoMagGUI
 
         private void DisplayModelData()
         {
-            if (_Model == null)
+            if (_Model == null || _Model.DetectedType == knownModels.NONE)
             {
-                MessageBox.Show(this, "Failed to identify model from the selected file.",
+                MessageBox.Show(this,
+                    "The selected file's content could not be identified as a magnetic model.",
                     "Model Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _Model = null;
                 return;
             }
 

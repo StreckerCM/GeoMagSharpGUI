@@ -459,7 +459,7 @@ namespace GeoMagGUI
                 toolStripStatusLabel1.Text = "Validating model file...";
 
                 var descriptor = ModelDiscovery.DescribeFile(fDlg.FileName);
-                if (descriptor == null)
+                if (descriptor == null || descriptor.DetectedType == knownModels.NONE)
                 {
                     MessageBox.Show(this,
                         "The selected file is not a recognized magnetic model.",
