@@ -491,6 +491,7 @@
             this.tableLayoutPanel1.SetRowSpan(this.dataGridViewResults, 2);
             this.dataGridViewResults.Size = new System.Drawing.Size(808, 95);
             this.dataGridViewResults.TabIndex = 19;
+            this.dataGridViewResults.SelectionChanged += new System.EventHandler(this.dataGridViewResults_SelectionChanged);
             // 
             // ColumnDate
             // 
@@ -519,24 +520,27 @@
             this.ColumnHorizontalIntensity.HeaderText = "Horizontal Intensity";
             this.ColumnHorizontalIntensity.Name = "ColumnHorizontalIntensity";
             this.ColumnHorizontalIntensity.ReadOnly = true;
-            // 
-            // ColumnNorthComp
-            // 
+            //
+            // ColumnNorthComp (hidden as of #61 Phase 1 — value shown in CalculationDetailPanel)
+            //
             this.ColumnNorthComp.HeaderText = "North Comp (+N/-S)";
             this.ColumnNorthComp.Name = "ColumnNorthComp";
             this.ColumnNorthComp.ReadOnly = true;
-            // 
-            // ColumnEastComp
-            // 
+            this.ColumnNorthComp.Visible = false;
+            //
+            // ColumnEastComp (hidden as of #61 Phase 1 — value shown in CalculationDetailPanel)
+            //
             this.ColumnEastComp.HeaderText = "East Comp (+E/-W)";
             this.ColumnEastComp.Name = "ColumnEastComp";
             this.ColumnEastComp.ReadOnly = true;
-            // 
-            // ColumnVerticalComp
-            // 
+            this.ColumnEastComp.Visible = false;
+            //
+            // ColumnVerticalComp (hidden as of #61 Phase 1 — value shown in CalculationDetailPanel)
+            //
             this.ColumnVerticalComp.HeaderText = "Vertical Comp (+D/-U)";
             this.ColumnVerticalComp.Name = "ColumnVerticalComp";
             this.ColumnVerticalComp.ReadOnly = true;
+            this.ColumnVerticalComp.Visible = false;
             // 
             // ColumnTotalField
             // 
@@ -740,19 +744,31 @@
             this.toolStripButtonCancel.ToolTipText = "Cancel the current operation (Esc)";
             this.toolStripButtonCancel.Visible = false;
             this.toolStripButtonCancel.Click += new System.EventHandler(this.toolStripButtonCancel_Click);
-            // 
+            //
+            // calculationDetailPanel
+            //
+            this.calculationDetailPanel = new GeoMagGUI.CalculationDetailPanel();
+            this.calculationDetailPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                | System.Windows.Forms.AnchorStyles.Right)));
+            this.calculationDetailPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.calculationDetailPanel.Location = new System.Drawing.Point(844, 24);
+            this.calculationDetailPanel.Name = "calculationDetailPanel";
+            this.calculationDetailPanel.Size = new System.Drawing.Size(330, 245);
+            this.calculationDetailPanel.TabIndex = 100;
+            //
             // FrmMain
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(844, 316);
+            this.ClientSize = new System.Drawing.Size(1180, 316);
+            this.Controls.Add(this.calculationDetailPanel);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(804, 328);
+            this.MinimumSize = new System.Drawing.Size(1140, 328);
             this.Name = "FrmMain";
             this.Text = "GeoMag #";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmMain_KeyDown);
@@ -803,6 +819,7 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.DataGridView dataGridViewResults;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private GeoMagGUI.CalculationDetailPanel calculationDetailPanel;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemUseRangeOfDates;
         private System.Windows.Forms.Button buttonMyLocation;
