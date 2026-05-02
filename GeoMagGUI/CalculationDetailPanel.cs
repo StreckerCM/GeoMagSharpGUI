@@ -1,52 +1,36 @@
 using System;
-using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using GeoMagSharp;
 
-// Diagnostic tooltips on value labels (#61): hovering reveals the full
-// formatted string even when the cell visually clips it.
-
 namespace GeoMagGUI
 {
     /// <summary>
-    /// Side panel that displays the full breakdown of a selected calculation row:
-    /// field values with per-component sigma, components, change/yr, and model metadata.
-    /// Phase 1 + 2 of issue #61 (results grid redesign).
+    /// Side panel that displays the full breakdown of a selected calculation row.
+    /// Three-column layout for value rows: [name | value | sigma]. The sigma column
+    /// gets dedicated horizontal space rather than being concatenated into the value.
     /// </summary>
     public partial class CalculationDetailPanel : UserControl
     {
-        private readonly ToolTip _valueTooltip = new ToolTip();
-
         public CalculationDetailPanel()
         {
             InitializeComponent();
             Clear();
         }
 
-        private void SetValueWithTooltip(Label lbl, string text)
-        {
-            lbl.Text = text;
-            _valueTooltip.SetToolTip(lbl, text);
-        }
-
-        /// <summary>
-        /// Reset all labels to "—" placeholders. Called when the grid is empty
-        /// or when no row is selected.
-        /// </summary>
         public void Clear()
         {
             labelHeaderDate.Text = "(no calculation)";
             labelHeaderRowIndex.Text = string.Empty;
 
-            labelDeclValue.Text = "—";
-            labelInclValue.Text = "—";
-            labelHValue.Text = "—";
-            labelFValue.Text = "—";
+            labelDeclValue.Text = "—";  labelDeclSigma.Text = "";
+            labelInclValue.Text = "—";  labelInclSigma.Text = "";
+            labelHValue.Text    = "—";  labelHSigma.Text    = "";
+            labelFValue.Text    = "—";  labelFSigma.Text    = "";
 
-            labelXValue.Text = "—";
-            labelYValue.Text = "—";
-            labelZValue.Text = "—";
+            labelXValue.Text = "—";  labelXSigma.Text = "";
+            labelYValue.Text = "—";  labelYSigma.Text = "";
+            labelZValue.Text = "—";  labelZSigma.Text = "";
 
             labelChangeDecl.Text = "—";
             labelChangeIncl.Text = "—";
@@ -60,14 +44,6 @@ namespace GeoMagGUI
             labelCoverageBadge.Visible = false;
         }
 
-        /// <summary>
-        /// Populate the panel with a single row's calculation result.
-        /// </summary>
-        /// <param name="result">The calculation for the selected date.</param>
-        /// <param name="rowIndex">Zero-based row index in the grid.</param>
-        /// <param name="totalRows">Total rows currently in the grid.</param>
-        /// <param name="changePerYearLast">The last result's secular variation values.</param>
-        /// <param name="descriptor">The discovered model descriptor (may be null for legacy paths).</param>
         public void LoadCalculation(MagneticCalculations result,
                                     int rowIndex,
                                     int totalRows,
@@ -85,31 +61,37 @@ namespace GeoMagGUI
                 ? string.Format(CultureInfo.CurrentCulture, "row {0} of {1}", rowIndex + 1, totalRows)
                 : string.Empty;
 
-            // Read per-point sigmas (HDGM populates these). Fall back to ISCWSA values
-            // for D/I/F when per-point are absent. X/Y/Z/H per-component sigmas are HDGM-only
-            // until GeoMagSharp#13 (WMM/WMMHR Level 2) lands.
+            // Per-point sigmas (HDGM populates these). Fall back to ISCWSA values
+            // for D/I/F when per-point are absent. X/Y/Z/H per-component sigmas are
+            // HDGM-only until GeoMagSharp#13 (WMM/WMMHR Level 2) lands.
             var unc = result.Uncertainty;
-            double? sD = unc?.SigmaD ?? unc?.Declination;
-            double? sI = unc?.SigmaI ?? unc?.DipAngle;
-            double? sH = unc?.SigmaH;
-            double? sF = unc?.SigmaF ?? unc?.TotalField;
-            double? sX = unc?.SigmaX;
-            double? sY = unc?.SigmaY;
-            double? sZ = unc?.SigmaZ;
+            double? sD = NonZero(unc?.SigmaD) ?? NonZero(unc?.Declination);
+            double? sI = NonZero(unc?.SigmaI) ?? NonZero(unc?.DipAngle);
+            double? sH = NonZero(unc?.SigmaH);
+            double? sF = NonZero(unc?.SigmaF) ?? NonZero(unc?.TotalField);
+            double? sX = NonZero(unc?.SigmaX);
+            double? sY = NonZero(unc?.SigmaY);
+            double? sZ = NonZero(unc?.SigmaZ);
 
-            // Field values (with sigma inline)
-            SetValueWithTooltip(labelDeclValue, FormatDegreesWithSigma(result.Declination?.Value, sD));
-            SetValueWithTooltip(labelInclValue, FormatDegreesWithSigma(result.Inclination?.Value, sI));
-            SetValueWithTooltip(labelHValue,    FormatNanoTeslaWithSigma(result.HorizontalIntensity?.Value, sH));
-            SetValueWithTooltip(labelFValue,    FormatNanoTeslaWithSigma(result.TotalField?.Value, sF));
+            // Field values + sigmas (separate labels in dedicated columns)
+            labelDeclValue.Text = FormatDegrees(result.Declination?.Value);
+            labelDeclSigma.Text = FormatSigmaDegrees(sD);
+            labelInclValue.Text = FormatDegrees(result.Inclination?.Value);
+            labelInclSigma.Text = FormatSigmaDegrees(sI);
+            labelHValue.Text    = FormatNanoTesla(result.HorizontalIntensity?.Value);
+            labelHSigma.Text    = FormatSigmaNanoTesla(sH);
+            labelFValue.Text    = FormatNanoTesla(result.TotalField?.Value);
+            labelFSigma.Text    = FormatSigmaNanoTesla(sF);
 
             // Components
-            SetValueWithTooltip(labelXValue, FormatNanoTeslaWithSigma(result.NorthComp?.Value, sX));
-            SetValueWithTooltip(labelYValue, FormatNanoTeslaWithSigma(result.EastComp?.Value, sY));
-            SetValueWithTooltip(labelZValue, FormatNanoTeslaWithSigma(result.VerticalComp?.Value, sZ));
+            labelXValue.Text = FormatNanoTesla(result.NorthComp?.Value);
+            labelXSigma.Text = FormatSigmaNanoTesla(sX);
+            labelYValue.Text = FormatNanoTesla(result.EastComp?.Value);
+            labelYSigma.Text = FormatSigmaNanoTesla(sY);
+            labelZValue.Text = FormatNanoTesla(result.VerticalComp?.Value);
+            labelZSigma.Text = FormatSigmaNanoTesla(sZ);
 
-            // Change per year (use last row's values; secular variation is reported per-model
-            // not per-row, and the existing app convention is to show the latest date's values)
+            // Change per year
             if (changePerYearLast != null)
             {
                 labelChangeDecl.Text = FormatChangeDegrees(changePerYearLast.Declination?.ChangePerYear);
@@ -141,7 +123,6 @@ namespace GeoMagGUI
                 ? "NOAA DLL (per-point)"
                 : (unc != null ? "ISCWSA (default)" : "—");
 
-            // Coverage badge — HDGM only, color based on NSD coverage flag
             UpdateCoverageBadge(unc);
         }
 
@@ -156,36 +137,41 @@ namespace GeoMagGUI
             if (unc.HighResolutionCoverage.Value)
             {
                 labelCoverageBadge.Text = "✓ NSD covered";
-                labelCoverageBadge.BackColor = Color.FromArgb(230, 244, 234);
-                labelCoverageBadge.ForeColor = Color.FromArgb(19, 115, 51);
+                labelCoverageBadge.BackColor = System.Drawing.Color.FromArgb(230, 244, 234);
+                labelCoverageBadge.ForeColor = System.Drawing.Color.FromArgb(19, 115, 51);
             }
             else
             {
                 labelCoverageBadge.Text = "⚠ Satellite fallback";
-                labelCoverageBadge.BackColor = Color.FromArgb(254, 247, 224);
-                labelCoverageBadge.ForeColor = Color.FromArgb(176, 96, 0);
+                labelCoverageBadge.BackColor = System.Drawing.Color.FromArgb(254, 247, 224);
+                labelCoverageBadge.ForeColor = System.Drawing.Color.FromArgb(176, 96, 0);
             }
             labelCoverageBadge.Visible = true;
         }
 
         // ─── Formatters ─────────────────────────────────────────────
 
-        private static string FormatDegreesWithSigma(double? v, double? sigma)
+        /// <summary>Treat exact-zero sigmas as "not provided" — saves the user from misreading "± 0.00°" as if HDGM had perfect knowledge.</summary>
+        private static double? NonZero(double? v) => (v.HasValue && v.Value != 0.0) ? v : null;
+
+        private static string FormatDegrees(double? v)
         {
-            if (!v.HasValue) return "—";
-            string main = v.Value.ToString("F4", CultureInfo.CurrentCulture) + "°";
-            if (sigma.HasValue)
-                return main + "  ± " + sigma.Value.ToString("F2", CultureInfo.CurrentCulture) + "°";
-            return main;
+            return v.HasValue ? v.Value.ToString("F4", CultureInfo.CurrentCulture) + "°" : "—";
         }
 
-        private static string FormatNanoTeslaWithSigma(double? v, double? sigma)
+        private static string FormatNanoTesla(double? v)
         {
-            if (!v.HasValue) return "—";
-            string main = v.Value.ToString("N0", CultureInfo.CurrentCulture) + " nT";
-            if (sigma.HasValue)
-                return main + "  ± " + sigma.Value.ToString("N0", CultureInfo.CurrentCulture) + " nT";
-            return main;
+            return v.HasValue ? v.Value.ToString("N0", CultureInfo.CurrentCulture) + " nT" : "";
+        }
+
+        private static string FormatSigmaDegrees(double? v)
+        {
+            return v.HasValue ? "± " + v.Value.ToString("F2", CultureInfo.CurrentCulture) + "°" : "";
+        }
+
+        private static string FormatSigmaNanoTesla(double? v)
+        {
+            return v.HasValue ? "± " + v.Value.ToString("N0", CultureInfo.CurrentCulture) + " nT" : "";
         }
 
         private static string FormatChangeDegrees(double? v)
