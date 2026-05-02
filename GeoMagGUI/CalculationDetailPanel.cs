@@ -4,6 +4,9 @@ using System.Globalization;
 using System.Windows.Forms;
 using GeoMagSharp;
 
+// Diagnostic tooltips on value labels (#61): hovering reveals the full
+// formatted string even when the cell visually clips it.
+
 namespace GeoMagGUI
 {
     /// <summary>
@@ -13,10 +16,18 @@ namespace GeoMagGUI
     /// </summary>
     public partial class CalculationDetailPanel : UserControl
     {
+        private readonly ToolTip _valueTooltip = new ToolTip();
+
         public CalculationDetailPanel()
         {
             InitializeComponent();
             Clear();
+        }
+
+        private void SetValueWithTooltip(Label lbl, string text)
+        {
+            lbl.Text = text;
+            _valueTooltip.SetToolTip(lbl, text);
         }
 
         /// <summary>
@@ -87,15 +98,15 @@ namespace GeoMagGUI
             double? sZ = unc?.SigmaZ;
 
             // Field values (with sigma inline)
-            labelDeclValue.Text = FormatDegreesWithSigma(result.Declination?.Value, sD);
-            labelInclValue.Text = FormatDegreesWithSigma(result.Inclination?.Value, sI);
-            labelHValue.Text    = FormatNanoTeslaWithSigma(result.HorizontalIntensity?.Value, sH);
-            labelFValue.Text    = FormatNanoTeslaWithSigma(result.TotalField?.Value, sF);
+            SetValueWithTooltip(labelDeclValue, FormatDegreesWithSigma(result.Declination?.Value, sD));
+            SetValueWithTooltip(labelInclValue, FormatDegreesWithSigma(result.Inclination?.Value, sI));
+            SetValueWithTooltip(labelHValue,    FormatNanoTeslaWithSigma(result.HorizontalIntensity?.Value, sH));
+            SetValueWithTooltip(labelFValue,    FormatNanoTeslaWithSigma(result.TotalField?.Value, sF));
 
             // Components
-            labelXValue.Text = FormatNanoTeslaWithSigma(result.NorthComp?.Value, sX);
-            labelYValue.Text = FormatNanoTeslaWithSigma(result.EastComp?.Value, sY);
-            labelZValue.Text = FormatNanoTeslaWithSigma(result.VerticalComp?.Value, sZ);
+            SetValueWithTooltip(labelXValue, FormatNanoTeslaWithSigma(result.NorthComp?.Value, sX));
+            SetValueWithTooltip(labelYValue, FormatNanoTeslaWithSigma(result.EastComp?.Value, sY));
+            SetValueWithTooltip(labelZValue, FormatNanoTeslaWithSigma(result.VerticalComp?.Value, sZ));
 
             // Change per year (use last row's values; secular variation is reported per-model
             // not per-row, and the existing app convention is to show the latest date's values)

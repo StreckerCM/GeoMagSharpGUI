@@ -251,6 +251,7 @@ namespace GeoMagGUI
             nameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 
             valueLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            valueLabel.AutoEllipsis = true;
             valueLabel.AutoSize = false;
             valueLabel.Font = new System.Drawing.Font("Consolas", 9F);
             valueLabel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
