@@ -53,6 +53,9 @@ namespace GeoMagGUI
         private System.Windows.Forms.Label labelModelSigmaSourceName;
         private System.Windows.Forms.Label labelModelSigmaSource;
 
+        // Coverage badge (HDGM only)
+        private System.Windows.Forms.Label labelCoverageBadge;
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -107,6 +110,8 @@ namespace GeoMagGUI
             this.labelModelValidity = new System.Windows.Forms.Label();
             this.labelModelSigmaSourceName = new System.Windows.Forms.Label();
             this.labelModelSigmaSource = new System.Windows.Forms.Label();
+
+            this.labelCoverageBadge = new System.Windows.Forms.Label();
 
             this.pnlHeader.SuspendLayout();
             this.grpFieldValues.SuspendLayout();
@@ -169,17 +174,28 @@ namespace GeoMagGUI
             AddRow(this.tblModel, 2, this.labelModelValidityName,    "Validity", this.labelModelValidity);
             AddRow(this.tblModel, 3, this.labelModelSigmaSourceName, "σ source", this.labelModelSigmaSource);
 
+            // ── Coverage badge (HDGM-only; populated dynamically by LoadCalculation) ──
+            this.labelCoverageBadge.AutoSize = true;
+            this.labelCoverageBadge.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelCoverageBadge.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular);
+            this.labelCoverageBadge.Location = new System.Drawing.Point(16, 540);
+            this.labelCoverageBadge.Name = "labelCoverageBadge";
+            this.labelCoverageBadge.Padding = new System.Windows.Forms.Padding(8, 3, 8, 3);
+            this.labelCoverageBadge.Text = "✓ NSD covered";
+            this.labelCoverageBadge.Visible = false;
+
             // ── UserControl root ──
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
+            this.Controls.Add(this.labelCoverageBadge);
             this.Controls.Add(this.grpModel);
             this.Controls.Add(this.grpChange);
             this.Controls.Add(this.grpComponents);
             this.Controls.Add(this.grpFieldValues);
             this.Controls.Add(this.pnlHeader);
             this.Name = "CalculationDetailPanel";
-            this.Size = new System.Drawing.Size(320, 540);
+            this.Size = new System.Drawing.Size(320, 580);
 
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();

@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using GeoMagSharp;
@@ -7,8 +8,8 @@ namespace GeoMagGUI
 {
     /// <summary>
     /// Side panel that displays the full breakdown of a selected calculation row:
-    /// field values, components, change/yr, and model metadata.
-    /// Phase 1 of issue #61 (results grid redesign).
+    /// field values with per-component sigma, components, change/yr, and model metadata.
+    /// Phase 1 + 2 of issue #61 (results grid redesign).
     /// </summary>
     public partial class CalculationDetailPanel : UserControl
     {
@@ -44,6 +45,8 @@ namespace GeoMagGUI
             labelModelCategory.Text = "—";
             labelModelValidity.Text = "—";
             labelModelSigmaSource.Text = "—";
+
+            labelCoverageBadge.Visible = false;
         }
 
         /// <summary>
@@ -52,15 +55,13 @@ namespace GeoMagGUI
         /// <param name="result">The calculation for the selected date.</param>
         /// <param name="rowIndex">Zero-based row index in the grid.</param>
         /// <param name="totalRows">Total rows currently in the grid.</param>
-        /// <param name="changePerYearLast">The last result's secular variation values (same for all rows in a calc).</param>
-        /// <param name="modelName">Display name of the loaded model.</param>
-        /// <param name="modelType">Detected type of the loaded model.</param>
+        /// <param name="changePerYearLast">The last result's secular variation values.</param>
+        /// <param name="descriptor">The discovered model descriptor (may be null for legacy paths).</param>
         public void LoadCalculation(MagneticCalculations result,
                                     int rowIndex,
                                     int totalRows,
                                     MagneticCalculations changePerYearLast,
-                                    string modelName,
-                                    knownModels modelType)
+                                    ModelDescriptor descriptor)
         {
             if (result == null)
             {
@@ -73,18 +74,31 @@ namespace GeoMagGUI
                 ? string.Format(CultureInfo.CurrentCulture, "row {0} of {1}", rowIndex + 1, totalRows)
                 : string.Empty;
 
-            // Field values
-            labelDeclValue.Text = FormatDegrees(result.Declination?.Value);
-            labelInclValue.Text = FormatDegrees(result.Inclination?.Value);
-            labelHValue.Text    = FormatNanoTesla(result.HorizontalIntensity?.Value);
-            labelFValue.Text    = FormatNanoTesla(result.TotalField?.Value);
+            // Read per-point sigmas (HDGM populates these). Fall back to ISCWSA values
+            // for D/I/F when per-point are absent. X/Y/Z/H per-component sigmas are HDGM-only
+            // until GeoMagSharp#13 (WMM/WMMHR Level 2) lands.
+            var unc = result.Uncertainty;
+            double? sD = unc?.SigmaD ?? unc?.Declination;
+            double? sI = unc?.SigmaI ?? unc?.DipAngle;
+            double? sH = unc?.SigmaH;
+            double? sF = unc?.SigmaF ?? unc?.TotalField;
+            double? sX = unc?.SigmaX;
+            double? sY = unc?.SigmaY;
+            double? sZ = unc?.SigmaZ;
+
+            // Field values (with sigma inline)
+            labelDeclValue.Text = FormatDegreesWithSigma(result.Declination?.Value, sD);
+            labelInclValue.Text = FormatDegreesWithSigma(result.Inclination?.Value, sI);
+            labelHValue.Text    = FormatNanoTeslaWithSigma(result.HorizontalIntensity?.Value, sH);
+            labelFValue.Text    = FormatNanoTeslaWithSigma(result.TotalField?.Value, sF);
 
             // Components
-            labelXValue.Text = FormatNanoTesla(result.NorthComp?.Value);
-            labelYValue.Text = FormatNanoTesla(result.EastComp?.Value);
-            labelZValue.Text = FormatNanoTesla(result.VerticalComp?.Value);
+            labelXValue.Text = FormatNanoTeslaWithSigma(result.NorthComp?.Value, sX);
+            labelYValue.Text = FormatNanoTeslaWithSigma(result.EastComp?.Value, sY);
+            labelZValue.Text = FormatNanoTeslaWithSigma(result.VerticalComp?.Value, sZ);
 
-            // Change per year (taken from changePerYearLast, since secular variation is per-model not per-row)
+            // Change per year (use last row's values; secular variation is reported per-model
+            // not per-row, and the existing app convention is to show the latest date's values)
             if (changePerYearLast != null)
             {
                 labelChangeDecl.Text = FormatChangeDegrees(changePerYearLast.Declination?.ChangePerYear);
@@ -99,24 +113,68 @@ namespace GeoMagGUI
             }
 
             // Model
-            labelModelName.Text = string.IsNullOrEmpty(modelName) ? "—" : modelName;
-            labelModelCategory.Text = modelType.ToString();
-            labelModelValidity.Text = "—"; // Phase 2: pull from descriptor.MinDate/MaxDate
-            labelModelSigmaSource.Text = (result.Uncertainty != null && result.Uncertainty.SigmaD.HasValue)
-                ? "per-point (model)"
-                : "ISCWSA (default)";
+            if (descriptor != null)
+            {
+                labelModelName.Text = string.IsNullOrEmpty(descriptor.DisplayName) ? "—" : descriptor.DisplayName;
+                labelModelCategory.Text = descriptor.DetectedType.ToString();
+                labelModelValidity.Text = FormatValidityRange(descriptor.MinDate, descriptor.MaxDate);
+            }
+            else
+            {
+                labelModelName.Text = "—";
+                labelModelCategory.Text = "—";
+                labelModelValidity.Text = "—";
+            }
+
+            labelModelSigmaSource.Text = (unc != null && unc.SigmaD.HasValue)
+                ? "NOAA DLL (per-point)"
+                : (unc != null ? "ISCWSA (default)" : "—");
+
+            // Coverage badge — HDGM only, color based on NSD coverage flag
+            UpdateCoverageBadge(unc);
+        }
+
+        private void UpdateCoverageBadge(GeomagneticUncertainty unc)
+        {
+            if (unc == null || !unc.HighResolutionCoverage.HasValue)
+            {
+                labelCoverageBadge.Visible = false;
+                return;
+            }
+
+            if (unc.HighResolutionCoverage.Value)
+            {
+                labelCoverageBadge.Text = "✓ NSD covered";
+                labelCoverageBadge.BackColor = Color.FromArgb(230, 244, 234);
+                labelCoverageBadge.ForeColor = Color.FromArgb(19, 115, 51);
+            }
+            else
+            {
+                labelCoverageBadge.Text = "⚠ Satellite fallback";
+                labelCoverageBadge.BackColor = Color.FromArgb(254, 247, 224);
+                labelCoverageBadge.ForeColor = Color.FromArgb(176, 96, 0);
+            }
+            labelCoverageBadge.Visible = true;
         }
 
         // ─── Formatters ─────────────────────────────────────────────
 
-        private static string FormatDegrees(double? v)
+        private static string FormatDegreesWithSigma(double? v, double? sigma)
         {
-            return v.HasValue ? v.Value.ToString("F4", CultureInfo.CurrentCulture) + "°" : "—";
+            if (!v.HasValue) return "—";
+            string main = v.Value.ToString("F4", CultureInfo.CurrentCulture) + "°";
+            if (sigma.HasValue)
+                return main + "  ± " + sigma.Value.ToString("F2", CultureInfo.CurrentCulture) + "°";
+            return main;
         }
 
-        private static string FormatNanoTesla(double? v)
+        private static string FormatNanoTeslaWithSigma(double? v, double? sigma)
         {
-            return v.HasValue ? v.Value.ToString("N0", CultureInfo.CurrentCulture) + " nT" : "—";
+            if (!v.HasValue) return "—";
+            string main = v.Value.ToString("N0", CultureInfo.CurrentCulture) + " nT";
+            if (sigma.HasValue)
+                return main + "  ± " + sigma.Value.ToString("N0", CultureInfo.CurrentCulture) + " nT";
+            return main;
         }
 
         private static string FormatChangeDegrees(double? v)
@@ -131,6 +189,14 @@ namespace GeoMagGUI
             if (!v.HasValue) return "—";
             string sign = v.Value >= 0 ? "+" : "";
             return sign + v.Value.ToString("F2", CultureInfo.CurrentCulture) + " nT/yr";
+        }
+
+        private static string FormatValidityRange(double? minDate, double? maxDate)
+        {
+            if (!minDate.HasValue && !maxDate.HasValue) return "—";
+            string lo = minDate.HasValue ? ((int)minDate.Value).ToString(CultureInfo.CurrentCulture) : "?";
+            string hi = maxDate.HasValue ? ((int)maxDate.Value).ToString(CultureInfo.CurrentCulture) : "?";
+            return lo + " – " + hi;
         }
     }
 }

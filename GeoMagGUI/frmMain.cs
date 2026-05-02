@@ -247,6 +247,7 @@ namespace GeoMagGUI
                     _lastCalculationOptions = calcOptions;
                     _lastModelName = selectedDescriptor.DisplayName;
                     _lastModelType = selectedDescriptor.DetectedType;
+                    _lastDescriptor = selectedDescriptor;
 
                     if (toolStripMenuItemUseRangeOfDates.Checked) calcOptions.EndDate = dateTimePicker2.Value;
 
@@ -859,6 +860,7 @@ namespace GeoMagGUI
         private CalculationOptions _lastCalculationOptions;
         private string _lastModelName;
         private knownModels _lastModelType;
+        private ModelDescriptor _lastDescriptor;
 
         // ── #61 Phase 1 — populate the detail side panel from grid selection ──
 
@@ -893,8 +895,7 @@ namespace GeoMagGUI
                 idx,
                 results.Count,
                 results.Last(),
-                _lastModelName,
-                _lastModelType);
+                _lastDescriptor);
         }
 
         private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
