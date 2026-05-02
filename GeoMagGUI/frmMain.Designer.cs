@@ -599,7 +599,10 @@
             this.tableLayoutPanel1.Controls.Add(this.comboBoxAltitudeUnits, 19, 3);
             this.tableLayoutPanel1.Controls.Add(this.ComboBoxLongDir, 12, 4);
             this.tableLayoutPanel1.Controls.Add(this.ComboBoxLatDir, 5, 4);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            // #61 Phase 1: was Dock=Fill, now anchored Top|Bottom|Left so the right side
+            // of the form is reserved for calculationDetailPanel without overlap.
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                | System.Windows.Forms.AnchorStyles.Left))));
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -622,7 +625,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(844, 245);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(844, 534);
             this.tableLayoutPanel1.TabIndex = 23;
             // 
             // label3
