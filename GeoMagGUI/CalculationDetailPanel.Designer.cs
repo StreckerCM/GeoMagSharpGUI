@@ -131,7 +131,7 @@ namespace GeoMagGUI
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Padding = new System.Windows.Forms.Padding(8);
-            this.pnlHeader.Size = new System.Drawing.Size(320, 40);
+            this.pnlHeader.Size = new System.Drawing.Size(380, 40);
             this.pnlHeader.TabIndex = 0;
 
             this.labelHeaderDate.AutoSize = true;
@@ -195,7 +195,7 @@ namespace GeoMagGUI
             this.Controls.Add(this.grpFieldValues);
             this.Controls.Add(this.pnlHeader);
             this.Name = "CalculationDetailPanel";
-            this.Size = new System.Drawing.Size(320, 580);
+            this.Size = new System.Drawing.Size(380, 580);
 
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
@@ -220,12 +220,12 @@ namespace GeoMagGUI
             grp.Controls.Add(tbl);
             grp.Location = new System.Drawing.Point(8, top);
             grp.Name = "grp" + title.Replace(" ", "");
-            grp.Size = new System.Drawing.Size(304, rowCount * 24 + 32);
+            grp.Size = new System.Drawing.Size(364, rowCount * 24 + 32);
             grp.TabStop = false;
             grp.Text = title;
 
             tbl.ColumnCount = 2;
-            tbl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
+            tbl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
             tbl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tbl.Dock = System.Windows.Forms.DockStyle.Fill;
             tbl.Location = new System.Drawing.Point(3, 16);
