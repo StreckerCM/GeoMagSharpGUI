@@ -242,16 +242,18 @@ namespace GeoMagGUI
                             System.Windows.Forms.Label nameLabel, string nameText,
                             System.Windows.Forms.Label valueLabel)
         {
-            nameLabel.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            nameLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             nameLabel.AutoSize = false;
             nameLabel.ForeColor = System.Drawing.SystemColors.GrayText;
+            nameLabel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             nameLabel.Name = "name" + row;
             nameLabel.Text = nameText;
             nameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 
-            valueLabel.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            valueLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             valueLabel.AutoSize = false;
             valueLabel.Font = new System.Drawing.Font("Consolas", 9F);
+            valueLabel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             valueLabel.Name = "value" + row;
             valueLabel.Text = "—";
             valueLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
