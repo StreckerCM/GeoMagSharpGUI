@@ -750,17 +750,18 @@
             this.calculationDetailPanel = new GeoMagGUI.CalculationDetailPanel();
             this.calculationDetailPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                 | System.Windows.Forms.AnchorStyles.Right)));
+            this.calculationDetailPanel.AutoScroll = true;
             this.calculationDetailPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.calculationDetailPanel.Location = new System.Drawing.Point(844, 24);
             this.calculationDetailPanel.Name = "calculationDetailPanel";
-            this.calculationDetailPanel.Size = new System.Drawing.Size(330, 245);
+            this.calculationDetailPanel.Size = new System.Drawing.Size(330, 510);
             this.calculationDetailPanel.TabIndex = 100;
             //
             // FrmMain
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1180, 316);
+            this.ClientSize = new System.Drawing.Size(1180, 580);
             this.Controls.Add(this.calculationDetailPanel);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
@@ -768,7 +769,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(1140, 328);
+            this.MinimumSize = new System.Drawing.Size(1140, 590);
             this.Name = "FrmMain";
             this.Text = "GeoMag #";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmMain_KeyDown);
