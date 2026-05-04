@@ -49,8 +49,10 @@ namespace GeoMagGUI
             labelModelName.Text = "—";
             labelModelCategory.Text = "—";
             labelModelValidity.Text = "—";
+            labelModelAltitude.Text = "—";
             labelModelSigmaSource.Text = "—";
 
+            labelDegreeBadge.Visible = false;
             labelCoverageBadge.Visible = false;
         }
 
@@ -114,18 +116,21 @@ namespace GeoMagGUI
                 labelModelName.Text = string.IsNullOrEmpty(descriptor.DisplayName) ? "—" : descriptor.DisplayName;
                 labelModelCategory.Text = descriptor.DetectedType.ToString();
                 labelModelValidity.Text = FormatValidityRange(descriptor.MinDate, descriptor.MaxDate);
+                labelModelAltitude.Text = FormatAltitudeRange(descriptor.MinAltitudeKm, descriptor.MaxAltitudeKm);
             }
             else
             {
                 labelModelName.Text = "—";
                 labelModelCategory.Text = "—";
                 labelModelValidity.Text = "—";
+                labelModelAltitude.Text = "—";
             }
 
             labelModelSigmaSource.Text = (unc != null && unc.SigmaD.HasValue)
                 ? "NOAA DLL (per-point)"
                 : (unc != null ? "ISCWSA (default)" : "—");
 
+            UpdateDegreeBadge(descriptor);
             UpdateCoverageBadge(unc);
         }
 
@@ -214,9 +219,9 @@ namespace GeoMagGUI
             labelChangeF        = MakeValueLabel();
             AddRow2(tblChange, 2, labelChangeFName, labelChangeF);
 
-            // Model group (2-col)
-            grpModel = MakeGroupBox("Model", 408, 4);
-            tblModel = MakeTableLayoutPanel(threeColumns: false, rowCount: 4);
+            // Model group (2-col); top shifted from 408 → 424 to clear grpChange (ends 416)
+            grpModel = MakeGroupBox("Model", 424, 5);
+            tblModel = MakeTableLayoutPanel(threeColumns: false, rowCount: 5);
             grpModel.Controls.Add(tblModel);
             labelModelNameName        = MakeNameLabel("Name");
             labelModelName            = MakeValueLabel();
@@ -227,9 +232,27 @@ namespace GeoMagGUI
             labelModelValidityName    = MakeNameLabel("Validity");
             labelModelValidity        = MakeValueLabel();
             AddRow2(tblModel, 2, labelModelValidityName, labelModelValidity);
+            labelModelAltitudeName    = MakeNameLabel("Altitude");
+            labelModelAltitude        = MakeValueLabel();
+            AddRow2(tblModel, 3, labelModelAltitudeName, labelModelAltitude);
             labelModelSigmaSourceName = MakeNameLabel("σ source");
             labelModelSigmaSource     = MakeValueLabel();
-            AddRow2(tblModel, 3, labelModelSigmaSourceName, labelModelSigmaSource);
+            AddRow2(tblModel, 4, labelModelSigmaSourceName, labelModelSigmaSource);
+
+            // Degree chip (shown when descriptor.MaxDegree is known)
+            labelDegreeBadge = new Label
+            {
+                AutoSize = true,
+                BorderStyle = BorderStyle.FixedSingle,
+                Font = new Font("Segoe UI", 8F, FontStyle.Regular),
+                BackColor = Color.FromArgb(232, 240, 254),
+                ForeColor = Color.FromArgb(26, 86, 219),
+                Location = new Point(16, 588),
+                Name = "labelDegreeBadge",
+                Padding = new Padding(8, 3, 8, 3),
+                Text = "Degree —",
+                Visible = false
+            };
 
             // Coverage badge (populated by LoadCalculation)
             labelCoverageBadge = new Label
@@ -237,7 +260,7 @@ namespace GeoMagGUI
                 AutoSize = true,
                 BorderStyle = BorderStyle.FixedSingle,
                 Font = new Font("Segoe UI", 8F, FontStyle.Regular),
-                Location = new Point(16, 540),
+                Location = new Point(16, 614),
                 Name = "labelCoverageBadge",
                 Padding = new Padding(8, 3, 8, 3),
                 Text = "✓ NSD covered",
@@ -245,6 +268,7 @@ namespace GeoMagGUI
             };
 
             // Add everything to the user control (order: bottom-most last)
+            Controls.Add(labelDegreeBadge);
             Controls.Add(labelCoverageBadge);
             Controls.Add(grpModel);
             Controls.Add(grpChange);
@@ -339,7 +363,19 @@ namespace GeoMagGUI
             tbl.Controls.Add(sigmaLabel, 2, row);
         }
 
-        // ─── Coverage badge ─────────────────────────────────────────────
+        // ─── Chips ──────────────────────────────────────────────────────
+
+        private void UpdateDegreeBadge(ModelDescriptor descriptor)
+        {
+            if (descriptor == null || !descriptor.MaxDegree.HasValue)
+            {
+                labelDegreeBadge.Visible = false;
+                return;
+            }
+
+            labelDegreeBadge.Text = "Degree " + descriptor.MaxDegree.Value.ToString(CultureInfo.CurrentCulture);
+            labelDegreeBadge.Visible = true;
+        }
 
         private void UpdateCoverageBadge(GeomagneticUncertainty unc)
         {
@@ -408,6 +444,14 @@ namespace GeoMagGUI
             string lo = minDate.HasValue ? ((int)minDate.Value).ToString(CultureInfo.CurrentCulture) : "?";
             string hi = maxDate.HasValue ? ((int)maxDate.Value).ToString(CultureInfo.CurrentCulture) : "?";
             return lo + " – " + hi;
+        }
+
+        private static string FormatAltitudeRange(double? minKm, double? maxKm)
+        {
+            if (!minKm.HasValue && !maxKm.HasValue) return "—";
+            string lo = minKm.HasValue ? minKm.Value.ToString("0.###", CultureInfo.CurrentCulture) : "?";
+            string hi = maxKm.HasValue ? maxKm.Value.ToString("0.###", CultureInfo.CurrentCulture) : "?";
+            return lo + " – " + hi + " km";
         }
     }
 }

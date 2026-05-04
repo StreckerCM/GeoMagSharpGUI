@@ -63,10 +63,13 @@ namespace GeoMagGUI
         private System.Windows.Forms.Label labelModelCategory;
         private System.Windows.Forms.Label labelModelValidityName;
         private System.Windows.Forms.Label labelModelValidity;
+        private System.Windows.Forms.Label labelModelAltitudeName;
+        private System.Windows.Forms.Label labelModelAltitude;
         private System.Windows.Forms.Label labelModelSigmaSourceName;
         private System.Windows.Forms.Label labelModelSigmaSource;
 
-        // Coverage badge (HDGM only)
+        // Chips (degree shown when descriptor.MaxDegree is known; coverage HDGM-only)
+        private System.Windows.Forms.Label labelDegreeBadge;
         private System.Windows.Forms.Label labelCoverageBadge;
 
         protected override void Dispose(bool disposing)
@@ -89,7 +92,7 @@ namespace GeoMagGUI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.Name = "CalculationDetailPanel";
-            this.Size = new System.Drawing.Size(380, 580);
+            this.Size = new System.Drawing.Size(380, 644);
             this.ResumeLayout(false);
         }
     }
