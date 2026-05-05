@@ -49,6 +49,7 @@ namespace GeoMagGUI
             labelModelName.Text = "—";
             labelModelCategory.Text = "—";
             labelModelValidity.Text = "—";
+            labelModelEpochs.Text = "—";
             labelModelAltitude.Text = "—";
             labelModelSigmaSource.Text = "—";
 
@@ -116,6 +117,7 @@ namespace GeoMagGUI
                 labelModelName.Text = string.IsNullOrEmpty(descriptor.DisplayName) ? "—" : descriptor.DisplayName;
                 labelModelCategory.Text = descriptor.DetectedType.ToString();
                 labelModelValidity.Text = FormatValidityRange(descriptor.MinDate, descriptor.MaxDate);
+                labelModelEpochs.Text = FormatEpochCount(descriptor.EpochCount);
                 labelModelAltitude.Text = FormatAltitudeRange(descriptor.MinAltitudeKm, descriptor.MaxAltitudeKm);
             }
             else
@@ -123,6 +125,7 @@ namespace GeoMagGUI
                 labelModelName.Text = "—";
                 labelModelCategory.Text = "—";
                 labelModelValidity.Text = "—";
+                labelModelEpochs.Text = "—";
                 labelModelAltitude.Text = "—";
             }
 
@@ -220,8 +223,8 @@ namespace GeoMagGUI
             AddRow2(tblChange, 2, labelChangeFName, labelChangeF);
 
             // Model group (2-col); top shifted from 408 → 424 to clear grpChange (ends 416)
-            grpModel = MakeGroupBox("Model", 424, 5);
-            tblModel = MakeTableLayoutPanel(threeColumns: false, rowCount: 5);
+            grpModel = MakeGroupBox("Model", 424, 6);
+            tblModel = MakeTableLayoutPanel(threeColumns: false, rowCount: 6);
             grpModel.Controls.Add(tblModel);
             labelModelNameName        = MakeNameLabel("Name");
             labelModelName            = MakeValueLabel();
@@ -232,12 +235,15 @@ namespace GeoMagGUI
             labelModelValidityName    = MakeNameLabel("Validity");
             labelModelValidity        = MakeValueLabel();
             AddRow2(tblModel, 2, labelModelValidityName, labelModelValidity);
+            labelModelEpochsName      = MakeNameLabel("Epochs");
+            labelModelEpochs          = MakeValueLabel();
+            AddRow2(tblModel, 3, labelModelEpochsName, labelModelEpochs);
             labelModelAltitudeName    = MakeNameLabel("Altitude");
             labelModelAltitude        = MakeValueLabel();
-            AddRow2(tblModel, 3, labelModelAltitudeName, labelModelAltitude);
+            AddRow2(tblModel, 4, labelModelAltitudeName, labelModelAltitude);
             labelModelSigmaSourceName = MakeNameLabel("σ source");
             labelModelSigmaSource     = MakeValueLabel();
-            AddRow2(tblModel, 4, labelModelSigmaSourceName, labelModelSigmaSource);
+            AddRow2(tblModel, 5, labelModelSigmaSourceName, labelModelSigmaSource);
 
             // Degree chip (shown when descriptor.MaxDegree is known)
             labelDegreeBadge = new Label
@@ -247,7 +253,7 @@ namespace GeoMagGUI
                 Font = new Font("Segoe UI", 8F, FontStyle.Regular),
                 BackColor = Color.FromArgb(232, 240, 254),
                 ForeColor = Color.FromArgb(26, 86, 219),
-                Location = new Point(16, 588),
+                Location = new Point(16, 612),
                 Name = "labelDegreeBadge",
                 Padding = new Padding(8, 3, 8, 3),
                 Text = "Degree —",
@@ -260,7 +266,7 @@ namespace GeoMagGUI
                 AutoSize = true,
                 BorderStyle = BorderStyle.FixedSingle,
                 Font = new Font("Segoe UI", 8F, FontStyle.Regular),
-                Location = new Point(16, 614),
+                Location = new Point(16, 638),
                 Name = "labelCoverageBadge",
                 Padding = new Padding(8, 3, 8, 3),
                 Text = "✓ NSD covered",
@@ -452,6 +458,11 @@ namespace GeoMagGUI
             string lo = minKm.HasValue ? minKm.Value.ToString("0.###", CultureInfo.CurrentCulture) : "?";
             string hi = maxKm.HasValue ? maxKm.Value.ToString("0.###", CultureInfo.CurrentCulture) : "?";
             return lo + " – " + hi + " km";
+        }
+
+        private static string FormatEpochCount(int? count)
+        {
+            return count.HasValue ? count.Value.ToString(CultureInfo.CurrentCulture) : "—";
         }
     }
 }

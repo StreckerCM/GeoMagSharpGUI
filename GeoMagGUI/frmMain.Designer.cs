@@ -624,7 +624,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(844, 678);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(844, 702);
             this.tableLayoutPanel1.TabIndex = 23;
             // 
             // label3
@@ -756,14 +756,14 @@
             this.calculationDetailPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.calculationDetailPanel.Location = new System.Drawing.Point(844, 24);
             this.calculationDetailPanel.Name = "calculationDetailPanel";
-            this.calculationDetailPanel.Size = new System.Drawing.Size(390, 654);
+            this.calculationDetailPanel.Size = new System.Drawing.Size(390, 678);
             this.calculationDetailPanel.TabIndex = 100;
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1240, 724);
+            this.ClientSize = new System.Drawing.Size(1240, 748);
             this.Controls.Add(this.calculationDetailPanel);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
@@ -771,7 +771,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(1200, 734);
+            this.MinimumSize = new System.Drawing.Size(1200, 758);
             this.Name = "FrmMain";
             this.Text = "GeoMag #";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmMain_KeyDown);

@@ -63,6 +63,8 @@ namespace GeoMagGUI
         private System.Windows.Forms.Label labelModelCategory;
         private System.Windows.Forms.Label labelModelValidityName;
         private System.Windows.Forms.Label labelModelValidity;
+        private System.Windows.Forms.Label labelModelEpochsName;
+        private System.Windows.Forms.Label labelModelEpochs;
         private System.Windows.Forms.Label labelModelAltitudeName;
         private System.Windows.Forms.Label labelModelAltitude;
         private System.Windows.Forms.Label labelModelSigmaSourceName;
@@ -92,7 +94,7 @@ namespace GeoMagGUI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.Name = "CalculationDetailPanel";
-            this.Size = new System.Drawing.Size(380, 644);
+            this.Size = new System.Drawing.Size(380, 668);
             this.ResumeLayout(false);
         }
     }
