@@ -173,7 +173,6 @@ namespace GeoMagGUI
             if (_calculationCts != null) return;
 
             _MagCalculator = null;
-            saveToolStripMenuItem.Enabled = false;
 
             this.errorProviderCheck.SetError(comboBoxModels, string.Empty);
             this.errorProviderCheck.SetError(comboBoxAltitudeUnits, string.Empty);
@@ -246,6 +245,8 @@ namespace GeoMagGUI
 
                     _lastCalculationOptions = calcOptions;
                     _lastModelName = selectedDescriptor.DisplayName;
+                    _lastModelType = selectedDescriptor.DetectedType;
+                    _lastDescriptor = selectedDescriptor;
 
                     if (toolStripMenuItemUseRangeOfDates.Checked) calcOptions.EndDate = dateTimePicker2.Value;
 
@@ -287,10 +288,18 @@ namespace GeoMagGUI
 
                     }
 
-                    dataGridViewResults.Rows.Add();
+                    // Phase 1 of #61: Change/yr and Uncertainty rows replaced by the
+                    // CalculationDetailPanel side panel. Auto-select row 0 so the panel
+                    // populates immediately for single-date results.
+                    if (dataGridViewResults.Rows.Count > 0)
+                    {
+                        dataGridViewResults.ClearSelection();
+                        dataGridViewResults.Rows[0].Selected = true;
+                        dataGridViewResults.CurrentCell = dataGridViewResults.Rows[0].Cells[0];
+                        UpdateDetailPanelFromSelection();
+                    }
 
-                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Value = @"Change per year";
-                    dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDate"].Style.BackColor = System.Drawing.Color.LightBlue;
+                    /* Phase1Removed
 
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Value = string.Format("{0}°", _MagCalculator.ResultsOfCalculation.Last().Declination.ChangePerYear.ToString("F4"));
                     dataGridViewResults.Rows[dataGridViewResults.Rows.Count - 1].Cells["ColumnDeclination"].Style.BackColor = System.Drawing.Color.LightBlue;
@@ -345,19 +354,21 @@ namespace GeoMagGUI
                         uncertaintyRow.Cells["ColumnTotalField"].Value = string.Format("\u00B1{0} nT", lastUncertainty.TotalField.ToString("F2"));
                         uncertaintyRow.Cells["ColumnTotalField"].Style.BackColor = System.Drawing.Color.LightGoldenrodYellow;
                     }
+                    Phase1Removed*/
 
-                    saveToolStripMenuItem.Enabled = true;
                     SetStatusTemporary("Calculation complete");
                 }
                 catch (OperationCanceledException)
                 {
                     dataGridViewResults.Rows.Clear();
+                    calculationDetailPanel.Clear();
                     SetStatusTemporary("Calculation cancelled");
                     _MagCalculator = null;
                 }
                 catch (Exception ex)
                 {
                     dataGridViewResults.Rows.Clear();
+                    calculationDetailPanel.Clear();
                     MessageBox.Show(ex.Message, "Error: Calculating Magnetics", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     toolStripStatusLabel1.Text = "Ready";
                     _MagCalculator = null;
@@ -843,65 +854,45 @@ namespace GeoMagGUI
             SetElevationDisplay();
         }
 
-        private bool _isSaving;
         private CalculationOptions _lastCalculationOptions;
         private string _lastModelName;
+        private knownModels _lastModelType;
+        private ModelDescriptor _lastDescriptor;
 
-        private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        // ── #61 Phase 1 — populate the detail side panel from grid selection ──
+
+        private void dataGridViewResults_SelectionChanged(object sender, EventArgs e)
         {
-            if (_isSaving || _MagCalculator == null || _lastCalculationOptions == null
-                || _MagCalculator.ResultsOfCalculation == null || !_MagCalculator.ResultsOfCalculation.Any()) return;
+            UpdateDetailPanelFromSelection();
+        }
 
-            var fldlg = new SaveFileDialog
+        private void UpdateDetailPanelFromSelection()
+        {
+            if (calculationDetailPanel == null) return;
+
+            if (_MagCalculator == null
+                || _MagCalculator.ResultsOfCalculation == null
+                || !_MagCalculator.ResultsOfCalculation.Any()
+                || dataGridViewResults.CurrentRow == null)
             {
-                Filter = string.Format("{0}|{1}", Resources.File_Type_CSV, Resources.File_Type_JSON),
-                Title = "Save Results",
-                FileName = "Results"
-            };
-
-            if (fldlg.ShowDialog() == DialogResult.OK)
-            {
-                _isSaving = true;
-                try
-                {
-                    buttonCalculate.Enabled = false;
-                    saveToolStripMenuItem.Enabled = false;
-                    UseWaitCursor = true;
-                    toolStripStatusLabel1.Text = "Saving results...";
-
-                    var ext = Path.GetExtension(fldlg.FileName).ToLowerInvariant();
-                    if (ext == ".json")
-                    {
-                        await ResultsExporter.ExportJsonAsync(
-                            fldlg.FileName,
-                            _MagCalculator.ResultsOfCalculation,
-                            _lastCalculationOptions,
-                            _lastModelName);
-                    }
-                    else
-                    {
-                        await ResultsExporter.ExportCsvAsync(
-                            fldlg.FileName,
-                            _MagCalculator.ResultsOfCalculation,
-                            _lastCalculationOptions,
-                            _lastModelName);
-                    }
-
-                    SetStatusTemporary("Results saved");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error: Saving Results", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    SetStatusTemporary("Error saving");
-                }
-                finally
-                {
-                    buttonCalculate.Enabled = true;
-                    saveToolStripMenuItem.Enabled = true;
-                    UseWaitCursor = false;
-                    _isSaving = false;
-                }
+                calculationDetailPanel.Clear();
+                return;
             }
+
+            int idx = dataGridViewResults.CurrentRow.Index;
+            var results = _MagCalculator.ResultsOfCalculation;
+            if (idx < 0 || idx >= results.Count)
+            {
+                calculationDetailPanel.Clear();
+                return;
+            }
+
+            calculationDetailPanel.LoadCalculation(
+                results[idx],
+                idx,
+                results.Count,
+                results.Last(),
+                _lastDescriptor);
         }
 
         private void comboBoxAltitudeUnits_Validated(object sender, EventArgs e)

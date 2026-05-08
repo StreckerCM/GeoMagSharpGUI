@@ -69,7 +69,6 @@
             this.addModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -98,6 +97,7 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripButtonCancel = new System.Windows.Forms.ToolStripButton();
+            this.calculationDetailPanel = new GeoMagGUI.CalculationDetailPanel();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStepSize)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderCheck)).BeginInit();
@@ -361,7 +361,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(844, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1240, 24);
             this.menuStrip1.TabIndex = 20;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -371,7 +371,6 @@
             this.addModelToolStripMenuItem,
             this.loadModelToolStripMenuItem,
             this.toolStripSeparator1,
-            this.saveToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -397,16 +396,7 @@
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
-            // 
-            // saveToolStripMenuItem
-            // 
-            this.saveToolStripMenuItem.Enabled = false;
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.saveToolStripMenuItem.Text = "Export";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
-            // 
+            //
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
@@ -489,8 +479,9 @@
             this.dataGridViewResults.Name = "dataGridViewResults";
             this.dataGridViewResults.ReadOnly = true;
             this.tableLayoutPanel1.SetRowSpan(this.dataGridViewResults, 2);
-            this.dataGridViewResults.Size = new System.Drawing.Size(808, 95);
+            this.dataGridViewResults.Size = new System.Drawing.Size(808, 464);
             this.dataGridViewResults.TabIndex = 19;
+            this.dataGridViewResults.SelectionChanged += new System.EventHandler(this.dataGridViewResults_SelectionChanged);
             // 
             // ColumnDate
             // 
@@ -525,18 +516,21 @@
             this.ColumnNorthComp.HeaderText = "North Comp (+N/-S)";
             this.ColumnNorthComp.Name = "ColumnNorthComp";
             this.ColumnNorthComp.ReadOnly = true;
+            this.ColumnNorthComp.Visible = false;
             // 
             // ColumnEastComp
             // 
             this.ColumnEastComp.HeaderText = "East Comp (+E/-W)";
             this.ColumnEastComp.Name = "ColumnEastComp";
             this.ColumnEastComp.ReadOnly = true;
+            this.ColumnEastComp.Visible = false;
             // 
             // ColumnVerticalComp
             // 
             this.ColumnVerticalComp.HeaderText = "Vertical Comp (+D/-U)";
             this.ColumnVerticalComp.Name = "ColumnVerticalComp";
             this.ColumnVerticalComp.ReadOnly = true;
+            this.ColumnVerticalComp.Visible = false;
             // 
             // ColumnTotalField
             // 
@@ -546,6 +540,8 @@
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.tableLayoutPanel1.ColumnCount = 21;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 8F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
@@ -595,7 +591,6 @@
             this.tableLayoutPanel1.Controls.Add(this.comboBoxAltitudeUnits, 19, 3);
             this.tableLayoutPanel1.Controls.Add(this.ComboBoxLongDir, 12, 4);
             this.tableLayoutPanel1.Controls.Add(this.ComboBoxLatDir, 5, 4);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -618,7 +613,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(844, 245);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(844, 702);
             this.tableLayoutPanel1.TabIndex = 23;
             // 
             // label3
@@ -708,9 +703,9 @@
             this.toolStripStatusLabel1,
             this.toolStripProgressBar1,
             this.toolStripButtonCancel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 269);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 638);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(844, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1240, 22);
             this.statusStrip1.TabIndex = 24;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -718,7 +713,7 @@
             // 
             this.toolStripStatusLabel1.AccessibleName = "Status";
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(829, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(1225, 17);
             this.toolStripStatusLabel1.Spring = true;
             this.toolStripStatusLabel1.Text = "Ready";
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -741,18 +736,31 @@
             this.toolStripButtonCancel.Visible = false;
             this.toolStripButtonCancel.Click += new System.EventHandler(this.toolStripButtonCancel_Click);
             // 
+            // calculationDetailPanel
+            // 
+            this.calculationDetailPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.calculationDetailPanel.AutoScroll = true;
+            this.calculationDetailPanel.BackColor = System.Drawing.SystemColors.Window;
+            this.calculationDetailPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.calculationDetailPanel.Location = new System.Drawing.Point(844, 24);
+            this.calculationDetailPanel.Name = "calculationDetailPanel";
+            this.calculationDetailPanel.Size = new System.Drawing.Size(390, 678);
+            this.calculationDetailPanel.TabIndex = 100;
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(844, 316);
+            this.ClientSize = new System.Drawing.Size(1240, 748);
+            this.Controls.Add(this.calculationDetailPanel);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(804, 328);
+            this.MinimumSize = new System.Drawing.Size(1200, 758);
             this.Name = "FrmMain";
             this.Text = "GeoMag #";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmMain_KeyDown);
@@ -803,13 +811,13 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.DataGridView dataGridViewResults;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private GeoMagGUI.CalculationDetailPanel calculationDetailPanel;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemUseRangeOfDates;
         private System.Windows.Forms.Button buttonMyLocation;
         internal System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBoxAltitudeUnits;
         private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ComboBox ComboBoxLongDir;
         private System.Windows.Forms.ComboBox ComboBoxLatDir;

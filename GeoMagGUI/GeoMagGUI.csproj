@@ -91,10 +91,19 @@
     <Compile Include="frmPreferences.Designer.cs">
       <DependentUpon>frmPreferences.cs</DependentUpon>
     </Compile>
+    <Compile Include="CalculationDetailPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CalculationDetailPanel.Designer.cs">
+      <DependentUpon>CalculationDetailPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Helper.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="ResultsExporter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="CalculationDetailPanel.resx">
+      <DependentUpon>CalculationDetailPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="AboutBoxGeoMag.resx">
       <DependentUpon>AboutBoxGeoMag.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -138,7 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="GeoMagSharp">
-      <Version>1.7.1</Version>
+      <Version>1.7.2</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
