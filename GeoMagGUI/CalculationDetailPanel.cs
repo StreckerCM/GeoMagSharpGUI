@@ -74,14 +74,18 @@ namespace GeoMagGUI
                 ? string.Format(CultureInfo.CurrentCulture, "row {0} of {1}", rowIndex + 1, totalRows)
                 : string.Empty;
 
+            // GeoMagSharp 1.7.2 unified the uncertainty fields: every source
+            // (ISCWSA / WMM error model / HDGM) populates the same property names
+            // mirroring MagneticCalculations. Per-component fields are nullable
+            // (null when source is ISCWSA which doesn't provide them).
             var unc = result.Uncertainty;
-            double? sD = NonZero(unc?.SigmaD) ?? NonZero(unc?.Declination);
-            double? sI = NonZero(unc?.SigmaI) ?? NonZero(unc?.DipAngle);
-            double? sH = NonZero(unc?.SigmaH);
-            double? sF = NonZero(unc?.SigmaF) ?? NonZero(unc?.TotalField);
-            double? sX = NonZero(unc?.SigmaX);
-            double? sY = NonZero(unc?.SigmaY);
-            double? sZ = NonZero(unc?.SigmaZ);
+            double? sD = NonZero(unc?.Declination);
+            double? sI = NonZero(unc?.Inclination);
+            double? sH = NonZero(unc?.HorizontalIntensity);
+            double? sF = NonZero(unc?.TotalField);
+            double? sX = NonZero(unc?.NorthComp);
+            double? sY = NonZero(unc?.EastComp);
+            double? sZ = NonZero(unc?.VerticalComp);
 
             labelDeclValue.Text = FormatDegrees(result.Declination?.Value);
             labelDeclSigma.Text = FormatSigmaDegrees(sD);
@@ -129,9 +133,7 @@ namespace GeoMagGUI
                 labelModelAltitude.Text = "—";
             }
 
-            labelModelSigmaSource.Text = (unc != null && unc.SigmaD.HasValue)
-                ? "NOAA DLL (per-point)"
-                : (unc != null ? "ISCWSA (default)" : "—");
+            labelModelSigmaSource.Text = FormatSigmaSource(unc);
 
             UpdateDegreeBadge(descriptor);
             UpdateCoverageBadge(unc);
@@ -463,6 +465,18 @@ namespace GeoMagGUI
         private static string FormatEpochCount(int? count)
         {
             return count.HasValue ? count.Value.ToString(CultureInfo.CurrentCulture) : "—";
+        }
+
+        private static string FormatSigmaSource(GeomagneticUncertainty unc)
+        {
+            if (unc == null) return "—";
+            switch (unc.Source)
+            {
+                case UncertaintySource.Hdgm:          return "NOAA DLL (per-point)";
+                case UncertaintySource.WmmErrorModel: return "WMM error model";
+                case UncertaintySource.Iscwsa:        return "ISCWSA (default)";
+                default:                              return "—";
+            }
         }
     }
 }
