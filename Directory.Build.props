@@ -1,0 +1,17 @@
+<Project>
+  <!-- Single source of truth for the GeoMagGUI version.
+
+       When bumping, update **three** locations (the old-style .NET Framework
+       csproj does not auto-consume these MSBuild properties; they're declared
+       here as documentation + future-proofing for an SDK-style migration):
+
+       1. <VersionPrefix> below
+       2. [assembly: AssemblyVersion]   in GeoMagGUI/Properties/AssemblyInfo.cs
+       3. [assembly: AssemblyFileVersion] in GeoMagGUI/Properties/AssemblyInfo.cs
+       4. <ApplicationVersion>          in GeoMagGUI/GeoMagGUI.csproj
+
+       Keep all four in sync. -->
+  <PropertyGroup>
+    <VersionPrefix>1.2.0</VersionPrefix>
+  </PropertyGroup>
+</Project>

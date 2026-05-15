@@ -11,24 +11,32 @@ A C# WinForms application for calculating geomagnetic field values using spheric
 
 GeoMagSharpGUI calculates Earth's magnetic field components (declination, inclination, intensity) at any location and date using coefficient files from models like:
 
-- **IGRF** (International Geomagnetic Reference Field)
-- **WMM** (World Magnetic Model)
-- **DGRF** (Definitive Geomagnetic Reference Field)
+- **WMM** / **WMMHR** (World Magnetic Model and high-resolution variant)
+- **IGRF** / **DGRF** (International / Definitive Geomagnetic Reference Field)
 - **EMM** (Enhanced Magnetic Model)
+- **BGGM** (BGS Global Geomagnetic Model — commercial, user-supplied)
+- **HDGM** (High Definition Geomagnetic Model — Windows-only, NOAA DLL)
 
 ## Features
 
 - Calculate magnetic declination, inclination, and field intensity
 - Auto-discovery of model files in the `coefficient/` folder (`.COF`, `.DAT`, HDGM `.DLL`)
 - HDGM (High Definition Geomagnetic Model) support via NOAA-supplied DLL (Windows-only)
-- ISCWSA-based uncertainty (1-sigma) shown in the results grid
+- 1-sigma uncertainty shown in the results grid + side detail panel,
+  populated from the loaded model's native error model where one exists
+  (WMM/WMMHR Tech Report formula, HDGM per-point sigmas) with ISCWSA
+  Level 1 fallback for IGRF/DGRF/EMM/BGGM
+- Master-detail layout: values-only grid on the left, full breakdown
+  (declination, inclination, all components, σ rows, model metadata
+  chips) on the right
+- Model metadata surfaced from `ModelDescriptor` 1.7.2 fields: degree
+  chip, altitude validity row, epoch count, σ source label
 - Support for multiple coordinate input formats (Decimal Degrees, DMS)
 - GPS location integration via Windows Location Services
 - Historical calculations with date range support
 - Multiple output units (nanoTesla, Gauss)
 - Secular variation (change per year) calculations
 - Async calculation with cancellation and progress reporting
-- Export results to TXT, CSV, and JSON formats
 - User-configurable preferences
 
 ## Solution Structure
@@ -77,12 +85,12 @@ NuGet restore automatically downloads the [GeoMagSharp](https://www.nuget.org/pa
 
 ## Usage
 
-1. **Select a Magnetic Model** - Choose from available models (IGRF, WMM, etc.)
+1. **Select a Magnetic Model** - Choose from available models (WMM, WMMHR, IGRF, EMM, BGGM, HDGM)
 2. **Enter Location** - Input coordinates as decimal degrees or DMS
 3. **Set Elevation** - Enter altitude above MSL or depth below MSL
 4. **Choose Date(s)** - Select single date or date range
 5. **Calculate** - View magnetic field results in the grid
-6. **Save Results** - Export to text file if needed
+6. **Inspect a Row** - Selecting a grid row populates the side detail panel with the full breakdown (all seven components, 1-σ uncertainty per component, model metadata chips, validity range, epoch count)
 
 ## Magnetic Field Components
 
