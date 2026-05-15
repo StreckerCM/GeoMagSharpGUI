@@ -161,12 +161,27 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- Move NuGet-provided coefficient files into the coefficient/ subdirectory -->
+  <!-- Move NuGet-provided coefficient files into the coefficient/ subdirectory.
+       Defends against the path-mangling bug in #59 where NuGet occasionally
+       produced "coefficientWMM2025.COF" flat at $(OutputPath) instead of
+       "coefficient\WMM2025.COF" — promoting that into coefficient/ would
+       leave a mangled-name duplicate. The Exclude clauses keep flat files
+       starting with "coefficient" out of the Move; the ManglingArtifacts
+       step deletes them with a build warning so the cause stays visible.
+
+       Note on MSBuild glob semantics: $(OutputPath)coefficient*.COF matches
+       a flat file at $(OutputPath) whose name starts with "coefficient"; it
+       does NOT match $(OutputPath)\coefficient\*.COF (legit files inside the
+       coefficient subdir), because the * wildcard doesn't cross path
+       separators. -->
   <Target Name="AfterBuild">
     <ItemGroup>
-      <CofFiles Include="$(OutputPath)*.COF" />
-      <DatFiles Include="$(OutputPath)*.DAT" />
+      <CofFiles Include="$(OutputPath)*.COF" Exclude="$(OutputPath)coefficient*.COF" />
+      <DatFiles Include="$(OutputPath)*.DAT" Exclude="$(OutputPath)coefficient*.DAT" />
+      <ManglingArtifacts Include="$(OutputPath)coefficient*.COF;$(OutputPath)coefficient*.DAT" />
     </ItemGroup>
+    <Warning Text="AfterBuild: removing path-mangled coefficient artifact '%(ManglingArtifacts.Filename)%(ManglingArtifacts.Extension)' (#59 defensive guard; likely a NuGet packaging quirk for this version)" Condition="'@(ManglingArtifacts)' != ''" />
+    <Delete Files="@(ManglingArtifacts)" Condition="'@(ManglingArtifacts)' != ''" />
     <MakeDir Directories="$(OutputPath)coefficient" Condition="'@(CofFiles)' != '' Or '@(DatFiles)' != ''" />
     <Move SourceFiles="@(CofFiles)" DestinationFolder="$(OutputPath)coefficient" OverwriteReadOnlyFiles="true" Condition="'@(CofFiles)' != ''" />
     <Move SourceFiles="@(DatFiles)" DestinationFolder="$(OutputPath)coefficient" OverwriteReadOnlyFiles="true" Condition="'@(DatFiles)' != ''" />
